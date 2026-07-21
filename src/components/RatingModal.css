@@ -1,0 +1,158 @@
+.rating-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(10, 10, 18, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+  animation: ratingOverlayFadeIn 0.2s ease-out;
+}
+
+.rating-modal-content {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 1rem;
+  padding: 2rem;
+  width: 100%;
+  max-width: 450px;
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+  box-shadow: var(--shadow-xl);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  animation: modalFadeIn 0.3s ease-out;
+}
+
+@keyframes ratingOverlayFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.rating-modal-content h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+  text-align: center;
+}
+
+.rating-modal-content p {
+  color: var(--text-tertiary);
+  text-align: center;
+  font-size: 0.95rem;
+}
+
+.star-rating {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+.star-rating button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  font-size: 2.5rem;
+  transition: transform 0.2s, color 0.2s;
+}
+
+.star-rating button:hover {
+  transform: scale(1.1);
+}
+
+.star-rating button:focus-visible {
+  outline: 2px solid #4A4DC9;
+  outline-offset: 4px;
+  border-radius: 0.25rem;
+}
+
+.star-rating button.on {
+  color: #FC9145;
+}
+
+/* Tracks the theme, so an unfilled star stays a faint outline in both modes. */
+.star-rating button.off {
+  color: var(--border-hover);
+}
+
+.rating-modal-content textarea {
+  width: 100%;
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+  font-family: inherit;
+  font-size: 0.875rem;
+  resize: vertical;
+  background-color: var(--input-bg);
+  color: var(--text-primary);
+}
+
+.rating-modal-content textarea::placeholder {
+  color: var(--text-tertiary);
+}
+
+.rating-modal-content textarea:focus {
+  outline: none;
+  border-color: #4A4DC9;
+  box-shadow: 0 0 0 2px rgba(83, 48, 134, 0.2);
+}
+
+.rating-error {
+  color: var(--color-error);
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+.rating-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.rating-actions button {
+  padding: 0.5rem 1.25rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.rating-actions .btn-secondary {
+  background-color: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+}
+
+.rating-actions .btn-secondary:hover {
+  background-color: var(--bg-card-hover);
+  border-color: var(--border-hover);
+}
+
+.rating-actions .btn-primary {
+  background: linear-gradient(135deg, #533086, #4A4DC9);
+  color: #FFFFFF;
+  border: none;
+}
+
+.rating-actions .btn-primary:hover {
+  opacity: 0.9;
+}
+
+.rating-actions button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}

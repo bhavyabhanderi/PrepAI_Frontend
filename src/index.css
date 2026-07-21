@@ -1,0 +1,478 @@
+@import "tailwindcss";
+
+/* ThemeContext toggles `.dark` on <html>. Without this, Tailwind v4 resolves
+   `dark:` against prefers-color-scheme, so the theme switch would move the CSS
+   variables while every `dark:` utility stayed on the OS setting. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ================================================
+   CUSTOM THEME - AI Interview Platform
+   Color Palette:
+   - Deep Purple: #533086
+   - Indigo Blue: #4A4DC9
+   - Orange Accent: #FC9145
+   - Lavender: #C1C1EA
+   - Peach: #FFF3E4
+   - Neutrals: #4E4E4E, #CACACA, #EBEBEB, #F5F5F5
+   ================================================ */
+
+@theme {
+  /* Primary Colors */
+  --color-primary-900: #2a1645;
+  --color-primary-800: #3d2066;
+  --color-primary-700: #533086;
+  --color-primary-600: #6a3da6;
+  --color-primary-500: #4A4DC9;
+  --color-primary-400: #7577D9;
+  --color-primary-300: #C1C1EA;
+  --color-primary-200: #DDDDF5;
+  --color-primary-100: #EEEEF9;
+  --color-primary-50: #F5F5FC;
+
+  /* Accent Colors */
+  --color-accent-600: #e07520;
+  --color-accent-500: #FC9145;
+  --color-accent-400: #FDB070;
+  --color-accent-300: #FECF9C;
+  --color-accent-200: #FEE3C0;
+  --color-accent-100: #FFF3E4;
+  --color-accent-50: #FFF9F1;
+
+  /* Neutral Colors. The 950-700 rungs are the dark-theme surface ramp and must
+     stay in step with the `.dark` variables below: a `dark:bg-neutral-800` card
+     and a `var(--bg-card-hover)` card have to resolve to the same colour. */
+  --color-neutral-950: #0A0A12;
+  --color-neutral-900: #12121C;
+  --color-neutral-800: #1B1B29;
+  --color-neutral-700: #26263A;
+  --color-neutral-600: #4E4E4E;
+  --color-neutral-500: #7a7a95;
+  --color-neutral-400: #CACACA;
+  --color-neutral-300: #DDDDF0;
+  --color-neutral-200: #EBEBEB;
+  --color-neutral-100: #F5F5F5;
+  --color-neutral-50: #FAFAFE;
+
+  /* Semantic Colors */
+  --color-success: #22C55E;
+  --color-warning: #F59E0B;
+  --color-error: #EF4444;
+  --color-info: #4A4DC9;
+
+  /* Surface Colors for Dark/Light */
+  --color-surface-dark: #13132B;
+  --color-surface-dark-2: #1C1C3A;
+  --color-surface-dark-3: #252549;
+  --color-surface-light: #FFFFFF;
+  --color-surface-light-2: #F5F5FC;
+  --color-surface-light-3: #EEEEF9;
+
+  /* Glass effect colors */
+  --color-glass-dark: rgba(19, 19, 43, 0.7);
+  --color-glass-light: rgba(255, 255, 255, 0.7);
+
+  /* Fonts */
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+  /* Shadows */
+  --shadow-glow-purple: 0 0 20px rgba(83, 48, 134, 0.3);
+  --shadow-glow-orange: 0 0 20px rgba(252, 145, 69, 0.3);
+  --shadow-glow-indigo: 0 0 20px rgba(74, 77, 201, 0.3);
+
+  /* Animations */
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-pulse-glow: pulse-glow 2s ease-in-out infinite;
+  --animate-slide-up: slide-up 0.5s ease-out;
+  --animate-slide-down: slide-down 0.3s ease-out;
+  --animate-fade-in: fade-in 0.3s ease-out;
+}
+
+/* ================================================
+   CSS Custom Properties for Theme Switching
+   ================================================ */
+:root {
+  color-scheme: light;
+
+  --bg-primary: #FAFAFE;
+  --bg-secondary: #F5F5FC;
+  --bg-tertiary: #EEEEF9;
+  --bg-card: #FFFFFF;
+  --bg-card-hover: #F5F5FC;
+  --text-primary: #1a1a2e;
+  --text-secondary: #4E4E4E;
+  --text-tertiary: #7a7a95;
+  --text-inverse: #FFFFFF;
+  --border-color: #DDDDF0;
+  --border-hover: #C1C1EA;
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(193, 193, 234, 0.3);
+  --sidebar-bg: #FFFFFF;
+  --sidebar-hover: #F5F5FC;
+  --input-bg: #F5F5FC;
+  --scrollbar-thumb: #C1C1EA;
+  --scrollbar-thumb-hover: #533086;
+  --scrollbar-track: #EEEEF9;
+  --shadow-sm: 0 1px 3px rgba(26, 26, 46, 0.06);
+  --shadow-md: 0 4px 12px rgba(26, 26, 46, 0.08);
+  --shadow-lg: 0 8px 30px rgba(26, 26, 46, 0.12);
+  --shadow-xl: 0 20px 50px rgba(26, 26, 46, 0.15);
+  --selection-bg: rgba(83, 48, 134, 0.3);
+}
+
+/* Dark theme.
+
+   Surfaces climb a single ramp -- page < sidebar < card < raised -- so depth
+   comes from a surface getting lighter, not from a shadow. Black shadows are
+   nearly invisible against a near-black page, which is why the previous values
+   (0.8-0.95 alpha) read as nothing at all. Here they only soften the edge and
+   the ramp does the lifting.
+
+   Every step carries a trace of the brand violet (hue ~250) rather than pure
+   grey, so the purple gradients and primary buttons sit in the same family as
+   the chrome instead of floating on top of a neutral slab. */
+.dark {
+  color-scheme: dark;
+
+  --bg-primary: #0A0A12;
+  --bg-secondary: #12121C;
+  --bg-tertiary: #1B1B29;
+  --bg-card: #12121C;
+  --bg-card-hover: #1B1B29;
+
+  /* Not pure white: #FFF on near-black haloes and tires the eye on long reads. */
+  --text-primary: #F2F2F7;
+  --text-secondary: #A5A5B8;
+  /* 4.54:1 against the lightest surface it lands on (--bg-tertiary), so muted
+     text clears AA on every rung of the ramp rather than only on the page. */
+  --text-tertiary: #82829A;
+  --text-inverse: #0A0A12;
+
+  --border-color: #26263A;
+  --border-hover: #34344D;
+
+  --glass-bg: rgba(14, 14, 24, 0.72);
+  --glass-border: rgba(255, 255, 255, 0.07);
+
+  --sidebar-bg: #0D0D16;
+  --sidebar-hover: #1B1B29;
+  /* Inputs recess below the card they sit on, the inverse of the light theme. */
+  --input-bg: #0E0E18;
+
+  --scrollbar-thumb: #2E2E45;
+  --scrollbar-thumb-hover: #4A4DC9;
+  --scrollbar-track: transparent;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.55);
+  --shadow-xl: 0 24px 60px rgba(0, 0, 0, 0.65);
+
+  --selection-bg: rgba(117, 119, 217, 0.35);
+}
+
+/* ================================================
+   Keyframe Animations
+   ================================================ */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 5px rgba(74, 77, 201, 0.2); }
+  50% { box-shadow: 0 0 20px rgba(74, 77, 201, 0.4); }
+}
+
+@keyframes slide-up {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes slide-down {
+  from { transform: translateY(-10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* ================================================
+   Base Styles
+   ================================================ */
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    /* Stop iOS from re-scaling text when a phone is rotated to landscape */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    transition: background-color 0.3s ease, color 0.3s ease;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* `clip` rather than `hidden`: it kills sideways overflow without turning
+       body into a scroll container, which would break the sticky navbar. */
+    overflow-x: clip;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Media and embeds never dictate layout width */
+  img, video, canvas, svg, iframe {
+    max-width: 100%;
+  }
+
+  img, video {
+    height: auto;
+  }
+
+  /* iOS zooms the viewport when focusing a control whose text is under 16px */
+  @media (max-width: 767.98px) {
+    input, select, textarea {
+      font-size: 16px;
+    }
+  }
+
+  /* Long unbroken strings (URLs, tokens, IDs) must not widen a phone screen */
+  p, h1, h2, h3, h4, h5, h6, span, a, li, td, th {
+    overflow-wrap: break-word;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--scrollbar-track);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-thumb-hover);
+  }
+
+  /* Firefox has no ::-webkit pseudo-elements. This inherits to descendants. */
+  html {
+    scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+  }
+
+  /* Selection. The light theme's 30%-alpha deep purple is near-black on a dark
+     page and swallows the text it is meant to highlight. */
+  ::selection {
+    background: var(--selection-bg);
+    color: inherit;
+  }
+
+  /* Interview lockdown. Toggled on <html> by useCopyGuard while a test or
+     interview is in progress, so questions and problem statements cannot be
+     selected, long-pressed, or dragged out of the page. */
+  html.interview-lockdown,
+  html.interview-lockdown body {
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+  }
+
+  /* Candidates still need a caret and a selection to write and revise their
+     own answers, so editable surfaces opt back in. The clipboard itself stays
+     blocked there by the event handlers. */
+  html.interview-lockdown input,
+  html.interview-lockdown textarea,
+  html.interview-lockdown [contenteditable='true'],
+  html.interview-lockdown .monaco-editor {
+    -webkit-user-select: text;
+    user-select: text;
+  }
+}
+
+/* ================================================
+   Utility Classes
+   ================================================ */
+@layer utilities {
+  .glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+  }
+
+  .glass-strong {
+    background: var(--glass-bg);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid var(--glass-border);
+  }
+
+  .gradient-text {
+    background: linear-gradient(135deg, #533086, #4A4DC9, #FC9145);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* The deep-purple stop reads at ~2.4:1 on the dark page -- the left end of
+     every gradient heading disappears. These are the same three hues lifted
+     into a range that stays legible on #0A0A12. */
+  .dark .gradient-text {
+    background: linear-gradient(135deg, #A98AE6, #7577D9, #FDB070);
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+
+  .gradient-bg {
+    background: linear-gradient(135deg, #533086, #4A4DC9);
+  }
+
+  .gradient-bg-accent {
+    background: linear-gradient(135deg, #FC9145, #533086);
+  }
+
+  .gradient-border {
+    position: relative;
+    background: var(--bg-card);
+    border: 1px solid transparent;
+    background-clip: padding-box;
+  }
+
+  .gradient-border::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, #533086, #4A4DC9, #FC9145);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    -webkit-mask-composite: xor;
+    pointer-events: none;
+  }
+
+  .card-hover {
+    transition: all 0.3s ease;
+  }
+
+  .card-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .animate-gradient {
+    background-size: 200% 200%;
+    animation: gradient-shift 3s ease infinite;
+  }
+
+  .skeleton {
+    background: linear-gradient(
+      90deg,
+      var(--bg-tertiary) 25%,
+      var(--bg-secondary) 50%,
+      var(--bg-tertiary) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* ---- Responsive helpers ----------------------------------------------- */
+
+  /* Wrap any table, chart, or code block that cannot shrink. It scrolls
+     itself instead of pushing the page sideways. */
+  .scroll-x {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    max-width: 100%;
+  }
+
+  /* Horizontally scrolling chip/tab strips on narrow screens.
+     Deliberately does NOT set `display` — combine it with `flex`. Forcing
+     `display: flex` here would outrank a responsive `md:grid` on the same
+     element, since this rule is emitted after the breakpoint variants. */
+  .snap-row {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .snap-row > * {
+    scroll-snap-align: start;
+  }
+
+  /* Meets the 44x44px minimum comfortable touch target on pointer-coarse
+     devices, without inflating the same control for mouse users. */
+  @media (pointer: coarse) {
+    .tap-target {
+      min-width: 44px;
+      min-height: 44px;
+    }
+  }
+
+  /* Notch / home-indicator insets */
+  .safe-top    { padding-top: env(safe-area-inset-top); }
+  .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+  .safe-x {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+
+  /* Fluid type: scales between the mobile and desktop sizes with no jump */
+  .text-fluid-3xl { font-size: clamp(1.5rem, 1.2rem + 1.5vw, 2.25rem); }
+  .text-fluid-4xl { font-size: clamp(1.875rem, 1.4rem + 2.4vw, 3rem); }
+  .text-fluid-5xl { font-size: clamp(2.25rem, 1.5rem + 3.75vw, 3.75rem); }
+  .text-fluid-6xl { font-size: clamp(2.5rem, 1.6rem + 4.5vw, 4.5rem); }
+}
+
+
