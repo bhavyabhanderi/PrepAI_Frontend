@@ -18,7 +18,8 @@ export const authService = {
     // If backend has no logout endpoint, we do clean up in Redux
     return Promise.resolve();
   },
-  forgotPassword: (email) => Promise.resolve(),
+  forgotPassword: (email) => axiosInstance.post('/auth/forgot-password', { email }),
+  resetPasswordDirect: (email, new_password) => axiosInstance.post('/auth/reset-password-direct', { email, new_password }),
   resetPassword: (data) => Promise.resolve(),
   getProfile: () => axiosInstance.get(API_ENDPOINTS.AUTH.ME),
 };

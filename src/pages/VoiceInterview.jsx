@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import {
   RiMicLine, RiMicOffLine, RiStopCircleLine,
   RiPlayLine, RiTimeLine, RiSpeedLine,
-  RiEmotionHappyLine, RiVoiceprintLine, RiSparklingLine,
+  RiEmotionHappyLine, RiVoiceprintLine, RiSparklingFill,
 } from 'react-icons/ri';
 import { formatTimer } from '../utils/helpers';
 import { useTimer, usePrefersReducedMotion, useTabSwitchGuard } from '../hooks';
@@ -311,7 +311,7 @@ export default function VoiceInterview() {
           {/* AI Response */}
           <div className="p-6 rounded-2xl border" style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)' }}>
             <div className="flex items-center gap-2 mb-3">
-              <RiSparklingLine className="text-accent-500" />
+              <RiSparklingFill className="text-accent-500" />
               <span className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>AI Interviewer</span>
             </div>
             <p className="text-sm leading-relaxed whitespace-pre-line break-words max-h-[40dvh] overflow-y-auto" style={{ color: 'var(--text-secondary)' }}>

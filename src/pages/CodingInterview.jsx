@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import Editor from '@monaco-editor/react';
 import { startInterview, endInterview } from '../redux/slices/interviewSlice';
 import {
-  RiPlayLine, RiSendPlaneFill, RiSparklingLine,
+  RiPlayLine, RiSendPlaneFill, RiSparklingFill,
   RiTimeLine, RiCheckLine, RiCloseLine,
   RiCodeSSlashLine, RiArrowDownSLine, RiRefreshLine,
   RiStopCircleLine,
@@ -450,7 +450,7 @@ export default function CodingInterview() {
                         {f.type === 'positive' ? (
                           <RiCheckLine className="text-success mt-0.5 flex-shrink-0" />
                         ) : (
-                          <RiSparklingLine className="text-accent-500 mt-0.5 flex-shrink-0" />
+                          <RiSparklingFill className="text-accent-500 mt-0.5 flex-shrink-0" />
                         )}
                         <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>{f.text}</span>
                       </div>

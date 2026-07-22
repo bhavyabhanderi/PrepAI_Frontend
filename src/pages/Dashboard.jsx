@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import {
   RiFileTextLine, RiUserVoiceLine, RiCodeSSlashLine,
   RiBarChartBoxLine, RiArrowUpLine, RiArrowDownLine,
-  RiSparklingLine, RiTimeLine, RiTrophyLine,
+  RiSparklingFill, RiTimeLine, RiTrophyLine,
   RiCalendarLine, RiArrowRightLine, RiMicLine, RiBook2Line
 } from 'react-icons/ri';
 import {
@@ -22,6 +22,7 @@ const ICON_MAP = {
   'code': RiCodeSSlashLine,
   'mic': RiMicLine,
   'trophy': RiTrophyLine,
+  'book': RiBook2Line,
 };
 
 const fadeInUp = { initial: { opacity: 0, y: 20 }, animate: { opacity: 1, y: 0 } };
@@ -232,7 +233,7 @@ export default function Dashboard() {
           }}
         >
           <div className="flex items-center gap-2 mb-5">
-            <RiSparklingLine className="text-accent-500" size={20} />
+            <RiSparklingFill className="text-accent-500" size={20} />
             <h3 className="text-base font-semibold" style={{ color: 'var(--text-primary)' }}>
               AI Suggestions
             </h3>
@@ -300,9 +301,9 @@ export default function Dashboard() {
                 </div>
                 <div
                   className="text-sm font-bold"
-                  style={{ color: getScoreColor(activity.score) }}
+                  style={{ color: activity.score != null ? getScoreColor(activity.score) : 'var(--text-tertiary)' }}
                 >
-                  {activity.score}%
+                  {activity.score != null ? `${activity.score}%` : 'N/A'}
                 </div>
               </div>
             ))}

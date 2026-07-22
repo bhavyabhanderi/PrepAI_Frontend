@@ -3,7 +3,7 @@ import { ROUTES } from '../constants/routes';
 import Footer from '../components/layout/Footer';
 import PublicNavbar from '../components/layout/PublicNavbar';
 import { motion } from 'framer-motion';
-import { RiSparklingLine } from 'react-icons/ri';
+import { RiSparklingFill } from 'react-icons/ri';
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },

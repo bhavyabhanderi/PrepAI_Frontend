@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { motion } from 'framer-motion';
 import {
   RiCodeSSlashLine, RiCheckLine, RiCloseLine,
-  RiTimeLine, RiArrowRightLine, RiSparklingLine,
+  RiTimeLine, RiArrowRightLine, RiSparklingFill,
   RiTrophyLine, RiStarLine, RiSendPlaneFill, RiMicLine,
   RiMicOffLine, RiRobot2Line, RiUser3Line, RiStopCircleLine
 } from 'react-icons/ri';
@@ -304,7 +304,7 @@ export default function TechnicalInterview() {
                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
               ) : (
                 <>
-                  <RiSparklingLine size={16} />
+                  <RiSparklingFill size={16} />
                   Start Interview
                 </>
               )}

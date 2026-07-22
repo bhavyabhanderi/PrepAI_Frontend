@@ -6,7 +6,7 @@ import {
   RiUploadCloud2Line,
   RiFileTextLine,
   RiCloseLine,
-  RiSparklingLine,
+  RiSparklingFill,
   RiBook2Line,
   RiCheckDoubleLine,
   RiTimeLine,
@@ -163,7 +163,7 @@ export default function SyllabusAnalyzer() {
                 </div>
 
                 <div className="p-4 rounded-xl border border-primary-500/20 bg-primary-500/5 flex gap-3">
-                  <RiSparklingLine size={20} className="text-primary-500 flex-shrink-0 mt-0.5" />
+                  <RiSparklingFill size={20} className="text-primary-500 flex-shrink-0 mt-0.5" />
                   <div>
                     <p className="text-sm font-semibold text-primary-500 mb-1">AI Powered Extraction</p>
                     <p className="text-sm" style={{ color: 'var(--text-tertiary)' }}>We'll use advanced NLP models to scan your document, extract the syllabus, and save it to your account.</p>
@@ -177,7 +177,7 @@ export default function SyllabusAnalyzer() {
                   {loading ? (
                     <><div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Analyzing & Saving...</>
                   ) : (
-                    <><RiSparklingLine size={18} /> Extract Topics & Chapters</>
+                    <><RiSparklingFill size={18} /> Extract Topics & Chapters</>
                   )}
                 </button>
               </div>

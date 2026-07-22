@@ -4,7 +4,7 @@ import { toast } from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   RiCalendarLine,
-  RiSparklingLine, RiCheckLine, RiTimeLine,
+  RiSparklingFill, RiCheckLine, RiTimeLine,
   RiExternalLinkLine, RiPlayCircleLine,
   RiCodeSSlashLine,
   RiUploadCloud2Line, RiFileTextLine, RiCloseLine,
@@ -279,7 +279,7 @@ export default function LearningPlan() {
                   <div className="w-9 h-9 rounded-xl gradient-bg flex items-center justify-center mb-3">
                     {isGeneratingTest
                       ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                      : <RiSparklingLine size={18} className="text-white" />}
+                      : <RiSparklingFill size={18} className="text-white" />}
                   </div>
                   <p className="text-sm font-bold mb-1" style={{ color: 'var(--text-primary)' }}>
                     {isGeneratingTest ? 'Generating Test…' : 'Take Skills Test'}
@@ -355,7 +355,7 @@ export default function LearningPlan() {
               {isGeneratingPlan ? (
                 <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Generating Your Plan...</>
               ) : (
-                <><RiSparklingLine size={16} /> Generate My Personalized Plan</>
+                <><RiSparklingFill size={16} /> Generate My Personalized Plan</>
               )}
             </button>
           </motion.div>
@@ -615,7 +615,7 @@ export default function LearningPlan() {
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
             className="p-6 rounded-2xl border" style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)' }}>
             <div className="flex items-center gap-2 mb-4">
-              <RiSparklingLine className="text-warning" />
+              <RiSparklingFill className="text-warning" />
               <h3 className="text-base font-semibold" style={{ color: 'var(--text-primary)' }}>AI Recommendations</h3>
             </div>
             <div className="space-y-2">

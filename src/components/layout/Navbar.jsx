@@ -61,6 +61,11 @@ export default function Navbar() {
           <RiMenuLine size={22} />
         </button>
 
+        {/* Mobile Logo */}
+        <div className="lg:hidden flex items-center gap-2 cursor-pointer" onClick={() => navigate(ROUTES.DASHBOARD)}>
+          <img src="/PrepAI.png" alt="PrepAI Logo" className="w-8 h-8 object-contain" />
+        </div>
+
         {/* Greeting */}
         <div className="hidden md:block min-w-0">
           <h2 className="text-sm font-medium" style={{ color: 'var(--text-tertiary)' }}>

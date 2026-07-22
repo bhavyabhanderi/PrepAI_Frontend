@@ -1,5 +1,5 @@
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { RiSparklingLine, RiGithubLine, RiTwitterXLine, RiLinkedinLine, RiMailLine } from 'react-icons/ri';
+import { RiSparklingFill, RiGithubLine, RiTwitterXLine, RiLinkedinLine, RiMailLine } from 'react-icons/ri';
 import { ROUTES } from '../../constants/routes';
 
 /**

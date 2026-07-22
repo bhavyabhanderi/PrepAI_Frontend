@@ -175,39 +175,85 @@
    Keyframe Animations
    ================================================ */
 @keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-20px); }
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-20px);
+  }
 }
 
 @keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 5px rgba(74, 77, 201, 0.2); }
-  50% { box-shadow: 0 0 20px rgba(74, 77, 201, 0.4); }
+
+  0%,
+  100% {
+    box-shadow: 0 0 5px rgba(74, 77, 201, 0.2);
+  }
+
+  50% {
+    box-shadow: 0 0 20px rgba(74, 77, 201, 0.4);
+  }
 }
 
 @keyframes slide-up {
-  from { transform: translateY(20px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 @keyframes slide-down {
-  from { transform: translateY(-10px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+  from {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 @keyframes fade-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes gradient-shift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 @keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
 }
 
 /* ================================================
@@ -241,23 +287,42 @@
   }
 
   /* Media and embeds never dictate layout width */
-  img, video, canvas, svg, iframe {
+  img,
+  video,
+  canvas,
+  svg,
+  iframe {
     max-width: 100%;
   }
 
-  img, video {
+  img,
+  video {
     height: auto;
   }
 
   /* iOS zooms the viewport when focusing a control whose text is under 16px */
   @media (max-width: 767.98px) {
-    input, select, textarea {
+
+    input,
+    select,
+    textarea {
       font-size: 16px;
     }
   }
 
   /* Long unbroken strings (URLs, tokens, IDs) must not widen a phone screen */
-  p, h1, h2, h3, h4, h5, h6, span, a, li, td, th {
+  p,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  span,
+  a,
+  li,
+  td,
+  th {
     overflow-wrap: break-word;
   }
 
@@ -266,7 +331,9 @@
       scroll-behavior: auto;
     }
 
-    *, *::before, *::after {
+    *,
+    *::before,
+    *::after {
       animation-duration: 0.01ms !important;
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
@@ -408,12 +475,10 @@
   }
 
   .skeleton {
-    background: linear-gradient(
-      90deg,
-      var(--bg-tertiary) 25%,
-      var(--bg-secondary) 50%,
-      var(--bg-tertiary) 75%
-    );
+    background: linear-gradient(90deg,
+        var(--bg-tertiary) 25%,
+        var(--bg-secondary) 50%,
+        var(--bg-tertiary) 75%);
     background-size: 200% 100%;
     animation: shimmer 1.5s infinite;
   }
@@ -447,7 +512,7 @@
     -webkit-overflow-scrolling: touch;
   }
 
-  .snap-row > * {
+  .snap-row>* {
     scroll-snap-align: start;
   }
 
@@ -461,18 +526,33 @@
   }
 
   /* Notch / home-indicator insets */
-  .safe-top    { padding-top: env(safe-area-inset-top); }
-  .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+  .safe-top {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
   .safe-x {
     padding-left: env(safe-area-inset-left);
     padding-right: env(safe-area-inset-right);
   }
 
   /* Fluid type: scales between the mobile and desktop sizes with no jump */
-  .text-fluid-3xl { font-size: clamp(1.5rem, 1.2rem + 1.5vw, 2.25rem); }
-  .text-fluid-4xl { font-size: clamp(1.875rem, 1.4rem + 2.4vw, 3rem); }
-  .text-fluid-5xl { font-size: clamp(2.25rem, 1.5rem + 3.75vw, 3.75rem); }
-  .text-fluid-6xl { font-size: clamp(2.5rem, 1.6rem + 4.5vw, 4.5rem); }
+  .text-fluid-3xl {
+    font-size: clamp(1.5rem, 1.2rem + 1.5vw, 2.25rem);
+  }
+
+  .text-fluid-4xl {
+    font-size: clamp(1.875rem, 1.4rem + 2.4vw, 3rem);
+  }
+
+  .text-fluid-5xl {
+    font-size: clamp(2.25rem, 1.5rem + 3.75vw, 3.75rem);
+  }
+
+  .text-fluid-6xl {
+    font-size: clamp(2.5rem, 1.6rem + 4.5vw, 4.5rem);
+  }
 }
-
-

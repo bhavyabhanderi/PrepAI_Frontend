@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { motion } from 'framer-motion';
 import {
   RiSendPlaneFill, RiMicLine, RiMicOffLine,
-  RiTimeLine, RiSparklingLine, RiUser3Line, RiUserVoiceLine,
+  RiTimeLine, RiSparklingFill, RiUser3Line, RiUserVoiceLine,
   RiRobot2Line, RiStopCircleLine, RiRefreshLine,
 } from 'react-icons/ri';
 import { formatTimer } from '../utils/helpers';
@@ -383,7 +383,7 @@ export default function HRInterview() {
                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
               ) : (
                 <>
-                  <RiSparklingLine size={16} /> Text Interview
+                  <RiSparklingFill size={16} /> Text Interview
                 </>
               )}
             </button>

@@ -4,7 +4,7 @@ import { useDropzone } from 'react-dropzone';
 import {
   RiUploadCloud2Line, RiFileTextLine, RiCheckLine,
   RiCloseLine, RiDownloadLine, RiAlertLine,
-  RiStarLine, RiSparklingLine, RiShieldCheckLine,
+  RiStarLine, RiSparklingFill, RiShieldCheckLine,
   RiArrowRightLine, RiRefreshLine,
 } from 'react-icons/ri';
 import { formatFileSize, getScoreColor, getScoreLabel } from '../utils/helpers';
@@ -208,7 +208,7 @@ export default function ResumeAnalyzer() {
                       </>
                     ) : (
                       <>
-                        <RiSparklingLine size={16} />
+                        <RiSparklingFill size={16} />
                         Analyze Resume
                       </>
                     )}
@@ -254,7 +254,7 @@ export default function ResumeAnalyzer() {
                 style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)' }}
               >
                 <div className="w-16 h-16 rounded-2xl gradient-bg flex items-center justify-center mx-auto mb-4 animate-pulse">
-                  <RiSparklingLine className="text-white text-2xl" />
+                  <RiSparklingFill className="text-white text-2xl" />
                 </div>
                 <h3 className="text-lg font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>
                   AI is analyzing your resume...
@@ -414,7 +414,7 @@ export default function ResumeAnalyzer() {
                   style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)' }}
                 >
                   <h3 className="text-base font-semibold mb-4 flex items-center gap-2" style={{ color: 'var(--text-primary)' }}>
-                    <RiSparklingLine className="text-accent-500" /> AI Suggestions
+                    <RiSparklingFill className="text-accent-500" /> AI Suggestions
                   </h3>
                   <div className="space-y-3">
                     {analysis.suggestions.map((s, i) => (

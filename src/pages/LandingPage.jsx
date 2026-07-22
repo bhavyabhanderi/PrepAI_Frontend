@@ -2,7 +2,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import {
-  RiSparklingLine, RiRobot2Line, RiFileTextLine,
+  RiSparklingFill, RiRobot2Line, RiFileTextLine,
   RiMicLine, RiCodeSSlashLine, RiBarChartBoxLine,
   RiShieldCheckLine, RiTimeLine, RiUserVoiceLine,
   RiArrowRightLine, RiStarFill, RiCheckLine,
@@ -144,7 +144,7 @@ export default function LandingPage() {
                 color: 'var(--text-secondary)',
               }}
             >
-              <RiSparklingLine className="text-accent-500" />
+              <RiSparklingFill className="text-accent-500" />
               Powered by PrepAI
             </motion.div>
 
