@@ -54,7 +54,7 @@ export default function AuthLayout() {
 
       {/* ================= LEFT PANEL ================= */}
 
-      <div className="hidden lg:flex lg:w-[55%] relative overflow-hidden lg:rounded-r-[40px]">
+      <div className="hidden md:flex md:w-[45%] lg:w-[50%] xl:w-[55%] relative overflow-hidden md:rounded-r-[30px] lg:rounded-r-[40px]">
 
         {/* Background Gradient */}
         <div
@@ -92,24 +92,24 @@ export default function AuthLayout() {
         <div className="absolute bottom-0 right-0 w-[320px] h-[320px] rounded-full bg-fuchsia-500/20 blur-[150px]" />
 
         {/* Hero Content */}
-        <div className="relative z-20 flex flex-col justify-center h-full px-16 xl:px-20 text-white">
+        <div className="relative z-20 flex flex-col justify-center h-full px-6 md:px-8 lg:px-12 xl:px-20 text-white">
 
           <Link
             to="/"
-            className="flex items-center gap-3 mb-16"
+            className="flex items-center gap-2 md:gap-3 mb-10 md:mb-12 xl:mb-16"
           >
             <img
               src={prepAiLogo}
               alt="PrepAI"
-              className="w-11 h-11"
+              className="w-8 h-8 md:w-10 md:h-10 xl:w-11 xl:h-11"
             />
 
-            <span className="text-3xl font-bold">
+            <span className="text-xl md:text-2xl xl:text-3xl font-bold">
               PrepAI
             </span>
           </Link>
 
-          <h1 className="text-[0px] xl:text-[50px] font-extrabold leading-[1.05] tracking-tight max-w-xl">
+          <h1 className="text-3xl md:text-3xl lg:text-[40px] xl:text-[50px] font-extrabold leading-[1.15] md:leading-[1.1] xl:leading-[1.05] tracking-tight max-w-xl">
             Ace Your Next
             <br />
             Interview with
@@ -119,7 +119,7 @@ export default function AuthLayout() {
             </span>
           </h1>
 
-          <p className="mt-8 max-w-lg text-lg leading-8 text-white/75">
+          <p className="mt-4 md:mt-6 xl:mt-8 max-w-lg text-sm md:text-base xl:text-lg leading-relaxed xl:leading-8 text-white/75">
             Practice with AI-powered mock interviews,
             receive instant feedback,
             improve your communication,
@@ -127,14 +127,14 @@ export default function AuthLayout() {
             to land your dream job.
           </p>
 
-          <div className="flex gap-16 mt-14">
+          <div className="flex gap-6 md:gap-8 lg:gap-10 xl:gap-16 mt-8 md:mt-10 xl:mt-14">
             {stats.map((item) => (
               <div key={item.label}>
-                <h2 className="text-4xl font-bold">
+                <h2 className="text-2xl md:text-2xl lg:text-3xl xl:text-4xl font-bold">
                   {item.value}
                 </h2>
 
-                <p className="mt-2 text-white/60">
+                <p className="mt-1 xl:mt-2 text-xs md:text-sm xl:text-base text-white/60">
                   {item.label}
                 </p>
               </div>
@@ -145,15 +145,15 @@ export default function AuthLayout() {
       </div>
 
       {/* ================= RIGHT PANEL ================= */}
-      <div className="flex-1 flex items-center justify-center bg-white px-6 py-10">
+      <div className="flex-1 flex items-center justify-center bg-white px-4 sm:px-6 md:px-8 py-10">
         <motion.div
           initial={{ opacity: 0, y: 25 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.45 }}
-          className="w-full max-w-lg"
+          className="w-full max-w-md lg:max-w-lg xl:max-w-xl"
         >
           {/* Mobile Logo */}
-          <div className="lg:hidden flex justify-center mb-10">
+          <div className="md:hidden flex justify-center mb-8">
             <Link to="/" className="flex items-center gap-3">
               <img
                 src={prepAiLogo}
