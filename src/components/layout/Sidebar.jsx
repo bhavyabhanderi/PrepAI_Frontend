@@ -13,9 +13,8 @@ import {
   RiDashboardLine, RiFileTextLine, RiUserVoiceLine,
   RiCodeSSlashLine, RiTerminalBoxLine, RiMicLine,
   RiBarChartBoxLine, RiBookOpenLine, RiHistoryLine,
-  RiSettings4Line, RiLogoutBoxRLine, RiMenuFoldLine,
-  RiMenuUnfoldLine, RiSparklingLine, RiMoonLine,
-  RiSunLine, RiCloseLine, RiShieldUserLine, RiBrainLine,
+  RiUser3Line, RiLogoutBoxRLine, RiMenuFoldLine,
+  RiSunLine, RiCloseLine, RiShieldUserLine, RiBrainLine, RiBook2Line,
 } from 'react-icons/ri';
 
 const iconMap = {
@@ -29,6 +28,7 @@ const iconMap = {
   RiBookOpenLine: RiBookOpenLine,
   RiHistoryLine: RiHistoryLine,
   RiBrainLine: RiBrainLine,
+  RiBook2Line: RiBook2Line,
 };
 
 /**
@@ -258,37 +258,6 @@ export default function Sidebar() {
 
         {/* Bottom Section */}
         <div className="border-t p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] space-y-1 shrink-0" style={{ borderColor: 'var(--border-color)' }}>
-          {/* Theme Toggle */}
-          <button
-            onClick={toggleTheme}
-            className={`
-              w-full flex items-center gap-3 px-3 py-2.5 rounded-xl
-              transition-all duration-200 hover:bg-primary-500/8
-              ${collapsed ? 'justify-center' : ''}
-            `}
-            style={{ color: 'var(--text-secondary)' }}
-          >
-            {isDark ? <RiSunLine size={20} /> : <RiMoonLine size={20} />}
-            {!collapsed && (
-              <span className="text-sm font-medium">{isDark ? 'Light Mode' : 'Dark Mode'}</span>
-            )}
-          </button>
-
-          {/* Settings */}
-          <NavLink
-            to={ROUTES.PROFILE}
-            onClick={handleNavClick}
-            className={`
-              w-full flex items-center gap-3 px-3 py-2.5 rounded-xl
-              transition-all duration-200 hover:bg-primary-500/8
-              ${collapsed ? 'justify-center' : ''}
-            `}
-            style={{ color: 'var(--text-secondary)' }}
-          >
-            <RiSettings4Line size={20} />
-            {!collapsed && <span className="text-sm font-medium">Settings</span>}
-          </NavLink>
-
           {/* Logout */}
           <button
             onClick={(e) => {

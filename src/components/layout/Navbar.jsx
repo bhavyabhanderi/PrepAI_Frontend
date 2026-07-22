@@ -4,9 +4,11 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   RiMenuLine, RiSearchLine, RiNotification3Line,
-  RiUser3Line, RiSettings4Line, RiLogoutBoxRLine,
+  RiUser3Line, RiLogoutBoxRLine,
   RiArrowDownSLine, RiCloseLine,
+  RiMoonLine, RiSunLine,
 } from 'react-icons/ri';
+import { useTheme } from '../../context/ThemeContext';
 import { setSidebarOpen } from '../../redux/slices/uiSlice';
 import { logout } from '../../redux/slices/authSlice';
 import { useClickOutside } from '../../hooks';
@@ -24,12 +26,10 @@ export default function Navbar() {
   const { user } = useSelector((state) => state.auth);
   const { notifications } = useSelector((state) => state.ui);
   const { isActive: isInterviewActive } = useSelector((state) => state.interview);
+  const { isDark, toggleTheme } = useTheme();
 
   const [showProfile, setShowProfile] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
-  const [showMobileSearch, setShowMobileSearch] = useState(false);
-  const [searchFocused, setSearchFocused] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
 
   const profileRef = useRef(null);
   const notifRef = useRef(null);
@@ -39,26 +39,7 @@ export default function Navbar() {
 
   const unreadCount = notifications.filter((n) => !n.read).length;
 
-  const searchField = (
-    <>
-      <RiSearchLine className="text-lg flex-shrink-0" style={{ color: 'var(--text-tertiary)' }} />
-      <input
-        type="text"
-        placeholder="Search interviews, resources..."
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-        onFocus={() => setSearchFocused(true)}
-        onBlur={() => setSearchFocused(false)}
-        className="flex-1 min-w-0 bg-transparent text-base md:text-sm outline-none"
-        style={{ color: 'var(--text-primary)' }}
-      />
-      {searchQuery && (
-        <button onClick={() => setSearchQuery('')} aria-label="Clear search">
-          <RiCloseLine style={{ color: 'var(--text-tertiary)' }} />
-        </button>
-      )}
-    </>
-  );
+
 
   return (
     <header
@@ -91,68 +72,20 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Center - Search Bar (docked from lg, where there is room beside the greeting) */}
-      <div className="hidden lg:flex flex-1 max-w-md mx-4 xl:mx-8">
-        <div
-          className="w-full flex items-center gap-2 px-4 py-2.5 rounded-xl border transition-all duration-200"
-          style={{
-            backgroundColor: 'var(--input-bg)',
-            borderColor: searchFocused ? '#4A4DC9' : 'var(--border-color)',
-            boxShadow: searchFocused ? 'var(--shadow-glow-indigo)' : undefined,
-          }}
-        >
-          {searchField}
-          <kbd
-            className="hidden xl:inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-medium border"
-            style={{
-              color: 'var(--text-tertiary)',
-              borderColor: 'var(--border-color)',
-              backgroundColor: 'var(--bg-secondary)',
-            }}
-          >
-            ⌘K
-          </kbd>
-        </div>
-      </div>
+      <div className="hidden lg:flex flex-1 mx-4 xl:mx-8"></div>
 
       {/* Right Section */}
       <div className="flex items-center gap-1 sm:gap-2 shrink-0">
-        {/* Compact search — opens a full-width row below the bar */}
-        <button
-          onClick={() => setShowMobileSearch((v) => !v)}
-          aria-label="Search"
-          aria-expanded={showMobileSearch}
-          className="p-2 rounded-xl hover:bg-primary-500/10 transition-colors lg:hidden"
-          style={{ color: 'var(--text-secondary)' }}
-        >
-          <RiSearchLine size={20} />
-        </button>
 
-        <AnimatePresence>
-          {showMobileSearch && (
-            <motion.div
-              initial={{ opacity: 0, y: -8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.15 }}
-              className="absolute left-0 right-0 top-16 px-3 sm:px-4 pb-3 pt-1 border-b lg:hidden"
-              style={{
-                backgroundColor: 'var(--bg-primary)',
-                borderColor: 'var(--border-color)',
-              }}
-            >
-              <div
-                className="w-full flex items-center gap-2 px-4 py-2.5 rounded-xl border"
-                style={{
-                  backgroundColor: 'var(--input-bg)',
-                  borderColor: searchFocused ? '#4A4DC9' : 'var(--border-color)',
-                }}
-              >
-                {searchField}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {/* Theme Toggle */}
+        <button
+          onClick={toggleTheme}
+          className="p-2 rounded-xl hover:bg-primary-500/10 transition-colors"
+          style={{ color: 'var(--text-secondary)' }}
+          aria-label="Toggle theme"
+        >
+          {isDark ? <RiSunLine size={20} /> : <RiMoonLine size={20} />}
+        </button>
 
         {/* Notifications */}
         <div className="relative" ref={notifRef}>
@@ -262,21 +195,7 @@ export default function Navbar() {
                     <RiUser3Line size={16} />
                     Profile
                   </button>
-                  <button
-                    onClick={() => {
-                      if (isInterviewActive) {
-                        toast.error("Please end or cancel the current interview process first!");
-                        return;
-                      }
-                      navigate(ROUTES.PROFILE);
-                      setShowProfile(false);
-                    }}
-                    className="w-full flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-primary-500/8 transition-colors"
-                    style={{ color: 'var(--text-secondary)' }}
-                  >
-                    <RiSettings4Line size={16} />
-                    Settings
-                  </button>
+
                 </div>
 
                 <div className="border-t py-1" style={{ borderColor: 'var(--border-color)' }}>

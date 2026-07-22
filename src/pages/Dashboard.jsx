@@ -4,7 +4,7 @@ import {
   RiFileTextLine, RiUserVoiceLine, RiCodeSSlashLine,
   RiBarChartBoxLine, RiArrowUpLine, RiArrowDownLine,
   RiSparklingLine, RiTimeLine, RiTrophyLine,
-  RiCalendarLine, RiArrowRightLine, RiMicLine,
+  RiCalendarLine, RiArrowRightLine, RiMicLine, RiBook2Line
 } from 'react-icons/ri';
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid,
@@ -330,6 +330,7 @@ export default function Dashboard() {
               { label: 'Coding', icon: RiCodeSSlashLine, path: ROUTES.CODING_INTERVIEW, color: '#22C55E' },
               { label: 'Voice Practice', icon: RiMicLine, path: ROUTES.VOICE_INTERVIEW, color: '#533086' },
               { label: 'Aptitude Test', icon: RiCodeSSlashLine, path: ROUTES.APTITUDE_INTERVIEW, color: '#F59E0B' },
+              { label: 'Syllabus', icon: RiBook2Line, path: ROUTES.SYLLABUS_ANALYZER, color: '#10B981' },
               { label: 'View Report', icon: RiBarChartBoxLine, path: ROUTES.PERFORMANCE_REPORT, color: '#4A4DC9' },
             ].map((action) => (
               <Link

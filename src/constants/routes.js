@@ -8,6 +8,7 @@ export const ROUTES = {
   FORGOT_PASSWORD: '/forgot-password',
   DASHBOARD: '/dashboard',
   RESUME_ANALYZER: '/resume-analyzer',
+  SYLLABUS_ANALYZER: '/syllabus-analyzer',
   HR_INTERVIEW: '/hr-interview',
   TECHNICAL_INTERVIEW: '/technical-interview',
   CODING_INTERVIEW: '/coding-interview',
@@ -28,6 +29,7 @@ export const ROUTES = {
 export const NAV_ITEMS = [
   { label: 'Dashboard', path: ROUTES.DASHBOARD, icon: 'RiDashboardLine' },
   { label: 'Resume Analyzer', path: ROUTES.RESUME_ANALYZER, icon: 'RiFileTextLine' },
+  { label: 'Syllabus Analyzer', path: ROUTES.SYLLABUS_ANALYZER, icon: 'RiBook2Line' },
   { label: 'Aptitude Test', path: ROUTES.APTITUDE_INTERVIEW, icon: 'RiBrainLine' },
   { label: 'HR Interview', path: ROUTES.HR_INTERVIEW, icon: 'RiUserVoiceLine' },
   { label: 'Technical Interview', path: ROUTES.TECHNICAL_INTERVIEW, icon: 'RiCodeSSlashLine' },

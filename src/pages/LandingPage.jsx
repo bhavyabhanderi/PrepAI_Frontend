@@ -8,7 +8,8 @@ import {
   RiArrowRightLine, RiStarFill, RiCheckLine,
   RiArrowDownSLine, RiSunLine, RiMoonLine,
   RiBrainLine, RiLightbulbLine, RiTeamLine,
-  RiMenuLine, RiCloseLine,
+  RiMenuLine, RiCloseLine, RiBook2Line,
+  RiTerminalBoxLine, RiBookOpenLine
 } from 'react-icons/ri';
 import { useTheme } from '../context/ThemeContext';
 import { ROUTES } from '../constants/routes';
@@ -227,12 +228,15 @@ export default function LandingPage() {
 
           <motion.div variants={staggerContainer} initial="initial" whileInView="animate" viewport={{ once: true }} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
+              { icon: RiFileTextLine, title: 'Resume Analyzer', desc: 'Get your ATS score, identify missing skills, and receive AI-powered suggestions.', color: '#FC9145', route: ROUTES.RESUME_ANALYZER },
+              { icon: RiBook2Line, title: 'Syllabus Analyzer', desc: 'Upload your syllabus and get a structured breakdown with an AI tutor for every topic.', color: '#10B981', route: ROUTES.SYLLABUS_ANALYZER },
+              { icon: RiBrainLine, title: 'Aptitude Test', desc: 'Evaluate your logical reasoning, quantitative, and verbal skills with adaptive AI tests.', color: '#F59E0B', route: ROUTES.APTITUDE_INTERVIEW },
               { icon: RiRobot2Line, title: 'AI HR Interview', desc: 'Practice behavioral questions with our AI interviewer. Get instant feedback on your answers.', color: '#533086', route: ROUTES.HR_INTERVIEW },
               { icon: RiCodeSSlashLine, title: 'Technical Interview', desc: 'Master DSA & system design with AI-generated questions tailored to your skill level.', color: '#4A4DC9', route: ROUTES.TECHNICAL_INTERVIEW },
-              { icon: RiFileTextLine, title: 'Resume Analyzer', desc: 'Get your ATS score, identify missing skills, and receive AI-powered suggestions.', color: '#FC9145', route: ROUTES.RESUME_ANALYZER },
+              { icon: RiTerminalBoxLine, title: 'Coding Interview', desc: 'Solve coding challenges in a real-time environment with AI-assisted code reviews.', color: '#22C55E', route: ROUTES.CODING_INTERVIEW },
               { icon: RiMicLine, title: 'Voice Interview', desc: 'Practice speaking with AI voice recognition. Improve confidence & communication.', color: '#533086', route: ROUTES.VOICE_INTERVIEW },
               { icon: RiBarChartBoxLine, title: 'Performance Analytics', desc: 'Track your progress with detailed charts, reports, and AI recommendations.', color: '#4A4DC9', route: ROUTES.PERFORMANCE_REPORT },
-              { icon: RiBrainLine, title: 'AI Learning Plan', desc: 'Personalized study roadmap based on your strengths and areas for improvement.', color: '#FC9145', route: ROUTES.LEARNING_PLAN },
+              { icon: RiBookOpenLine, title: 'AI Learning Plan', desc: 'Personalized study roadmap based on your strengths and areas for improvement.', color: '#FC9145', route: ROUTES.LEARNING_PLAN },
             ].map((feature, i) => (
               <motion.div
                 key={feature.title}

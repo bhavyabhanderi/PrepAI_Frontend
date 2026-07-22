@@ -60,4 +60,10 @@ export const API_ENDPOINTS = {
   ADMIN: {
     DASHBOARD: '/admin/dashboard',
   },
+  // Syllabus
+  SYLLABUS: {
+    UPLOAD: '/syllabus/upload',
+    LIST: '/syllabus/',
+    CHAT: '/syllabus/chat',
+  },
 };

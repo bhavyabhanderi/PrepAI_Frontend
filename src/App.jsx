@@ -22,7 +22,9 @@ const Register = lazy(() => import('./pages/Register'));
 const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const ResumeAnalyzer = lazy(() => import('./pages/ResumeAnalyzer'));
+const SyllabusAnalyzer = lazy(() => import('./pages/SyllabusAnalyzer'));
 const HRInterview = lazy(() => import('./pages/HRInterview'));
+
 const TechnicalInterview = lazy(() => import('./pages/TechnicalInterview'));
 const CodingInterview = lazy(() => import('./pages/CodingInterview'));
 const VoiceInterview = lazy(() => import('./pages/VoiceInterview'));
@@ -127,6 +129,7 @@ export default function App() {
                   >
                     <Route path={ROUTES.DASHBOARD} element={<Dashboard />} />
                     <Route path={ROUTES.RESUME_ANALYZER} element={<ResumeAnalyzer />} />
+                    <Route path={ROUTES.SYLLABUS_ANALYZER} element={<SyllabusAnalyzer />} />
                     <Route path={ROUTES.HR_INTERVIEW} element={<HRInterview />} />
                     <Route path={ROUTES.TECHNICAL_INTERVIEW} element={<TechnicalInterview />} />
                     <Route path={ROUTES.CODING_INTERVIEW} element={<CodingInterview />} />

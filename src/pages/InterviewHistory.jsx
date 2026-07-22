@@ -3,12 +3,12 @@ import { motion } from 'framer-motion';
 import {
   RiSearchLine, RiCalendarLine,
   RiUserVoiceLine, RiCodeSSlashLine, RiMicLine,
-  RiBrainLine, RiArrowRightLine, RiHistoryLine,
+  RiBrainLine, RiArrowRightLine, RiHistoryLine, RiBook2Line
 } from 'react-icons/ri';
 import { formatDate, getScoreColor, getScoreLabel } from '../utils/helpers';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../constants/routes';
-import { interviewService } from '../services/api';
+import { interviewService, syllabusService } from '../services/api';
 
 const TYPE_META = {
   hr:         { label: 'HR Interview',          icon: RiUserVoiceLine,  color: '#533086' },
@@ -17,6 +17,7 @@ const TYPE_META = {
   aptitude:   { label: 'Aptitude Test',         icon: RiBrainLine,      color: '#FC9145' },
   coding:     { label: 'Coding Challenge',      icon: RiCodeSSlashLine, color: '#4A4DC9' },
   company_specific: { label: 'Company Interview', icon: RiUserVoiceLine, color: '#533086' },
+  syllabus:   { label: 'Syllabus Analysis',     icon: RiBook2Line,      color: '#10B981' },
 };
 
 function getTypeMeta(type) {
@@ -43,10 +44,25 @@ export default function InterviewHistory() {
   useEffect(() => {
     const fetchHistory = async () => {
       try {
-        const res = await interviewService.getHistory();
-        setHistory(res.data || []);
+        const [intRes, sylRes] = await Promise.all([
+          interviewService.getHistory().catch(() => ({ data: [] })),
+          syllabusService.list().catch(() => ({ data: [] }))
+        ]);
+        
+        const interviews = (intRes.data || []).map(i => ({...i}));
+        const syllabi = (sylRes.data || []).map(s => ({
+          id: s.id || s._id,
+          type: 'syllabus',
+          status: 'completed',
+          created_at: s.created_at,
+          subject: s.subject,
+          file_name: s.file_name
+        }));
+        
+        const combined = [...interviews, ...syllabi].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        setHistory(combined);
       } catch (err) {
-        setError('Failed to load interview history.');
+        setError('Failed to load history.');
       } finally {
         setLoading(false);
       }
@@ -54,12 +70,14 @@ export default function InterviewHistory() {
     fetchHistory();
   }, []);
 
-  const filters = ['all', 'hr', 'technical', 'aptitude', 'behavioral', 'coding'];
+  const filters = ['all', 'hr', 'technical', 'aptitude', 'behavioral', 'coding', 'syllabus'];
 
   const filtered = history.filter((item) => {
     const meta = getTypeMeta(item.type);
     const matchesSearch = meta.label.toLowerCase().includes(search.toLowerCase())
-      || (item.job_role || '').toLowerCase().includes(search.toLowerCase());
+      || (item.job_role || '').toLowerCase().includes(search.toLowerCase())
+      || (item.subject || '').toLowerCase().includes(search.toLowerCase())
+      || (item.file_name || '').toLowerCase().includes(search.toLowerCase());
     const matchesFilter = filter === 'all' || item.type === filter;
     return matchesSearch && matchesFilter;
   });
@@ -67,8 +85,8 @@ export default function InterviewHistory() {
   return (
     <div className="space-y-6">
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-        <h1 className="text-2xl lg:text-3xl font-bold" style={{ color: 'var(--text-primary)' }}>Interview History</h1>
-        <p className="text-sm mt-1" style={{ color: 'var(--text-tertiary)' }}>Review your previous interviews and track your progress.</p>
+        <h1 className="text-2xl lg:text-3xl font-bold" style={{ color: 'var(--text-primary)' }}>History</h1>
+        <p className="text-sm mt-1" style={{ color: 'var(--text-tertiary)' }}>Review your previous interviews and syllabus analyses.</p>
       </motion.div>
 
       {/* Search & Filter */}
@@ -76,7 +94,7 @@ export default function InterviewHistory() {
         <div className="flex-1 flex items-center gap-2 px-4 py-2.5 rounded-xl border"
           style={{ backgroundColor: 'var(--input-bg)', borderColor: 'var(--border-color)' }}>
           <RiSearchLine style={{ color: 'var(--text-tertiary)' }} />
-          <input type="text" placeholder="Search interviews..." value={search} onChange={(e) => setSearch(e.target.value)}
+          <input type="text" placeholder="Search history..." value={search} onChange={(e) => setSearch(e.target.value)}
             className="flex-1 bg-transparent text-sm outline-none" style={{ color: 'var(--text-primary)' }} />
         </div>
         <div className="flex gap-2 flex-wrap">
@@ -110,43 +128,75 @@ export default function InterviewHistory() {
         {!loading && !error && filtered.length === 0 && (
           <div className="p-12 text-center rounded-2xl border" style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)' }}>
             <RiHistoryLine size={40} className="mx-auto mb-3" style={{ color: 'var(--text-tertiary)' }} />
-            <p className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>No interviews found</p>
+            <p className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>No history found</p>
             <p className="text-xs mt-1" style={{ color: 'var(--text-tertiary)' }}>
-              {history.length === 0 ? "You haven't started any interviews yet. Go ahead and take one!" : "No interviews match your current filters."}
+              {history.length === 0 ? "You haven't started any interviews or analyses yet. Go ahead and take one!" : "No history matches your current filters."}
             </p>
           </div>
         )}
 
-        {!loading && filtered.map((item, i) => {
-          const meta = getTypeMeta(item.type);
-          const Icon = meta.icon;
-          const statusClass = STATUS_COLORS[item.status] || 'bg-primary-500/10 text-primary-500';
+        {!loading && filtered.length > 0 && (
+          <div className="space-y-3">
+            {/* Header Row */}
+            <div className="hidden md:grid grid-cols-4 gap-4 px-4 pb-1 text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>
+              <div>Activity</div>
+              <div>Date</div>
+              <div>Subject / Role</div>
+              <div>Details</div>
+            </div>
 
-          return (
-            <motion.div key={item.id}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.05 }}
-              className="p-4 rounded-2xl border flex items-center gap-3 sm:gap-4 card-hover"
-              style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)' }}>
-              <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
-                style={{ backgroundColor: `${meta.color}15`, color: meta.color }}>
-                <Icon size={22} />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold truncate" style={{ color: 'var(--text-primary)' }}>{meta.label}</p>
-                <div className="flex items-center gap-x-3 gap-y-1 flex-wrap mt-1 text-xs" style={{ color: 'var(--text-tertiary)' }}>
-                  <span className="flex items-center gap-1">
-                    <RiCalendarLine size={12} /> {item.created_at ? formatDate(item.created_at) : '—'}
-                  </span>
-                  {item.job_role && <span className="truncate max-w-[120px]">{item.job_role}</span>}
-                  {item.difficulty_level && <span className="capitalize">{item.difficulty_level}</span>}
-                </div>
-              </div>
+            {/* Cards List */}
+            {filtered.map((item, i) => {
+              const meta = getTypeMeta(item.type);
+              const Icon = meta.icon;
 
-            </motion.div>
-          );
-        })}
+              return (
+                <motion.div key={item.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.05 }}
+                  className="p-3 sm:p-4 rounded-2xl border card-hover grid grid-cols-1 md:grid-cols-4 gap-3 sm:gap-4 items-center"
+                  style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)' }}
+                >
+                  {/* Activity */}
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+                      style={{ backgroundColor: `${meta.color}15`, color: meta.color }}>
+                      <Icon size={20} />
+                    </div>
+                    <span className="font-semibold text-sm truncate" style={{ color: 'var(--text-primary)' }}>{meta.label}</span>
+                  </div>
+
+                  {/* Date */}
+                  <div className="flex items-center gap-1.5 text-sm" style={{ color: 'var(--text-tertiary)' }}>
+                    <RiCalendarLine size={14} /> 
+                    <span className="truncate">{item.created_at ? formatDate(item.created_at) : '—'}</span>
+                  </div>
+
+                  {/* Subject / Role */}
+                  <div className="text-sm truncate" style={{ color: 'var(--text-secondary)' }}>
+                    {item.job_role || item.subject || '—'}
+                  </div>
+
+                  {/* Details */}
+                  <div className="flex items-center gap-2 min-w-0">
+                    {item.difficulty_level && (
+                      <span className="capitalize text-sm" style={{ color: 'var(--text-secondary)' }}>
+                        {item.difficulty_level}
+                      </span>
+                    )}
+                    {item.file_name && (
+                      <span className="truncate text-xs bg-primary-500/10 px-2 py-1 rounded-md" style={{ color: 'var(--text-secondary)' }}>
+                        {item.file_name}
+                      </span>
+                    )}
+                    {!item.difficulty_level && !item.file_name && <span className="text-sm" style={{ color: 'var(--text-tertiary)' }}>—</span>}
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );

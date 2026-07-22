@@ -1,4 +1,4 @@
-import { Outlet } from 'react-router-dom';
+import { Outlet, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { RiSparklingLine } from 'react-icons/ri';
 import { useState, useEffect } from 'react';

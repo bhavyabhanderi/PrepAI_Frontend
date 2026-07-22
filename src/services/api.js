@@ -76,3 +76,11 @@ export const adminService = {
   getDashboardStats: () => axiosInstance.get(API_ENDPOINTS.ADMIN.DASHBOARD),
 };
 
+export const syllabusService = {
+  upload: (formData) =>
+    axiosInstance.post(API_ENDPOINTS.SYLLABUS.UPLOAD, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    }),
+  list: () => axiosInstance.get(API_ENDPOINTS.SYLLABUS.LIST),
+  chat: (data) => axiosInstance.post(API_ENDPOINTS.SYLLABUS.CHAT, data),
+};
