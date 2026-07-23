@@ -9,6 +9,7 @@ import ErrorBoundary from './components/common/ErrorBoundary';
 import ScrollToTop from './components/common/ScrollToTop';
 import { useIsMobile } from './hooks';
 import { ROUTES } from './constants/routes';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 
 // Layouts
 import MainLayout from './layouts/MainLayout';
@@ -104,6 +105,7 @@ export default function App() {
             <BrowserRouter>
               <ScrollToTop />
               <AppToaster />
+              <SpeedInsights />
               <Suspense fallback={<PageLoader />}>
                 <Routes>
                   {/* Public Routes */}
