@@ -15,6 +15,7 @@ import { useTheme } from '../context/ThemeContext';
 import { ROUTES } from '../constants/routes';
 import Footer from '../components/layout/Footer';
 import PublicNavbar from '../components/layout/PublicNavbar';
+import Snowfall from '../components/common/Snowfall';
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
@@ -112,9 +113,12 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: 'var(--bg-primary)' }}>
+    <div className="min-h-screen overflow-x-hidden" style={{ backgroundColor: 'var(--bg-primary)' }}>
       {/* Navbar */}
       <PublicNavbar />
+      
+      {/* Global Snowfall Animation */}
+      <Snowfall count={70} />
 
       {/* Hero Section */}
       <section id="home" className="pt-28 sm:pt-32 pb-16 sm:pb-20 relative overflow-hidden">
@@ -296,8 +300,8 @@ export default function LandingPage() {
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, x: 40 }}
-              whileInView={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
               className="relative"

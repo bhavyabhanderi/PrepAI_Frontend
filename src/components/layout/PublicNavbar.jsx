@@ -103,7 +103,7 @@ export default function PublicNavbar() {
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.25 }}
             className="md:hidden overflow-hidden border-t"
-            style={{ borderColor: 'var(--border-color)' }}
+            style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-card)' }}
           >
             <div className="px-4 py-4 flex flex-col gap-1 safe-bottom">
               {navLinks.map((item) => (

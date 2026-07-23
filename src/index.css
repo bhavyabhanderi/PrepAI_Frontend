@@ -256,6 +256,24 @@
   }
 }
 
+@keyframes snowfall-left {
+  0% {
+    transform: translateY(-20px) translateX(0);
+  }
+  100% {
+    transform: translateY(150vh) translateX(-50px);
+  }
+}
+
+@keyframes snowfall-right {
+  0% {
+    transform: translateY(-20px) translateX(0);
+  }
+  100% {
+    transform: translateY(150vh) translateX(50px);
+  }
+}
+
 /* ================================================
    Base Styles
    ================================================ */
