@@ -8,7 +8,7 @@ const ThemeContext = createContext();
 export function ThemeProvider({ children }) {
   const [theme, setTheme] = useState(() => {
     const saved = localStorage.getItem('ai-interview-theme');
-    return saved || 'dark';
+    return saved || 'light';
   });
 
   useEffect(() => {
