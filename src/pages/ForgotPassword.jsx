@@ -41,11 +41,11 @@ export default function ForgotPassword() {
   if (isSubmitted) {
     return (
       <div className="text-center">
-        <div className="w-16 h-16 rounded-2xl bg-success/10 flex items-center justify-center mx-auto mb-6">
+        <div className="w-16 h-16 rounded-2xl bg-success/10 flex items-center justify-center mx-auto mb-4">
           <RiCheckLine className="text-3xl text-success" />
         </div>
-        <h2 className="text-5xl font-bold mb-2" style={{ color: 'var(--text-primary)' }}>Reset successful</h2>
-        <p className="text-lg mb-8" style={{ color: 'var(--text-tertiary)' }}>
+        <h2 className="text-2xl sm:text-3xl font-bold mb-1.5" style={{ color: 'var(--text-primary)' }}>Reset successful</h2>
+        <p className="text-sm sm:text-base mb-5" style={{ color: 'var(--text-tertiary)' }}>
           Your password for <span className="font-semibold text-primary-500">{submittedEmail}</span> has been successfully updated. You can now login with your new password.
         </p>
         <Link
@@ -60,8 +60,8 @@ export default function ForgotPassword() {
 
   return (
     <div>
-      <h2 className="text-5xl font-bold mb-2 text-center" style={{ color: 'var(--text-primary)' }}>Reset Password</h2>
-      <p className="text-lg mb-8 text-center" style={{ color: 'var(--text-tertiary)' }}>
+      <h2 className="text-2xl sm:text-3xl font-bold mb-1.5 text-center" style={{ color: 'var(--text-primary)' }}>Reset Password</h2>
+      <p className="text-sm sm:text-base mb-5 text-center" style={{ color: 'var(--text-tertiary)' }}>
         Enter your email and your new password to reset it directly.
       </p>
 

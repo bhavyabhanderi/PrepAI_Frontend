@@ -88,15 +88,15 @@ export default function Login() {
 
   return (
     <div>
-      <h2 className="text-5xl font-bold mb-2 text-center" style={{ color: 'var(--text-primary)' }}>
+      <h2 className="text-2xl sm:text-3xl font-bold mb-1.5 text-center" style={{ color: 'var(--text-primary)' }}>
         Welcome back
       </h2>
-      <p className="text-lg mb-8 text-center" style={{ color: 'var(--text-tertiary)' }}>
+      <p className="text-sm sm:text-base mb-5 text-center" style={{ color: 'var(--text-tertiary)' }}>
         Sign in to continue your interview preparation
       </p>
 
       {/* Social Login */}
-      <div className="flex gap-3 mb-6">
+      <div className="flex gap-3 mb-4">
         <button
           onClick={() => handleGoogleLogin()}
           className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border text-sm font-medium transition-all hover:bg-primary-500/5"
@@ -115,7 +115,7 @@ export default function Login() {
         </button>
       </div>
 
-      <div className="flex items-center gap-3 mb-6">
+      <div className="flex items-center gap-3 mb-4">
         <div className="flex-1 h-px" style={{ backgroundColor: 'var(--border-color)' }} />
         <span className="text-xs" style={{ color: 'var(--text-tertiary)' }}>or continue with email</span>
         <div className="flex-1 h-px" style={{ backgroundColor: 'var(--border-color)' }} />
