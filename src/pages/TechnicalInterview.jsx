@@ -178,9 +178,8 @@ export default function TechnicalInterview() {
     }
   };
 
-  const handleEndInterview = async ({ forceAutoSubmit = false } = {}) => {
+  const handleEndInterview = async ({ forceAutoSubmit = false, showScoreSwal = false } = {}) => {
     stop();
-    setInterviewActive(false);
     dispatch(endInterview());
     setIsThinking(true);
     try {
@@ -203,6 +202,15 @@ export default function TechnicalInterview() {
           text: `We detected that you left the interview tab. Your interview was automatically ended to ensure academic integrity.\n\nYour Overall Score: ${Math.round(report.overall_score)}/100`,
           confirmButtonColor: '#7c3aed'
         });
+      } else if (showScoreSwal) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Interview Complete!',
+          html: `Your technical interview performance report is ready.<br><br><b>Overall Score: ${Math.round(report.overall_score)}/100</b>`,
+          confirmButtonColor: '#7c3aed'
+        }).then(() => {
+          navigate(ROUTES.PERFORMANCE_REPORT);
+        });
       }
 
       setMessages((prev) => [
@@ -215,22 +223,51 @@ export default function TechnicalInterview() {
         },
       ]);
       
-      toast((t) => (
-        <div className="flex items-center gap-3">
-          <span>Performance report generated!</span>
-          <button
-            onClick={() => { toast.dismiss(t.id); navigate(ROUTES.PERFORMANCE_REPORT); }}
-            className="px-3 py-1.5 rounded-lg gradient-bg text-white text-xs font-semibold hover:opacity-90 transition-opacity"
-          >
-            View Report
-          </button>
-        </div>
-      ), { duration: 8000 });
+      if (!showScoreSwal) {
+        toast((t) => (
+          <div className="flex items-center gap-3">
+            <span>Performance report generated!</span>
+            <button
+              onClick={() => { toast.dismiss(t.id); navigate(ROUTES.PERFORMANCE_REPORT); }}
+              className="px-3 py-1.5 rounded-lg gradient-bg text-white text-xs font-semibold hover:opacity-90 transition-opacity"
+            >
+              View Report
+            </button>
+          </div>
+        ), { duration: 8000 });
+      }
     } catch (err) {
-      toast.error('Failed to generate final report');
+      if (showScoreSwal) {
+        Swal.fire({
+          icon: 'info',
+          title: 'Interview Ended',
+          text: 'The interview was ended. No score could be generated (you may not have answered any questions).',
+          confirmButtonColor: '#7c3aed'
+        }).then(() => {
+          navigate(ROUTES.DASHBOARD);
+        });
+      } else {
+        toast.error('Failed to generate final report');
+      }
     } finally {
       setIsThinking(false);
     }
+  };
+
+  const confirmEnd = () => {
+    Swal.fire({
+      title: 'End Interview?',
+      text: 'Are you sure you want to end the interview? Your performance report will be generated.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#7c3aed',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, end it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        handleEndInterview({ showScoreSwal: true });
+      }
+    });
   };
 
   // Leaving the tab ends the interview and grades it where it stands.
@@ -342,7 +379,7 @@ export default function TechnicalInterview() {
             {formatTimer(time)}
           </div>
           <button
-            onClick={handleEndInterview}
+            onClick={confirmEnd}
             className="px-3 py-1.5 rounded-lg text-sm font-medium bg-error/10 text-error hover:bg-error/20 transition-colors flex items-center gap-1"
           >
             <RiStopCircleLine size={14} />

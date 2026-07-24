@@ -8,7 +8,7 @@ import {
 import { formatDate, getScoreColor, getScoreLabel } from '../utils/helpers';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../constants/routes';
-import { interviewService, syllabusService } from '../services/api';
+import { interviewService, codingService, syllabusService, resumeService, analyticsService } from '../services/api';
 
 const TYPE_META = {
   hr:         { label: 'HR Interview',          icon: RiUserVoiceLine,  color: '#533086' },
@@ -18,6 +18,8 @@ const TYPE_META = {
   coding:     { label: 'Coding Challenge',      icon: RiCodeSSlashLine, color: '#4A4DC9' },
   company_specific: { label: 'Company Interview', icon: RiUserVoiceLine, color: '#533086' },
   syllabus:   { label: 'Syllabus Analysis',     icon: RiBook2Line,      color: '#10B981' },
+  resume:     { label: 'Resume Analysis',       icon: RiBook2Line,      color: '#FC9145' },
+  learning_plan: { label: 'Learning Plan',      icon: RiCalendarLine,   color: '#F59E0B' },
 };
 
 function getTypeMeta(type) {
@@ -44,12 +46,22 @@ export default function InterviewHistory() {
   useEffect(() => {
     const fetchHistory = async () => {
       try {
-        const [intRes, sylRes] = await Promise.all([
+        const [intRes, codRes, sylRes, resRes, lpRes] = await Promise.all([
           interviewService.getHistory().catch(() => ({ data: [] })),
-          syllabusService.list().catch(() => ({ data: [] }))
+          codingService.getHistory().catch(() => ({ data: [] })),
+          syllabusService.list().catch(() => ({ data: [] })),
+          resumeService.getHistory().catch(() => ({ data: [] })),
+          analyticsService.getLearningPlanHistory().catch(() => ({ data: [] }))
         ]);
         
         const interviews = (intRes.data || []).map(i => ({...i}));
+        const codings = (codRes.data || []).map(c => ({
+          id: c.id || c._id,
+          type: 'coding',
+          status: 'completed',
+          created_at: c.created_at,
+          job_role: c.problem_title || 'Coding Challenge',
+        }));
         const syllabi = (sylRes.data || []).map(s => ({
           id: s.id || s._id,
           type: 'syllabus',
@@ -58,8 +70,23 @@ export default function InterviewHistory() {
           subject: s.subject,
           file_name: s.file_name
         }));
+        const resumes = (resRes.data || []).map(r => ({
+          id: r.id || r._id,
+          type: 'resume',
+          status: 'completed',
+          created_at: r.created_at,
+          subject: 'Resume Analysis',
+          file_name: r.file_name || 'Resume'
+        }));
+        const learningPlans = (lpRes.data || []).map(lp => ({
+          id: lp.id || lp._id,
+          type: 'learning_plan',
+          status: 'completed',
+          created_at: lp.created_at,
+          subject: 'Learning Plan',
+        }));
         
-        const combined = [...interviews, ...syllabi].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        const combined = [...interviews, ...codings, ...syllabi, ...resumes, ...learningPlans].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
         setHistory(combined);
       } catch (err) {
         setError('Failed to load history.');
@@ -70,7 +97,7 @@ export default function InterviewHistory() {
     fetchHistory();
   }, []);
 
-  const filters = ['all', 'hr', 'technical', 'aptitude', 'behavioral', 'coding', 'syllabus'];
+  const filters = ['all', 'hr', 'technical', 'aptitude', 'coding', 'syllabus', 'resume', 'learning_plan'];
 
   const filtered = history.filter((item) => {
     const meta = getTypeMeta(item.type);

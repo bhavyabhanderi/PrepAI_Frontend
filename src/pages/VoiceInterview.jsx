@@ -11,6 +11,7 @@ import { voiceService } from '../services/api';
 import { useDispatch } from 'react-redux';
 import { startInterview, endInterview } from '../redux/slices/interviewSlice';
 import toast from 'react-hot-toast';
+import Swal from 'sweetalert2';
 
 /**
  * Voice Interview Page
@@ -35,10 +36,17 @@ export default function VoiceInterview() {
   const prefersReducedMotion = usePrefersReducedMotion();
   const mediaRecorderRef = useRef(null);
   const audioChunksRef = useRef([]);
+  const currentAudioRef = useRef(null);
+  const isEndingRef = useRef(false);
   const dispatch = useDispatch();
 
   useEffect(() => {
     return () => {
+      isEndingRef.current = true;
+      if (currentAudioRef.current) {
+        currentAudioRef.current.pause();
+        currentAudioRef.current.currentTime = 0;
+      }
       dispatch(endInterview());
     };
   }, [dispatch]);
@@ -74,6 +82,7 @@ export default function VoiceInterview() {
   }, [isRecording]);
 
   const handleStart = async () => {
+    isEndingRef.current = false;
     setIsThinking(true);
     try {
       const greetRes = await voiceService.firstQuestion({
@@ -94,7 +103,17 @@ export default function VoiceInterview() {
   };
 
   const handleEnd = () => {
+    isEndingRef.current = true;
     stop();
+    if (currentAudioRef.current) {
+      currentAudioRef.current.pause();
+      currentAudioRef.current.currentTime = 0;
+    }
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+      mediaRecorderRef.current.stop();
+      mediaRecorderRef.current.stream.getTracks().forEach(track => track.stop());
+    }
+    setIsRecording(false);
     dispatch(endInterview());
     setStarted(false);
     setConversations([]);
@@ -109,8 +128,10 @@ export default function VoiceInterview() {
   const playTTS = async (text) => {
     try {
       const res = await voiceService.tts(text);
+      if (isEndingRef.current) return;
       const url = URL.createObjectURL(res.data);
       const audio = new Audio(url);
+      currentAudioRef.current = audio;
       audio.play();
     } catch (err) {
       console.error('Failed to play TTS audio', err);
@@ -283,6 +304,37 @@ export default function VoiceInterview() {
   }
 
 
+  const confirmEnd = () => {
+    const wasPlaying = currentAudioRef.current && !currentAudioRef.current.paused;
+    if (wasPlaying) {
+      currentAudioRef.current.pause();
+    }
+
+    Swal.fire({
+      title: 'End Voice Interview?',
+      text: 'Are you sure you want to end the practice session?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#7c3aed',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, end it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        handleEnd();
+        Swal.fire({
+          icon: 'success',
+          title: 'Interview Complete!',
+          html: `Your voice practice session is over.<br><br><b>Confidence: ${confidence}%</b><br><b>Speaking Speed: ${speakingSpeed} WPM</b>`,
+          confirmButtonColor: '#7c3aed'
+        });
+      } else {
+        if (wasPlaying && currentAudioRef.current) {
+          currentAudioRef.current.play().catch(() => {});
+        }
+      }
+    });
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -294,10 +346,7 @@ export default function VoiceInterview() {
             <RiTimeLine size={14} /> {formatTimer(time)}
           </div>
           <button
-            onClick={() => {
-              handleEnd();
-              toast.success('Voice interview ended.');
-            }}
+            onClick={confirmEnd}
             className="px-3 py-1.5 rounded-lg text-sm font-medium bg-error/10 text-error hover:bg-error/20 flex items-center gap-1"
           >
             <RiStopCircleLine size={14} /> End

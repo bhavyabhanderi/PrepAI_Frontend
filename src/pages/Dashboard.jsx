@@ -4,7 +4,7 @@ import {
   RiFileTextLine, RiUserVoiceLine, RiCodeSSlashLine,
   RiBarChartBoxLine, RiArrowUpLine, RiArrowDownLine,
   RiSparklingFill, RiTimeLine, RiTrophyLine,
-  RiCalendarLine, RiArrowRightLine, RiMicLine, RiBook2Line
+  RiCalendarLine, RiArrowRightLine, RiMicLine, RiBook2Line, RiBrainLine
 } from 'react-icons/ri';
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid,
@@ -23,6 +23,8 @@ const ICON_MAP = {
   'mic': RiMicLine,
   'trophy': RiTrophyLine,
   'book': RiBook2Line,
+  'calendar': RiCalendarLine,
+  'brain': RiBrainLine,
 };
 
 const fadeInUp = { initial: { opacity: 0, y: 20 }, animate: { opacity: 1, y: 0 } };
@@ -124,39 +126,38 @@ export default function Dashboard() {
       </motion.div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
         {stats.map((stat, i) => (
           <motion.div
             key={stat.label}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.1 }}
-            className="p-5 rounded-2xl border card-hover"
+            className="p-3 sm:p-5 rounded-2xl border card-hover"
             style={{
               backgroundColor: 'var(--bg-card)',
               borderColor: 'var(--border-color)',
             }}
           >
-            <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center justify-between mb-2 sm:mb-3">
               <div
-                className="w-11 h-11 rounded-xl flex items-center justify-center"
+                className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center flex-shrink-0"
                 style={{ backgroundColor: stat.bg, color: stat.color }}
               >
-                <stat.icon size={22} />
+                <stat.icon className="w-4 h-4 sm:w-[22px] sm:h-[22px]" />
               </div>
               <span
-                className={`inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full ${
-                  stat.up ? 'bg-success/10 text-success' : 'bg-error/10 text-error'
-                }`}
+                className={`inline-flex items-center gap-0.5 sm:gap-1 text-[10px] sm:text-xs font-semibold px-1.5 sm:px-2 py-0.5 rounded-full whitespace-nowrap ${stat.up ? 'bg-success/10 text-success' : 'bg-error/10 text-error'
+                  }`}
               >
-                {stat.up ? <RiArrowUpLine size={12} /> : <RiArrowDownLine size={12} />}
+                {stat.up ? <RiArrowUpLine size={10} /> : <RiArrowDownLine size={10} />}
                 {stat.change}
               </span>
             </div>
-            <div className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>
+            <div className="text-xl sm:text-2xl font-bold truncate" style={{ color: 'var(--text-primary)' }}>
               {stat.value}
             </div>
-            <div className="text-xs mt-0.5" style={{ color: 'var(--text-tertiary)' }}>
+            <div className="text-[10px] sm:text-xs mt-0.5 leading-tight text-balance" style={{ color: 'var(--text-tertiary)' }}>
               {stat.label}
             </div>
           </motion.div>
@@ -195,30 +196,31 @@ export default function Dashboard() {
               </span>
             </div>
           </div>
-          <div className="h-64 sm:h-72 lg:h-[260px]">
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={weeklyData}>
-              <defs>
-                <linearGradient id="scoreGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#4A4DC9" stopOpacity={0.3} />
-                  <stop offset="95%" stopColor="#4A4DC9" stopOpacity={0} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="var(--border-color)" />
-              <XAxis dataKey="day" stroke="var(--text-tertiary)" fontSize={12} />
-              <YAxis stroke="var(--text-tertiary)" fontSize={12} />
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: 'var(--bg-card)',
-                  border: '1px solid var(--border-color)',
-                  borderRadius: '12px',
-                  fontSize: '12px',
-                }}
-              />
-              <Area type="monotone" dataKey="score" stroke="#4A4DC9" fill="url(#scoreGradient)" strokeWidth={2} />
-              <Bar dataKey="interviews" fill="#FC9145" radius={[4, 4, 0, 0]} barSize={20} />
-            </AreaChart>
-          </ResponsiveContainer>
+          <div className="h-64 sm:h-72 lg:h-[260px] [&_*]:!outline-none">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={weeklyData} style={{ outline: 'none' }}>
+                <defs>
+                  <linearGradient id="scoreGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#4A4DC9" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="#4A4DC9" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--border-color)" />
+                <XAxis dataKey="day" stroke="var(--text-tertiary)" fontSize={12} />
+                <YAxis stroke="var(--text-tertiary)" fontSize={12} />
+                <Tooltip
+                  cursor={false}
+                  contentStyle={{
+                    backgroundColor: 'var(--bg-card)',
+                    border: '1px solid var(--border-color)',
+                    borderRadius: '12px',
+                    fontSize: '12px',
+                  }}
+                />
+                <Area type="monotone" dataKey="score" stroke="#4A4DC9" fill="url(#scoreGradient)" strokeWidth={2} />
+                <Bar dataKey="interviews" fill="#FC9145" radius={[4, 4, 0, 0]} barSize={20} />
+              </AreaChart>
+            </ResponsiveContainer>
           </div>
         </motion.div>
 
@@ -280,7 +282,7 @@ export default function Dashboard() {
             </Link>
           </div>
           <div className="space-y-3">
-            {recentActivity.map((activity) => (
+            {recentActivity.slice(0, 5).map((activity) => (
               <div
                 key={activity.id}
                 className="flex items-center gap-3 p-3 rounded-xl hover:bg-primary-500/5 transition-colors"
@@ -323,7 +325,7 @@ export default function Dashboard() {
           <h3 className="text-base font-semibold mb-5" style={{ color: 'var(--text-primary)' }}>
             Quick Actions
           </h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4">
             {[
               { label: 'HR Interview', icon: RiUserVoiceLine, path: ROUTES.HR_INTERVIEW, color: '#533086' },
               { label: 'Technical', icon: RiCodeSSlashLine, path: ROUTES.TECHNICAL_INTERVIEW, color: '#4A4DC9' },
@@ -337,19 +339,19 @@ export default function Dashboard() {
               <Link
                 key={action.label}
                 to={action.path}
-                className="flex items-center gap-3 p-3 rounded-xl border transition-all hover:shadow-md card-hover"
+                className="flex flex-col sm:flex-row items-center text-center sm:text-left gap-2 sm:gap-3 p-2 sm:p-3 rounded-xl border transition-all hover:shadow-md card-hover justify-center sm:justify-start"
                 style={{
                   borderColor: 'var(--border-color)',
                   backgroundColor: 'var(--bg-card)',
                 }}
               >
                 <div
-                  className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0"
+                  className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg flex items-center justify-center flex-shrink-0"
                   style={{ backgroundColor: `${action.color}15`, color: action.color }}
                 >
                   <action.icon size={18} />
                 </div>
-                <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
+                <span className="text-[10px] sm:text-sm font-medium leading-tight text-balance" style={{ color: 'var(--text-primary)' }}>
                   {action.label}
                 </span>
               </Link>

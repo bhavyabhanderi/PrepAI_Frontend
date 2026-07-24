@@ -35,6 +35,7 @@ export const resumeService = {
       headers: { 'Content-Type': 'multipart/form-data' },
     }),
   getLatestAnalysis: () => axiosInstance.get(API_ENDPOINTS.RESUME.ANALYSIS),
+  getHistory: () => axiosInstance.get('/resume/history'),
 };
 
 export const interviewService = {
@@ -59,12 +60,14 @@ export const voiceService = {
 export const codingService = {
   execute: (data) => axiosInstance.post(API_ENDPOINTS.CODING.EXECUTE, data),
   getProblems: () => axiosInstance.get(API_ENDPOINTS.CODING.PROBLEMS),
+  getHistory: () => axiosInstance.get(API_ENDPOINTS.CODING.HISTORY),
 };
 
 export const analyticsService = {
   generateReport: (interviewId) => axiosInstance.post(API_ENDPOINTS.ANALYTICS.REPORT(interviewId)),
   generateLearningPlan: (reportId) => axiosInstance.post(API_ENDPOINTS.ANALYTICS.LEARNING_PLAN(reportId)),
   getLatestLearningPlan: () => axiosInstance.get(API_ENDPOINTS.ANALYTICS.GET_LATEST_LEARNING_PLAN),
+  getLearningPlanHistory: () => axiosInstance.get('/analytics/learning-plan/history'),
   generateLearningPlanFromResume: (formData) => axiosInstance.post(API_ENDPOINTS.ANALYTICS.LEARNING_PLAN_RESUME, formData, { headers: { 'Content-Type': 'multipart/form-data' } }),
   generateSkillsTest: (formData) => axiosInstance.post(API_ENDPOINTS.ANALYTICS.SKILLS_TEST, formData, { headers: { 'Content-Type': 'multipart/form-data' } }),
   generateLearningPlanWithScore: (formData) => axiosInstance.post(API_ENDPOINTS.ANALYTICS.LEARNING_PLAN_RESUME_WITH_SCORE, formData, { headers: { 'Content-Type': 'multipart/form-data' } }),

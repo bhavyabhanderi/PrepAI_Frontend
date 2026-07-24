@@ -57,12 +57,28 @@ export default function AptitudeInterview() {
   };
 
   const handleSubmit = async ({ force = false } = {}) => {
-    // Check if all answered. A forced submit (tab switch) can't prompt -- the
-    // tab is already hidden, so nobody would see the dialog.
     if (!force && Object.keys(answers).length < questions.length) {
-      if (!window.confirm('You have unanswered questions. Are you sure you want to submit?')) {
-        return;
-      }
+      const confirmResult = await Swal.fire({
+        title: 'Submit Test?',
+        text: 'You have unanswered questions. Are you sure you want to submit?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#7c3aed',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, submit it!'
+      });
+      if (!confirmResult.isConfirmed) return;
+    } else if (!force) {
+      const confirmResult = await Swal.fire({
+        title: 'Submit Test?',
+        text: 'Are you sure you want to submit your aptitude test?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#7c3aed',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, submit it!'
+      });
+      if (!confirmResult.isConfirmed) return;
     }
 
     setSubmitting(true);
@@ -86,7 +102,12 @@ export default function AptitudeInterview() {
           confirmButtonColor: '#7c3aed'
         });
       } else {
-        toast.success('Test submitted successfully!');
+        Swal.fire({
+          icon: 'success',
+          title: 'Test Complete!',
+          html: `Your aptitude test has been submitted.<br><br><b>Overall Score: ${res.data.score.toFixed(0)}%</b>`,
+          confirmButtonColor: '#7c3aed'
+        });
       }
     } catch (err) {
       toast.error('Failed to submit test.');

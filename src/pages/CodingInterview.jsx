@@ -109,6 +109,29 @@ export default function CodingInterview() {
     setProblem(null);
   };
 
+  const confirmEnd = () => {
+    Swal.fire({
+      title: 'End Interview?',
+      text: 'Are you sure you want to end the interview?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#7c3aed',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, end it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        handleEndInterview();
+        const score = review ? review.score : 0;
+        Swal.fire({
+          icon: 'success',
+          title: 'Interview Complete!',
+          html: `Your coding practice session is over.<br><br><b>Code Quality Score: ${score}/100</b>`,
+          confirmButtonColor: '#7c3aed'
+        });
+      }
+    });
+  };
+
   // Leaving the tab ends the interview; the attempt is not submitted.
   useTabSwitchGuard(started, () => {
     handleSubmit({ forceAutoSubmit: true });
@@ -334,10 +357,7 @@ export default function CodingInterview() {
             <RiTimeLine size={14} /> {formatTimer(time)}
           </div>
           <button
-            onClick={() => {
-              handleEndInterview();
-              toast.success('Coding interview ended.');
-            }}
+            onClick={confirmEnd}
             className="px-3 py-1.5 rounded-lg text-sm font-medium bg-error/10 text-error hover:bg-error/20 flex items-center gap-1 transition-colors"
           >
             <RiStopCircleLine size={14} /> End
