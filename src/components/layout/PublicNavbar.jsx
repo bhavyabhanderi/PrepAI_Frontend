@@ -39,9 +39,9 @@ export default function PublicNavbar() {
     <nav className="fixed top-0 left-0 right-0 z-50 glass safe-x">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <Link to={ROUTES.HOME} className="flex items-center gap-3">
-            <img src="/PrepAI.png" alt="PrepAI Logo" className="w-12 h-12 object-contain" />
-            <span className="font-bold text-xl gradient-text">PrepAI</span>
+          <Link to={ROUTES.HOME} className="flex items-center gap-2">
+            <img src="/PrepAI.png" alt="PrepAI Logo" className="w-16 h-16 scale-125 object-contain mt-1 ml-1" />
+            <span className="font-bold text-2xl tracking-tight gradient-text ml-2">PrepAI</span>
           </Link>
 
           <div className="hidden md:flex items-center gap-8">

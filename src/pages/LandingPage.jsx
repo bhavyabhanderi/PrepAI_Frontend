@@ -46,7 +46,7 @@ export default function LandingPage() {
       try {
         const stats = await ratingService.getRatingStats();
         if (stats) setRatingStats(stats);
-        
+
         const testimonialsData = await ratingService.getTestimonials();
         if (testimonialsData) setTestimonials(testimonialsData);
       } catch (err) {
@@ -116,7 +116,7 @@ export default function LandingPage() {
     <div className="min-h-screen overflow-x-hidden" style={{ backgroundColor: 'var(--bg-primary)' }}>
       {/* Navbar */}
       <PublicNavbar />
-      
+
       {/* Global Snowfall Animation */}
       <Snowfall count={70} />
 
@@ -198,11 +198,11 @@ export default function LandingPage() {
               {[
                 { value: `${ratingStats.total_users || 0}+`, label: 'Active Users' },
                 { value: `${ratingStats.total_interviews || 0}+`, label: 'Interviews Taken' },
-                { 
-                  value: ratingStats.total_ratings > 0 
-                    ? `${ratingStats.average_rating}/5` 
-                    : '4.9/5', 
-                  label: 'User Rating' 
+                {
+                  value: ratingStats.total_ratings > 0
+                    ? `${ratingStats.average_rating}/5`
+                    : '4.9/5',
+                  label: 'User Rating'
                 },
               ].map((stat) => (
                 <div key={stat.label} className="text-center">
@@ -246,7 +246,8 @@ export default function LandingPage() {
                 key={feature.title}
                 variants={fadeInUp}
                 onClick={() => navigate(feature.route)}
-                className="group p-6 rounded-2xl border card-hover cursor-pointer"
+                whileHover={{ y: -10, scale: 1.05, boxShadow: "0 20px 40px -5px rgba(74, 77, 201, 0.4)" }}
+                className="group p-6 rounded-2xl border card-hover cursor-pointer transition-all duration-300 hover:border-primary-500"
                 style={{
                   backgroundColor: 'var(--bg-card)',
                   borderColor: 'var(--border-color)',
@@ -362,7 +363,8 @@ export default function LandingPage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1 }}
-                  className="snap-start shrink-0 md:shrink p-6 rounded-2xl border w-[85vw] max-w-sm md:w-auto md:max-w-none"
+                  whileHover={{ y: -10, scale: 1.05, boxShadow: "0 20px 40px -5px rgba(74, 77, 201, 0.4)" }}
+                  className="snap-start shrink-0 md:shrink p-6 rounded-2xl border w-[85vw] max-w-sm md:w-auto md:max-w-none transition-all duration-300 hover:border-primary-500"
                   style={{
                     backgroundColor: 'var(--bg-card)',
                     borderColor: 'var(--border-color)',
@@ -387,7 +389,7 @@ export default function LandingPage() {
                 </motion.div>
               ))}
             </div>
-            
+
             {testimonials.length > visibleTestimonials && (
               <div className="text-center mt-10 sm:mt-12">
                 <button
