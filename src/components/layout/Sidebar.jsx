@@ -134,13 +134,13 @@ export default function Sidebar() {
               animate={{ opacity: 1 }}
               className="flex items-center gap-3"
             >
-              <img src="/PrepAI.png" alt="PrepAI Logo" className="w-8 h-8 object-contain" />
+              <img src="/PrepAI.png" alt="PrepAI Logo" className="w-12 h-12 object-contain" />
               <span className="font-bold text-lg gradient-text">PrepAI</span>
             </motion.div>
           )}
 
           {collapsed && (
-            <img src="/PrepAI.png" alt="PrepAI Logo" className="w-8 h-8 object-contain mx-auto" />
+            <img src="/PrepAI.png" alt="PrepAI Logo" className="w-12 h-12 object-contain mx-auto" />
           )}
 
           {/* Close button — drawer only */}

@@ -67,7 +67,7 @@ export default function Footer() {
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
             <Link to="/" className="flex items-center gap-3 mb-6">
-              <img src="/PrepAI.png" alt="PrepAI Logo" className="w-8 h-8 object-contain" />
+              <img src="/PrepAI.png" alt="PrepAI Logo" className="w-12 h-12 object-contain" />
               <span className="font-bold text-lg gradient-text">PrepAI</span>
             </Link>
             <p className="text-sm mb-4" style={{ color: 'var(--text-tertiary)' }}>

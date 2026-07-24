@@ -174,7 +174,7 @@ export default function AuthLayout() {
               <img
                 src={prepAiLogo}
                 alt="PrepAI"
-                className="w-8 h-8 md:w-10 md:h-10 xl:w-11 xl:h-11"
+                className="w-12 h-12 md:w-14 md:h-14 xl:w-16 xl:h-16"
               />
 
               <span className="text-xl md:text-2xl xl:text-3xl font-bold">
@@ -247,7 +247,7 @@ export default function AuthLayout() {
               <img
                 src={prepAiLogo}
                 alt="PrepAI"
-                className="w-10 h-10"
+                className="w-14 h-14"
               />
               <span className="text-2xl font-bold text-violet-700">
                 PrepAI

@@ -63,7 +63,7 @@ export default function Navbar() {
 
         {/* Mobile Logo */}
         <div className="lg:hidden flex items-center gap-2 cursor-pointer" onClick={() => navigate(ROUTES.DASHBOARD)}>
-          <img src="/PrepAI.png" alt="PrepAI Logo" className="w-8 h-8 object-contain" />
+          <img src="/PrepAI.png" alt="PrepAI Logo" className="w-12 h-12 object-contain" />
         </div>
 
         {/* Greeting */}

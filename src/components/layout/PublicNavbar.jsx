@@ -40,7 +40,7 @@ export default function PublicNavbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link to={ROUTES.HOME} className="flex items-center gap-3">
-            <img src="/PrepAI.png" alt="PrepAI Logo" className="w-8 h-8 object-contain" />
+            <img src="/PrepAI.png" alt="PrepAI Logo" className="w-12 h-12 object-contain" />
             <span className="font-bold text-xl gradient-text">PrepAI</span>
           </Link>
 
