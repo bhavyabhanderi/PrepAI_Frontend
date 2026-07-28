@@ -201,7 +201,7 @@ export default function LandingPage() {
                 {
                   value: ratingStats.total_ratings > 0
                     ? `${ratingStats.average_rating}/5`
-                    : '4.9/5',
+                    : '0/5',
                   label: 'User Rating'
                 },
               ].map((stat) => (

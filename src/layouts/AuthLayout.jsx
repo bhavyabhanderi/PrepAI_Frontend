@@ -10,11 +10,11 @@ export default function AuthLayout() {
   const location = useLocation();
   const [stats, setStats] = useState([
     {
-      value: "10K+",
+      value: "0",
       label: "Users",
     },
     {
-      value: "50K+",
+      value: "0",
       label: "Interviews",
     },
   ]);
@@ -51,7 +51,7 @@ export default function AuthLayout() {
   }, []);
 
   return (
-    <div className="min-h-screen flex bg-white">
+    <div className="min-h-screen flex" style={{ backgroundColor: 'var(--bg-primary)' }}>
 
       {/* ================= LEFT PANEL ================= */}
 
@@ -234,12 +234,20 @@ export default function AuthLayout() {
       </div>
 
       {/* ================= RIGHT PANEL ================= */}
-      <div className="flex-1 md:w-[30%] md:flex-none flex items-center justify-center bg-slate-50/50 px-4 sm:px-6 md:px-8 py-6">
+      <div 
+        className="flex-1 md:w-[30%] md:flex-none flex items-center justify-center px-4 sm:px-6 md:px-8 py-6"
+        style={{ backgroundColor: 'var(--bg-primary)' }}
+      >
         <motion.div
           initial={{ opacity: 0, y: 25 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.45 }}
-          className="w-full max-w-sm lg:max-w-md bg-white p-6 sm:p-8 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-gray-100"
+          className="w-full max-w-sm lg:max-w-md p-6 sm:p-8 rounded-2xl border"
+          style={{ 
+            backgroundColor: 'var(--bg-card)', 
+            borderColor: 'var(--border-color)',
+            boxShadow: 'var(--shadow-lg)'
+          }}
         >
           {/* Mobile Logo */}
           <div className="md:hidden flex justify-center mb-8">
@@ -249,7 +257,7 @@ export default function AuthLayout() {
                 alt="PrepAI"
                 className="w-14 h-14"
               />
-              <span className="text-2xl font-bold text-violet-700">
+              <span className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>
                 PrepAI
               </span>
             </Link>
