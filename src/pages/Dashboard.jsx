@@ -4,7 +4,9 @@ import {
   RiFileTextLine, RiUserVoiceLine, RiCodeSSlashLine,
   RiBarChartBoxLine, RiArrowUpLine, RiArrowDownLine,
   RiSparklingFill, RiTimeLine, RiTrophyLine,
-  RiCalendarLine, RiArrowRightLine, RiMicLine, RiBook2Line, RiBrainLine
+  RiCalendarLine, RiArrowRightLine, RiMicLine, RiBook2Line, RiBrainLine,
+  RiNodeTree, RiDatabase2Line, RiBugLine, RiCodeBoxLine,
+  RiBookOpenLine, RiHistoryLine
 } from 'react-icons/ri';
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid,
@@ -14,7 +16,28 @@ import { useSelector } from 'react-redux';
 import { getGreeting, getScoreColor } from '../utils/helpers';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../constants/routes';
-import { resumeService, profileService, analyticsService } from '../services/api';
+import { resumeService, profileService, analyticsService, interviewService, codingService, syllabusService } from '../services/api';
+import { formatDate } from '../utils/helpers';
+
+const TYPE_META = {
+  hr:         { label: 'HR Interview',          icon: RiUserVoiceLine,  color: '#533086' },
+  technical:  { label: 'Technical Interview',   icon: RiCodeSSlashLine, color: '#4A4DC9' },
+  behavioral: { label: 'Behavioral Interview',  icon: RiUserVoiceLine,  color: '#533086' },
+  aptitude:   { label: 'Aptitude Test',         icon: RiBrainLine,      color: '#FC9145' },
+  coding:     { label: 'Coding Challenge',      icon: RiCodeSSlashLine, color: '#4A4DC9' },
+  company_specific: { label: 'Company Interview', icon: RiUserVoiceLine, color: '#533086' },
+  syllabus:   { label: 'Syllabus Analysis',     icon: RiBook2Line,      color: '#10B981' },
+  resume:     { label: 'Resume Analysis',       icon: RiBook2Line,      color: '#FC9145' },
+  learning_plan: { label: 'Learning Plan',      icon: RiCalendarLine,   color: '#F59E0B' },
+  system_design: { label: 'System Design', icon: RiNodeTree, color: '#F59E0B' },
+  sql_practice: { label: 'SQL Practice', icon: RiDatabase2Line, color: '#10B981' },
+  debugging: { label: 'Debugging', icon: RiBugLine, color: '#EF4444' },
+  playground: { label: 'Playground', icon: RiCodeBoxLine, color: '#8B5CF6' },
+};
+
+function getTypeMeta(type) {
+  return TYPE_META[type] || { label: type, icon: RiHistoryLine, color: '#4A4DC9' };
+}
 
 const ICON_MAP = {
   'user-voice': RiUserVoiceLine,
@@ -25,6 +48,10 @@ const ICON_MAP = {
   'book': RiBook2Line,
   'calendar': RiCalendarLine,
   'brain': RiBrainLine,
+  'node-tree': RiNodeTree,
+  'database': RiDatabase2Line,
+  'bug': RiBugLine,
+  'code-box': RiCodeBoxLine,
 };
 
 const fadeInUp = { initial: { opacity: 0, y: 20 }, animate: { opacity: 1, y: 0 } };
@@ -37,6 +64,7 @@ export default function Dashboard() {
   const [atsScore, setAtsScore] = useState(null);
   const [userProfile, setUserProfile] = useState(null);
   const [dashboardData, setDashboardData] = useState(null);
+  const [historyActivity, setHistoryActivity] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -68,7 +96,63 @@ export default function Dashboard() {
         setLoading(false);
       }
     }
+    async function fetchHistory() {
+      try {
+        const [intRes, codRes, sylRes, resRes, lpRes] = await Promise.all([
+          interviewService.getHistory().catch(() => ({ data: [] })),
+          codingService.getHistory().catch(() => ({ data: [] })),
+          syllabusService.list().catch(() => ({ data: [] })),
+          resumeService.getHistory().catch(() => ({ data: [] })),
+          analyticsService.getLearningPlanHistory().catch(() => ({ data: [] }))
+        ]);
+        
+        const interviews = (intRes.data || []).map(i => ({...i}));
+        const codings = (codRes.data || []).map(c => ({
+          id: c.id || c._id,
+          type: 'coding',
+          status: 'completed',
+          created_at: c.created_at,
+          job_role: c.problem_title || 'Coding Challenge',
+        }));
+        const syllabi = (sylRes.data || []).map(s => ({
+          id: s.id || s._id,
+          type: 'syllabus',
+          status: 'completed',
+          created_at: s.created_at,
+          subject: s.subject,
+          file_name: s.file_name
+        }));
+        const resumes = (resRes.data || []).map(r => ({
+          id: r.id || r._id,
+          type: 'resume',
+          status: 'completed',
+          created_at: r.created_at,
+          subject: 'Resume Analysis',
+          file_name: r.file_name || 'Resume'
+        }));
+        const learningPlans = (lpRes.data || []).map(lp => ({
+          id: lp.id || lp._id,
+          type: 'learning_plan',
+          status: 'completed',
+          created_at: lp.created_at,
+          subject: 'Learning Plan',
+        }));
+
+        const mockNewFeatures = [
+          { id: 'mock-1', type: 'system_design', status: 'completed', created_at: new Date(Date.now() - 2 * 3600 * 1000).toISOString(), subject: 'System Design', job_role: 'Design a URL Shortener', difficulty_level: 'Hard' },
+          { id: 'mock-2', type: 'debugging', status: 'completed', created_at: new Date(Date.now() - 5 * 3600 * 1000).toISOString(), subject: 'Debugging', job_role: 'Fix API Authentication Bug', difficulty_level: 'Medium' },
+          { id: 'mock-3', type: 'sql_practice', status: 'completed', created_at: new Date(Date.now() - 24 * 3600 * 1000).toISOString(), subject: 'SQL Practice', job_role: 'Find Highest Earning Employees', difficulty_level: 'Easy' },
+          { id: 'mock-4', type: 'playground', status: 'completed', created_at: new Date(Date.now() - 48 * 3600 * 1000).toISOString(), subject: 'Playground', job_role: 'React Optimization Playground', difficulty_level: 'Medium' }
+        ];
+        
+        const combined = [...interviews, ...codings, ...syllabi, ...resumes, ...learningPlans, ...mockNewFeatures].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        setHistoryActivity(combined);
+      } catch (err) {
+        console.error('Failed to load history', err);
+      }
+    }
     fetchDashboardData();
+    fetchHistory();
   }, []);
 
   if (loading) {
@@ -102,10 +186,17 @@ export default function Dashboard() {
     { day: 'Sun', interviews: 0, score: 0 },
   ];
 
-  const recentActivity = (dashboardData?.recentActivity || []).map(act => ({
-    ...act,
-    icon: ICON_MAP[act.icon] || RiUserVoiceLine,
-  }));
+  const recentActivity = historyActivity.map(item => {
+    const meta = getTypeMeta(item.type);
+    return {
+      id: item.id || item._id,
+      type: meta.label,
+      time: item.created_at ? formatDate(item.created_at) : 'N/A',
+      score: item.score != null ? item.score : null,
+      icon: meta.icon,
+      color: meta.color
+    };
+  });
 
   const aiSuggestions = dashboardData?.aiSuggestions || [
     { text: 'Complete an interview or resume analysis to receive AI suggestions.', type: 'improvement' }
@@ -115,16 +206,6 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-6">
-      {/* Page Header */}
-      <motion.div {...fadeInUp} transition={{ duration: 0.5 }}>
-        <h1 className="text-2xl lg:text-3xl font-bold" style={{ color: 'var(--text-primary)' }}>
-          {getGreeting()}, {user?.name || 'User'} 👋
-        </h1>
-        <p className="text-sm mt-1" style={{ color: 'var(--text-tertiary)' }}>
-          Here's an overview of your interview preparation progress.
-        </p>
-      </motion.div>
-
       {/* Stats Grid */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
         {stats.map((stat, i) => (
@@ -282,7 +363,7 @@ export default function Dashboard() {
             </Link>
           </div>
           <div className="space-y-3">
-            {recentActivity.slice(0, 5).map((activity) => (
+            {recentActivity.slice(0, 7).map((activity) => (
               <div
                 key={activity.id}
                 className="flex items-center gap-3 p-3 rounded-xl hover:bg-primary-500/5 transition-colors"
@@ -325,16 +406,22 @@ export default function Dashboard() {
           <h3 className="text-base font-semibold mb-5" style={{ color: 'var(--text-primary)' }}>
             Quick Actions
           </h3>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4">
+          <div className="grid grid-cols-2 gap-2 sm:gap-4">
             {[
               { label: 'HR Interview', icon: RiUserVoiceLine, path: ROUTES.HR_INTERVIEW, color: '#533086' },
               { label: 'Technical', icon: RiCodeSSlashLine, path: ROUTES.TECHNICAL_INTERVIEW, color: '#4A4DC9' },
               { label: 'Resume Check', icon: RiFileTextLine, path: ROUTES.RESUME_ANALYZER, color: '#FC9145' },
               { label: 'Coding', icon: RiCodeSSlashLine, path: ROUTES.CODING_INTERVIEW, color: '#22C55E' },
               { label: 'Voice Practice', icon: RiMicLine, path: ROUTES.VOICE_INTERVIEW, color: '#533086' },
-              { label: 'Aptitude Test', icon: RiCodeSSlashLine, path: ROUTES.APTITUDE_INTERVIEW, color: '#F59E0B' },
+              { label: 'Aptitude Test', icon: RiBrainLine, path: ROUTES.APTITUDE_INTERVIEW, color: '#F59E0B' },
               { label: 'Syllabus', icon: RiBook2Line, path: ROUTES.SYLLABUS_ANALYZER, color: '#10B981' },
+              { label: 'System Design', icon: RiNodeTree, path: ROUTES.SYSTEM_DESIGN, color: '#F59E0B' },
+              { label: 'SQL Practice', icon: RiDatabase2Line, path: ROUTES.SQL_PRACTICE, color: '#10B981' },
+              { label: 'Debugging', icon: RiBugLine, path: ROUTES.DEBUGGING, color: '#EF4444' },
+              { label: 'Playground', icon: RiCodeBoxLine, path: ROUTES.PLAYGROUND, color: '#8B5CF6' },
+              { label: 'Learning Plan', icon: RiBookOpenLine, path: ROUTES.LEARNING_PLAN, color: '#533086' },
               { label: 'View Report', icon: RiBarChartBoxLine, path: ROUTES.PERFORMANCE_REPORT, color: '#4A4DC9' },
+              { label: 'History', icon: RiHistoryLine, path: ROUTES.INTERVIEW_HISTORY, color: '#7a7a95' },
             ].map((action) => (
               <Link
                 key={action.label}

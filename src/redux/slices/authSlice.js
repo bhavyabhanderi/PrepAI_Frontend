@@ -1,7 +1,15 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+const safeParseJSON = (str) => {
+  try {
+    return str && str !== 'undefined' ? JSON.parse(str) : null;
+  } catch (e) {
+    return null;
+  }
+};
+
 const initialState = {
-  user: JSON.parse(localStorage.getItem('ai-interview-user')) || null,
+  user: safeParseJSON(localStorage.getItem('ai-interview-user')),
   token: localStorage.getItem('ai-interview-token') || null,
   isAuthenticated: !!localStorage.getItem('ai-interview-token'),
   isLoading: false,

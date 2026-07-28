@@ -39,6 +39,10 @@ const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
 const AboutUs = lazy(() => import('./pages/AboutUs'));
 const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
 const TermsOfService = lazy(() => import('./pages/TermsOfService'));
+const Playground = lazy(() => import('./pages/Playground'));
+const SystemDesign = lazy(() => import('./pages/SystemDesign'));
+const SQLPractice = lazy(() => import('./pages/SQLPractice'));
+const Debugging = lazy(() => import('./pages/Debugging'));
 
 // Loading Fallback
 function PageLoader() {
@@ -138,6 +142,12 @@ export default function App() {
                     <Route path={ROUTES.TECHNICAL_INTERVIEW} element={<TechnicalInterview />} />
                     <Route path={ROUTES.CODING_INTERVIEW} element={<CodingInterview />} />
                     <Route path={ROUTES.VOICE_INTERVIEW} element={<VoiceInterview />} />
+                    <Route path={ROUTES.SYSTEM_DESIGN} element={<SystemDesign />} />
+                    <Route path={ROUTES.SQL_PRACTICE} element={<SQLPractice />} />
+                    <Route path={ROUTES.DEBUGGING} element={<Debugging />} />
+                    <Route path={ROUTES.PLAYGROUND} element={<Playground />} />
+
+                    {/* Progress & History */}
                     <Route path={ROUTES.APTITUDE_INTERVIEW} element={<AptitudeInterview />} />
                     <Route path={ROUTES.PERFORMANCE_REPORT} element={<PerformanceReport />} />
                     <Route path={ROUTES.LEARNING_PLAN} element={<LearningPlan />} />

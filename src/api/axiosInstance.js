@@ -31,8 +31,11 @@ axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      store.dispatch(logout());
-      window.location.href = '/login';
+      // Don't force redirect and reload if already on auth pages
+      if (window.location.pathname !== '/login' && window.location.pathname !== '/register') {
+        store.dispatch(logout());
+        window.location.href = '/login';
+      }
     }
     return Promise.reject(error);
   }

@@ -1,5 +1,5 @@
-import { useCallback, useEffect } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { useCallback, useEffect, useState } from 'react';
+import { NavLink, Link, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../../context/ThemeContext';
@@ -15,6 +15,9 @@ import {
   RiBarChartBoxLine, RiBookOpenLine, RiHistoryLine,
   RiUser3Line, RiLogoutBoxRLine, RiMenuFoldLine,
   RiSunLine, RiCloseLine, RiShieldUserLine, RiBrainLine, RiBook2Line,
+  RiGlobalLine, RiFireLine, RiTrophyLine, RiBriefcaseLine,
+  RiCodeBoxLine, RiDatabase2Line, RiBugLine, RiNodeTree, RiMenuUnfoldLine,
+  RiArrowDownSLine,
 } from 'react-icons/ri';
 
 const iconMap = {
@@ -29,6 +32,13 @@ const iconMap = {
   RiHistoryLine: RiHistoryLine,
   RiBrainLine: RiBrainLine,
   RiBook2Line: RiBook2Line,
+  RiFireLine: RiFireLine,
+  RiTrophyLine: RiTrophyLine,
+  RiBriefcaseLine: RiBriefcaseLine,
+  RiCodeBoxLine: RiCodeBoxLine,
+  RiDatabase2Line: RiDatabase2Line,
+  RiBugLine: RiBugLine,
+  RiNodeTree: RiNodeTree,
 };
 
 /**
@@ -49,6 +59,38 @@ export default function Sidebar() {
   const drawerOpen = !isDesktop && sidebarOpen;
 
   const closeDrawer = useCallback(() => dispatch(setSidebarOpen(false)), [dispatch]);
+
+  // Keep track of which accordion menus are open
+  const [expandedMenus, setExpandedMenus] = useState(() => {
+    return NAV_ITEMS.reduce((acc, item) => {
+      if (item.subItems && item.subItems.some(sub => location.pathname === sub.path)) {
+        acc[item.label] = true;
+      }
+      return acc;
+    }, {});
+  });
+
+  const toggleMenu = (label) => {
+    setExpandedMenus(prev => ({ ...prev, [label]: !prev[label] }));
+  };
+
+  // Auto-expand active menus and close others on navigation
+  useEffect(() => {
+    setExpandedMenus((prev) => {
+      const next = { ...prev };
+      NAV_ITEMS.forEach(item => {
+        if (item.subItems) {
+          const isActive = item.subItems.some(sub => location.pathname === sub.path);
+          if (isActive) {
+             next[item.label] = true;
+          } else {
+             next[item.label] = false;
+          }
+        }
+      });
+      return next;
+    });
+  }, [location.pathname]);
 
   // Close the drawer on navigation so the overlay never survives a route change.
   useEffect(() => {
@@ -189,6 +231,96 @@ export default function Sidebar() {
               const Icon = iconMap[item.icon];
               const isActive = location.pathname === item.path;
 
+              if (item.subItems) {
+                const isExpanded = expandedMenus[item.label];
+                const hasActiveChild = item.subItems.some(sub => location.pathname === sub.path);
+                
+                return (
+                  <div key={item.label} className="space-y-1">
+                    <button
+                      onClick={() => {
+                        if (collapsed) {
+                           dispatch(toggleSidebarCollapse());
+                           setExpandedMenus(prev => ({ ...prev, [item.label]: true }));
+                        } else {
+                           toggleMenu(item.label);
+                        }
+                      }}
+                      className={`
+                        w-full group flex items-center justify-between px-3 py-2.5 rounded-xl
+                        transition-all duration-200 relative
+                        ${hasActiveChild ? 'bg-primary-500/10 text-primary-500' : 'hover:bg-primary-500/8'}
+                        ${collapsed ? 'justify-center' : ''}
+                      `}
+                      style={!hasActiveChild ? { color: 'var(--text-secondary)' } : undefined}
+                    >
+                      <div className="flex items-center gap-3">
+                        <Icon size={20} className="flex-shrink-0" />
+                        {!collapsed && <span className="text-sm font-medium truncate">{item.label}</span>}
+                      </div>
+                      {!collapsed && (
+                        <RiArrowDownSLine size={16} className={`transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`} />
+                      )}
+                      
+                      {collapsed && (
+                        <div className="
+                          absolute left-full ml-2 px-2.5 py-1 rounded-md
+                          text-xs font-medium whitespace-nowrap
+                          opacity-0 invisible group-hover:opacity-100 group-hover:visible
+                          transition-all duration-200 z-50
+                          bg-neutral-900 text-white shadow-lg
+                        ">
+                          {item.label}
+                        </div>
+                      )}
+                    </button>
+                    
+                    <AnimatePresence>
+                      {!collapsed && isExpanded && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          className="overflow-hidden ml-4 pl-3 border-l space-y-1 mt-1"
+                          style={{ borderColor: 'var(--border-color)' }}
+                        >
+                          {item.subItems.map(subItem => {
+                             const SubIcon = iconMap[subItem.icon];
+                             const isSubActive = location.pathname === subItem.path;
+                             return (
+                               <NavLink
+                                  key={subItem.path}
+                                  to={subItem.path}
+                                  onClick={handleNavClick}
+                                  className={`
+                                    group flex items-center gap-3 px-3 py-2 rounded-lg
+                                    transition-all duration-200 relative
+                                    ${isSubActive ? 'text-white' : 'hover:bg-primary-500/8'}
+                                  `}
+                                  style={!isSubActive ? { color: 'var(--text-secondary)' } : undefined}
+                               >
+                                 {isSubActive && (
+                                   <motion.div
+                                     layoutId="sidebar-sub-active"
+                                     className="absolute inset-0 rounded-lg gradient-bg"
+                                     style={{ zIndex: -1 }}
+                                     transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
+                                   />
+                                 )}
+                                 <SubIcon size={18} className={`flex-shrink-0 ${isSubActive ? 'text-white' : ''}`} />
+                                 <span className={`text-sm font-medium truncate ${isSubActive ? 'text-white' : ''}`}>
+                                   {subItem.label}
+                                 </span>
+                               </NavLink>
+                             );
+                          })}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                );
+              }
+
               return (
                 <NavLink
                   key={item.path}
@@ -258,29 +390,14 @@ export default function Sidebar() {
 
         {/* Bottom Section */}
         <div className="border-t p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] space-y-1 shrink-0" style={{ borderColor: 'var(--border-color)' }}>
-          {/* Logout */}
-          <button
-            onClick={(e) => {
-              if (isInterviewActive) {
-                e.preventDefault();
-                toast.error("Please end or cancel the current interview process first!");
-                return;
-              }
-              handleLogout();
-            }}
-            className={`
-              w-full flex items-center gap-3 px-3 py-2.5 rounded-xl
-              transition-all duration-200 hover:bg-error/10 text-error
-              ${collapsed ? 'justify-center' : ''}
-            `}
-          >
-            <RiLogoutBoxRLine size={20} />
-            {!collapsed && <span className="text-sm font-medium">Logout</span>}
-          </button>
-
           {/* User Profile Mini */}
           {!collapsed && user && (
-            <div className="mt-2 p-3 rounded-xl" style={{ backgroundColor: 'var(--bg-tertiary)' }}>
+            <Link 
+              to={ROUTES.PROFILE}
+              onClick={handleNavClick}
+              className="mt-2 p-3 rounded-xl block transition-all duration-200 hover:opacity-80" 
+              style={{ backgroundColor: 'var(--bg-tertiary)' }}
+            >
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-full gradient-bg flex items-center justify-center text-white text-sm font-semibold">
                   {user.name?.charAt(0) || 'U'}
@@ -294,9 +411,10 @@ export default function Sidebar() {
                   </p>
                 </div>
               </div>
-            </div>
+            </Link>
           )}
         </div>
+
       </motion.aside>
     </>
   );

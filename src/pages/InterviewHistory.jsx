@@ -3,7 +3,8 @@ import { motion } from 'framer-motion';
 import {
   RiSearchLine, RiCalendarLine,
   RiUserVoiceLine, RiCodeSSlashLine, RiMicLine,
-  RiBrainLine, RiArrowRightLine, RiHistoryLine, RiBook2Line
+  RiBrainLine, RiArrowRightLine, RiHistoryLine, RiBook2Line,
+  RiNodeTree, RiDatabase2Line, RiBugLine, RiCodeBoxLine
 } from 'react-icons/ri';
 import { formatDate, getScoreColor, getScoreLabel } from '../utils/helpers';
 import { Link } from 'react-router-dom';
@@ -20,6 +21,10 @@ const TYPE_META = {
   syllabus:   { label: 'Syllabus Analysis',     icon: RiBook2Line,      color: '#10B981' },
   resume:     { label: 'Resume Analysis',       icon: RiBook2Line,      color: '#FC9145' },
   learning_plan: { label: 'Learning Plan',      icon: RiCalendarLine,   color: '#F59E0B' },
+  system_design: { label: 'System Design', icon: RiNodeTree, color: '#F59E0B' },
+  sql_practice: { label: 'SQL Practice', icon: RiDatabase2Line, color: '#10B981' },
+  debugging: { label: 'Debugging', icon: RiBugLine, color: '#EF4444' },
+  playground: { label: 'Playground', icon: RiCodeBoxLine, color: '#8B5CF6' },
 };
 
 function getTypeMeta(type) {
@@ -85,8 +90,15 @@ export default function InterviewHistory() {
           created_at: lp.created_at,
           subject: 'Learning Plan',
         }));
+
+        const mockNewFeatures = [
+          { id: 'mock-1', type: 'system_design', status: 'completed', created_at: new Date(Date.now() - 2 * 3600 * 1000).toISOString(), subject: 'System Design', job_role: 'Design a URL Shortener', difficulty_level: 'Hard' },
+          { id: 'mock-2', type: 'debugging', status: 'completed', created_at: new Date(Date.now() - 5 * 3600 * 1000).toISOString(), subject: 'Debugging', job_role: 'Fix API Authentication Bug', difficulty_level: 'Medium' },
+          { id: 'mock-3', type: 'sql_practice', status: 'completed', created_at: new Date(Date.now() - 24 * 3600 * 1000).toISOString(), subject: 'SQL Practice', job_role: 'Find Highest Earning Employees', difficulty_level: 'Easy' },
+          { id: 'mock-4', type: 'playground', status: 'completed', created_at: new Date(Date.now() - 48 * 3600 * 1000).toISOString(), subject: 'Playground', job_role: 'React Optimization Playground', difficulty_level: 'Medium' }
+        ];
         
-        const combined = [...interviews, ...codings, ...syllabi, ...resumes, ...learningPlans].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        const combined = [...interviews, ...codings, ...syllabi, ...resumes, ...learningPlans, ...mockNewFeatures].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
         setHistory(combined);
       } catch (err) {
         setError('Failed to load history.');
@@ -97,7 +109,7 @@ export default function InterviewHistory() {
     fetchHistory();
   }, []);
 
-  const filters = ['all', 'hr', 'technical', 'aptitude', 'coding', 'syllabus', 'resume', 'learning_plan'];
+  const filters = ['all', 'hr', 'technical', 'aptitude', 'coding', 'syllabus', 'resume', 'learning_plan', 'system_design', 'sql_practice', 'debugging', 'playground'];
 
   const filtered = history.filter((item) => {
     const meta = getTypeMeta(item.type);
@@ -116,14 +128,8 @@ export default function InterviewHistory() {
         <p className="text-sm mt-1" style={{ color: 'var(--text-tertiary)' }}>Review your previous interviews and syllabus analyses.</p>
       </motion.div>
 
-      {/* Search & Filter */}
+      {/* Filter */}
       <div className="flex flex-col sm:flex-row gap-3">
-        <div className="flex-1 flex items-center gap-2 px-4 py-2.5 rounded-xl border"
-          style={{ backgroundColor: 'var(--input-bg)', borderColor: 'var(--border-color)' }}>
-          <RiSearchLine style={{ color: 'var(--text-tertiary)' }} />
-          <input type="text" placeholder="Search history..." value={search} onChange={(e) => setSearch(e.target.value)}
-            className="flex-1 bg-transparent text-sm outline-none" style={{ color: 'var(--text-primary)' }} />
-        </div>
         <div className="flex gap-2 flex-wrap">
           {filters.map((f) => (
             <button key={f} onClick={() => setFilter(f)}

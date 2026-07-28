@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { RiSparklingFill, RiSunLine, RiMoonLine, RiMenuLine, RiCloseLine } from 'react-icons/ri';
+import { useSelector } from 'react-redux';
 import { useTheme } from '../../context/ThemeContext';
 import { ROUTES } from '../../constants/routes';
 
@@ -9,6 +10,7 @@ export default function PublicNavbar() {
   const { isDark, toggleTheme } = useTheme();
   const location = useLocation();
   const navigate = useNavigate();
+  const { isAuthenticated } = useSelector((state) => state.auth);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Close the mobile menu on Escape
@@ -68,19 +70,30 @@ export default function PublicNavbar() {
               {isDark ? <RiSunLine size={18} /> : <RiMoonLine size={18} />}
             </button>
             {/* Auth actions collapse into the mobile menu below md */}
-            <Link
-              to={ROUTES.LOGIN}
-              className="hidden md:inline-flex text-sm font-medium px-4 py-2 rounded-xl hover:bg-primary-500/10 transition-colors"
-              style={{ color: 'var(--text-primary)' }}
-            >
-              Sign In
-            </Link>
-            <Link
-              to={ROUTES.REGISTER}
-              className="hidden sm:inline-flex text-sm font-medium px-5 py-2.5 rounded-xl gradient-bg text-white hover:opacity-90 transition-opacity"
-            >
-              Get Started
-            </Link>
+            {isAuthenticated ? (
+              <Link
+                to={ROUTES.DASHBOARD}
+                className="hidden md:inline-flex text-sm font-medium px-5 py-2.5 rounded-xl gradient-bg text-white hover:opacity-90 transition-opacity"
+              >
+                Go to Dashboard
+              </Link>
+            ) : (
+              <>
+                <Link
+                  to={ROUTES.LOGIN}
+                  className="hidden md:inline-flex text-sm font-medium px-4 py-2 rounded-xl hover:bg-primary-500/10 transition-colors"
+                  style={{ color: 'var(--text-primary)' }}
+                >
+                  Sign In
+                </Link>
+                <Link
+                  to={ROUTES.REGISTER}
+                  className="hidden sm:inline-flex text-sm font-medium px-5 py-2.5 rounded-xl gradient-bg text-white hover:opacity-90 transition-opacity"
+                >
+                  Get Started
+                </Link>
+              </>
+            )}
             <button
               onClick={() => setMobileMenuOpen((v) => !v)}
               className="tap-target md:hidden p-2 rounded-lg hover:bg-primary-500/10 transition-colors"
@@ -118,21 +131,33 @@ export default function PublicNavbar() {
                 </a>
               ))}
               <div className="h-px my-2" style={{ backgroundColor: 'var(--border-color)' }} />
-              <Link
-                to={ROUTES.LOGIN}
-                onClick={() => setMobileMenuOpen(false)}
-                className="tap-target flex items-center px-3 py-3 rounded-xl text-base font-medium hover:bg-primary-500/10 transition-colors"
-                style={{ color: 'var(--text-primary)' }}
-              >
-                Sign In
-              </Link>
-              <Link
-                to={ROUTES.REGISTER}
-                onClick={() => setMobileMenuOpen(false)}
-                className="tap-target flex items-center justify-center px-3 py-3 rounded-xl text-base font-semibold gradient-bg text-white hover:opacity-90 transition-opacity"
-              >
-                Get Started
-              </Link>
+              {isAuthenticated ? (
+                <Link
+                  to={ROUTES.DASHBOARD}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="tap-target flex items-center justify-center px-3 py-3 rounded-xl text-base font-semibold gradient-bg text-white hover:opacity-90 transition-opacity"
+                >
+                  Go to Dashboard
+                </Link>
+              ) : (
+                <>
+                  <Link
+                    to={ROUTES.LOGIN}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="tap-target flex items-center px-3 py-3 rounded-xl text-base font-medium hover:bg-primary-500/10 transition-colors"
+                    style={{ color: 'var(--text-primary)' }}
+                  >
+                    Sign In
+                  </Link>
+                  <Link
+                    to={ROUTES.REGISTER}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="tap-target flex items-center justify-center px-3 py-3 rounded-xl text-base font-semibold gradient-bg text-white hover:opacity-90 transition-opacity"
+                  >
+                    Get Started
+                  </Link>
+                </>
+              )}
             </div>
           </motion.div>
         )}

@@ -19,7 +19,7 @@ export default function Login() {
   const navigate = useNavigate();
   const { isLoading } = useSelector((state) => state.auth);
 
-  const { register, handleSubmit, formState: { errors } } = useForm();
+  const { register, handleSubmit, setError, formState: { errors } } = useForm();
 
   const handleGoogleLogin = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
@@ -73,14 +73,13 @@ export default function Login() {
       toast.success('Welcome back!');
       navigate(ROUTES.DASHBOARD);
     } catch (err) {
-      let errorMessage = 'Invalid credentials';
-      if (err.response?.data?.detail) {
-        if (typeof err.response.data.detail === 'string') {
-          errorMessage = err.response.data.detail;
-        } else if (Array.isArray(err.response.data.detail)) {
-          errorMessage = err.response.data.detail.map(e => e.msg).join(', ');
-        }
-      }
+      // For any login failure, display a generic message to avoid leaking credential validity
+      const errorMessage = 'Username or password incorrect';
+      
+      // Set server errors on the fields so they highlight in red
+      setError('email', { type: 'server', message: ' ' }); 
+      setError('password', { type: 'server', message: errorMessage });
+      
       dispatch(loginFailure(errorMessage));
       toast.error(errorMessage);
     }

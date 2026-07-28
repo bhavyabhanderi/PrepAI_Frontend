@@ -1,4 +1,5 @@
-import { Outlet, Link, useLocation } from "react-router-dom";
+import { Outlet, Link, useLocation, Navigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import axiosInstance from "../api/axiosInstance";
@@ -8,6 +9,8 @@ import prepAiLogo from "../assets/PrepAI.png";
 
 export default function AuthLayout() {
   const location = useLocation();
+  const { isAuthenticated } = useSelector((state) => state.auth);
+
   const [stats, setStats] = useState([
     {
       value: "0",
@@ -49,6 +52,10 @@ export default function AuthLayout() {
 
     fetchStats();
   }, []);
+
+  if (isAuthenticated) {
+    return <Navigate to="/dashboard" replace />;
+  }
 
   return (
     <div className="min-h-screen flex" style={{ backgroundColor: 'var(--bg-primary)' }}>

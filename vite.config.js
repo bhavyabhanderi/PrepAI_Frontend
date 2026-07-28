@@ -13,11 +13,11 @@ export default defineConfig({
     },
   },
   optimizeDeps: {
-    include: ['recharts', 'decimal.js'],
+    include: ['recharts', 'decimal.js-light'],
   },
   build: {
     commonjsOptions: {
-      include: [/recharts/, /decimal\.js/, /node_modules/],
+      include: [/recharts/, /decimal\.js-light/, /node_modules/],
     },
   },
   server: {

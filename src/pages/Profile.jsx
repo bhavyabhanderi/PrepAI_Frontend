@@ -7,10 +7,11 @@ import {
   RiMapPinLine, RiLockLine, RiSaveLine,
   RiPencilLine, RiCloseLine, RiShieldCheckLine,
   RiDeleteBinLine, RiFileTextLine, RiDownloadLine,
+  RiEyeLine, RiEyeOffLine
 } from 'react-icons/ri';
 import { updateUser } from '../redux/slices/authSlice';
 import { useTheme } from '../context/ThemeContext';
-import { profileService } from '../services/api';
+import { profileService, authService } from '../services/api';
 import toast from 'react-hot-toast';
 
 /**
@@ -25,6 +26,12 @@ export default function Profile() {
   const [skills, setSkills] = useState([]);
   const [newSkill, setNewSkill] = useState('');
   const [profileLoading, setProfileLoading] = useState(true);
+  
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [passwordUpdating, setPasswordUpdating] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [preferences, setPreferences] = useState(() => {
     const saved = localStorage.getItem('ai-interview-preferences');
     return saved ? JSON.parse(saved) : { email: true, sound: true };
@@ -49,7 +56,14 @@ export default function Profile() {
           github: data.github || '',
           linkedin: data.linkedin || '',
         });
-        setSkills(data.skills || []);
+        let parsedSkills = [];
+        if (Array.isArray(data.skills)) {
+          parsedSkills = data.skills.flatMap(s => s.split(',').map(skill => skill.trim())).filter(Boolean);
+        } else if (typeof data.skills === 'string') {
+          parsedSkills = data.skills.split(',').map(s => s.trim()).filter(Boolean);
+        }
+        parsedSkills = [...new Set(parsedSkills)];
+        setSkills(parsedSkills);
       } catch (err) {
         toast.error('Failed to load profile details');
       } finally {
@@ -87,15 +101,29 @@ export default function Profile() {
   };
 
   const addSkill = async () => {
-    if (newSkill.trim() && !skills.includes(newSkill.trim())) {
-      const updatedSkills = [...skills, newSkill.trim()];
-      setSkills(updatedSkills);
-      setNewSkill('');
-      try {
-        await profileService.updateProfile({ skills: updatedSkills });
-        toast.success('Skill added');
-      } catch (err) {
-        toast.error('Failed to save skill');
+    if (newSkill.trim()) {
+      const newSkillsArray = newSkill.split(',').map(s => s.trim()).filter(Boolean);
+      let hasChanges = false;
+      const updatedSkills = [...skills];
+      
+      newSkillsArray.forEach(skill => {
+        if (!updatedSkills.includes(skill)) {
+          updatedSkills.push(skill);
+          hasChanges = true;
+        }
+      });
+      
+      if (hasChanges) {
+        setSkills(updatedSkills);
+        setNewSkill('');
+        try {
+          await profileService.updateProfile({ skills: updatedSkills });
+          toast.success('Skill(s) added');
+        } catch (err) {
+          toast.error('Failed to save skill');
+        }
+      } else {
+        setNewSkill('');
       }
     }
   };
@@ -108,6 +136,30 @@ export default function Profile() {
       toast.success('Skill removed');
     } catch (err) {
       toast.error('Failed to remove skill');
+    }
+  };
+
+  const handleUpdatePassword = async () => {
+    if (!newPassword || !confirmPassword) {
+      return toast.error('Please fill in both password fields');
+    }
+    if (newPassword !== confirmPassword) {
+      return toast.error('Passwords do not match');
+    }
+    if (newPassword.length < 6) {
+      return toast.error('Password must be at least 6 characters');
+    }
+
+    try {
+      setPasswordUpdating(true);
+      await authService.resetPasswordDirect(user.email, newPassword);
+      toast.success('Password updated successfully!');
+      setNewPassword('');
+      setConfirmPassword('');
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to update password');
+    } finally {
+      setPasswordUpdating(false);
     }
   };
 
@@ -206,25 +258,49 @@ export default function Profile() {
         )}
 
         {activeTab === 'skills' && (
-          <div>
-            <h3 className="text-base font-semibold mb-4" style={{ color: 'var(--text-primary)' }}>Your Skills</h3>
-            <div className="flex flex-wrap gap-2 mb-4">
-              {skills.map((skill) => (
-                <span key={skill} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium border"
-                  style={{ borderColor: 'var(--border-color)', color: 'var(--text-secondary)', backgroundColor: 'var(--bg-tertiary)' }}>
-                  {skill}
-                  <button onClick={() => removeSkill(skill)} className="tap-target hover:text-error transition-colors">
-                    <RiCloseLine size={14} />
-                  </button>
-                </span>
-              ))}
-            </div>
-            <div className="flex gap-2">
-              <input type="text" value={newSkill} onChange={(e) => setNewSkill(e.target.value)} placeholder="Add a skill..."
-                onKeyDown={(e) => e.key === 'Enter' && addSkill()}
-                className="flex-1 min-w-0 px-4 py-2.5 rounded-xl border bg-transparent text-sm outline-none"
-                style={{ borderColor: 'var(--border-color)', color: 'var(--text-primary)', backgroundColor: 'var(--input-bg)' }} />
-              <button onClick={addSkill} className="shrink-0 px-4 py-2.5 rounded-xl gradient-bg text-white text-sm font-medium hover:opacity-90">Add</button>
+          <div className="space-y-4">
+            <h3 className="text-base font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>Your Skills</h3>
+            <p className="text-sm mb-4" style={{ color: 'var(--text-tertiary)' }}>
+              Add technical skills to help us tailor your interview questions.
+            </p>
+            
+            {skills.length > 0 && (
+              <div className="flex flex-wrap gap-2 p-4 rounded-xl border" style={{ backgroundColor: 'var(--bg-tertiary)', borderColor: 'var(--border-color)' }}>
+                {skills.map((skill) => (
+                  <span key={skill} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium shadow-sm border"
+                    style={{ borderColor: 'var(--border-color)', color: 'var(--text-primary)', backgroundColor: 'var(--bg-card)' }}>
+                    {skill}
+                    <button onClick={(e) => { e.preventDefault(); removeSkill(skill); }} className="hover:text-error transition-colors flex items-center justify-center">
+                      <RiCloseLine size={16} />
+                    </button>
+                  </span>
+                ))}
+              </div>
+            )}
+            
+            <div className="flex flex-col sm:flex-row gap-3">
+              <input 
+                type="text" 
+                value={newSkill} 
+                onChange={(e) => setNewSkill(e.target.value)} 
+                placeholder="Type a skill and press Enter..."
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    addSkill();
+                  }
+                }}
+                className="flex-1 px-4 py-3 rounded-xl border focus:border-primary-500 transition-colors text-sm outline-none"
+                style={{ backgroundColor: 'var(--input-bg)', borderColor: 'var(--border-color)', color: 'var(--text-primary)' }} 
+              />
+              
+              <button 
+                onClick={(e) => { e.preventDefault(); addSkill(); }}
+                disabled={!newSkill.trim()}
+                className="shrink-0 px-6 py-3 rounded-xl gradient-bg text-white text-sm font-medium hover:opacity-90 disabled:opacity-50 transition-all"
+              >
+                Add Skill
+              </button>
             </div>
           </div>
         )}
@@ -232,18 +308,62 @@ export default function Profile() {
         {activeTab === 'security' && (
           <div className="space-y-4">
             <h3 className="text-base font-semibold mb-4" style={{ color: 'var(--text-primary)' }}>Change Password</h3>
-            {['Current Password', 'New Password', 'Confirm Password'].map((label) => (
-              <div key={label}>
-                <label className="text-sm font-medium mb-1.5 block" style={{ color: 'var(--text-primary)' }}>{label}</label>
-                <div className="flex items-center gap-2 px-4 py-3 rounded-xl border" style={{ backgroundColor: 'var(--input-bg)', borderColor: 'var(--border-color)' }}>
-                  <RiLockLine style={{ color: 'var(--text-tertiary)' }} />
-                  <input type="password" autoComplete={label === 'Current Password' ? 'current-password' : 'new-password'} placeholder={label}
-                    className="flex-1 min-w-0 bg-transparent text-sm outline-none"
-                    style={{ color: 'var(--text-primary)' }} />
-                </div>
+            
+            <div>
+              <label className="text-sm font-medium mb-1.5 block" style={{ color: 'var(--text-primary)' }}>New Password</label>
+              <div className="flex items-center gap-2 px-4 py-3 rounded-xl border focus-within:border-primary-500 transition-colors" style={{ backgroundColor: 'var(--input-bg)', borderColor: 'var(--border-color)' }}>
+                <RiLockLine style={{ color: 'var(--text-tertiary)' }} />
+                <input 
+                  type={showNewPassword ? "text" : "password"}
+                  autoComplete="new-password" 
+                  placeholder="Enter new password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  className="flex-1 min-w-0 bg-transparent text-sm outline-none"
+                  style={{ color: 'var(--text-primary)' }} 
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowNewPassword(!showNewPassword)}
+                  className="tap-target text-sm"
+                  style={{ color: 'var(--text-tertiary)' }}
+                >
+                  {showNewPassword ? <RiEyeOffLine size={18} /> : <RiEyeLine size={18} />}
+                </button>
               </div>
-            ))}
-            <button onClick={() => toast.success('Password updated successfully')} className="w-full sm:w-auto px-6 py-2.5 rounded-xl gradient-bg text-white text-sm font-medium hover:opacity-90">Update Password</button>
+            </div>
+
+            <div>
+              <label className="text-sm font-medium mb-1.5 block" style={{ color: 'var(--text-primary)' }}>Confirm Password</label>
+              <div className="flex items-center gap-2 px-4 py-3 rounded-xl border focus-within:border-primary-500 transition-colors" style={{ backgroundColor: 'var(--input-bg)', borderColor: 'var(--border-color)' }}>
+                <RiLockLine style={{ color: 'var(--text-tertiary)' }} />
+                <input 
+                  type={showConfirmPassword ? "text" : "password"}
+                  autoComplete="new-password" 
+                  placeholder="Confirm new password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className="flex-1 min-w-0 bg-transparent text-sm outline-none"
+                  style={{ color: 'var(--text-primary)' }} 
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="tap-target text-sm"
+                  style={{ color: 'var(--text-tertiary)' }}
+                >
+                  {showConfirmPassword ? <RiEyeOffLine size={18} /> : <RiEyeLine size={18} />}
+                </button>
+              </div>
+            </div>
+
+            <button 
+              onClick={handleUpdatePassword} 
+              disabled={passwordUpdating}
+              className="w-full sm:w-auto px-6 py-2.5 rounded-xl gradient-bg text-white text-sm font-medium hover:opacity-90 disabled:opacity-50"
+            >
+              {passwordUpdating ? 'Updating...' : 'Update Password'}
+            </button>
           </div>
         )}
 
@@ -268,10 +388,8 @@ export default function Profile() {
                   <p className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{setting.label}</p>
                   <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>{setting.desc}</p>
                 </div>
-                <input
-                  type="checkbox" 
-                  checked={preferences[setting.id]} 
-                  onChange={() => {
+                <button 
+                  onClick={() => {
                     setPreferences(prev => {
                       const newPrefs = { ...prev, [setting.id]: !prev[setting.id] };
                       localStorage.setItem('ai-interview-preferences', JSON.stringify(newPrefs));
@@ -279,8 +397,10 @@ export default function Profile() {
                     });
                     toast.success(`${setting.label} updated`);
                   }}
-                  className="shrink-0 w-5 h-5 rounded accent-primary-700"
-                />
+                  className={`shrink-0 w-12 h-6 rounded-full relative transition-colors ${preferences[setting.id] ? 'bg-primary-500' : 'bg-neutral-400'}`}
+                >
+                  <div className={`w-5 h-5 rounded-full bg-white absolute top-0.5 transition-transform ${preferences[setting.id] ? 'translate-x-6' : 'translate-x-0.5'}`} />
+                </button>
               </div>
             ))}
           </div>

@@ -69,7 +69,7 @@ export default function Navbar() {
         {/* Greeting */}
         <div className="hidden md:block min-w-0">
           <h2 className="text-sm font-medium" style={{ color: 'var(--text-tertiary)' }}>
-            {getGreeting()} 👋
+            {getGreeting()} 
           </h2>
           <h1 className="text-base lg:text-lg font-bold truncate" style={{ color: 'var(--text-primary)' }}>
             {user?.name || 'Welcome back'}
