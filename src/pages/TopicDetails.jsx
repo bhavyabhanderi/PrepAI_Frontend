@@ -22,6 +22,7 @@ mermaid.initialize({
   theme: 'default',
   securityLevel: 'loose',
   fontFamily: 'inherit',
+  flowchart: { htmlLabels: false },
 });
 
 // Mermaid block renderer
