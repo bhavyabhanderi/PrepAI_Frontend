@@ -74,7 +74,11 @@ function MermaidBlock({ code }) {
   }
 
   return (
-    <div className="mermaid-diagram" dangerouslySetInnerHTML={{ __html: svg }} />
+    <div 
+      className="mermaid-diagram overflow-x-auto w-full my-6 rounded-xl border p-4 bg-[var(--bg-tertiary)]/30" 
+      style={{ borderColor: 'var(--border-color)' }}
+      dangerouslySetInnerHTML={{ __html: svg }} 
+    />
   );
 }
 
