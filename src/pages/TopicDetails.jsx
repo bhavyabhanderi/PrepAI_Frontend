@@ -49,10 +49,10 @@ function MermaidBlock({ code }) {
   }, [code]);
 
   if (!svg) {
+    // Silent fallback to a nice code block if Mermaid fails to parse the AI's syntax
     return (
-      <div className="rounded-xl border bg-error/5 border-error/20 p-4 my-4">
-        <p className="text-xs font-bold text-error mb-2 uppercase">Diagram Generation Error</p>
-        <pre className="whitespace-pre-wrap font-mono text-[11px] text-error/80 overflow-x-auto">
+      <div className="my-4 rounded-xl border p-4 overflow-x-auto bg-[var(--bg-tertiary)]" style={{ borderColor: 'var(--border-color)' }}>
+        <pre className="font-mono text-[13px] whitespace-pre-wrap" style={{ color: 'var(--text-secondary)' }}>
           <code>{code}</code>
         </pre>
       </div>
@@ -178,6 +178,11 @@ Generate deep, accurate, and visually rich notes that a student can use as their
             remarkPlugins={[remarkGfm]}
             components={{
               code: codeRenderer,
+              table: ({ node, ...props }) => (
+                <div className="overflow-x-auto my-6 rounded-xl border border-[var(--border-color)]">
+                  <table {...props} className="w-full min-w-[600px]" />
+                </div>
+              ),
             }}
           >
             {notes}
