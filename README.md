@@ -33,7 +33,6 @@ The application is built using modern web technologies:
 1. **Clone the repository:**
    ```bash
    git clone https://github.com/bhavyabhanderi/PrepAI_Frontend.git
-   cd PrepAI/frontend
    ```
 
 2. **Install dependencies:**
