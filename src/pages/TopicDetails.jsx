@@ -32,19 +32,33 @@ function MermaidBlock({ code }) {
   useEffect(() => {
     let cancelled = false;
     const id = `mermaid-${Math.random().toString(36).substring(2, 10)}`;
-    mermaid.render(id, code).then(({ svg: renderedSvg }) => {
-      // Mermaid sometimes returns an SVG containing the error message instead of throwing
-      if (!cancelled) {
-        if (renderedSvg.includes('Syntax error') || renderedSvg.includes('mermaid-error')) {
-          setSvg(''); // Fallback to raw text
-        } else {
-          setSvg(renderedSvg);
+    
+    // First validate the syntax using mermaid.parse
+    // If it's invalid, this will throw and we can catch it silently WITHOUT mermaid drawing global errors
+    mermaid.parse(code, { suppressErrors: true })
+      .then(() => mermaid.render(id, code))
+      .then(({ svg: renderedSvg }) => {
+        if (!cancelled) {
+          if (renderedSvg.toLowerCase().includes('syntax error')) {
+             setSvg('');
+          } else {
+             setSvg(renderedSvg);
+          }
         }
-      }
-    }).catch(() => {
-      // If mermaid fails, show raw code
-      if (!cancelled) setSvg('');
-    });
+      })
+      .catch((e) => {
+        if (!cancelled) setSvg('');
+      })
+      .finally(() => {
+        // Mermaid sometimes leaves stray error elements in the DOM (like 'd'+id) when it crashes
+        const sandbox = document.getElementById('d' + id);
+        if (sandbox) sandbox.remove();
+        
+        // Also remove any global error boxes it might have attached to the body
+        const errorBoxes = document.querySelectorAll('.mermaid-error');
+        errorBoxes.forEach(box => box.remove());
+      });
+
     return () => { cancelled = true; };
   }, [code]);
 
