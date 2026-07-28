@@ -592,11 +592,19 @@ export default function LearningPlan() {
                                 Start <RiExternalLinkLine size={12} />
                               </button>
                             ) : (
-                              <a href={task.resource ? task.resource.link : `https://www.youtube.com/results?search_query=${encodeURIComponent(task.title + ' tutorial')}`}
-                                target="_blank" rel="noopener noreferrer"
-                                className="px-3 py-1.5 rounded-lg text-xs font-medium bg-error text-white hover:bg-error/90 transition-colors flex items-center gap-1">
-                                Watch <RiExternalLinkLine size={12} />
-                              </a>
+                              <div className="flex items-center gap-2">
+                                <button
+                                  onClick={() => navigate(`/topic-details?topic=${encodeURIComponent(task.title)}`)}
+                                  className="px-3 py-1.5 rounded-lg text-xs font-medium gradient-bg text-white hover:opacity-90 transition-opacity flex items-center gap-1 shadow-sm"
+                                >
+                                  Learn with AI <RiSparklingFill size={12} />
+                                </button>
+                                <a href={task.resource ? task.resource.link : `https://www.youtube.com/results?search_query=${encodeURIComponent(task.title + ' tutorial')}`}
+                                  target="_blank" rel="noopener noreferrer"
+                                  className="px-3 py-1.5 rounded-lg text-xs font-medium bg-error text-white hover:bg-error/90 transition-colors flex items-center gap-1">
+                                  Watch <RiExternalLinkLine size={12} />
+                                </a>
+                              </div>
                             )}
                           </div>
                         </div>
@@ -620,10 +628,18 @@ export default function LearningPlan() {
             </div>
             <div className="space-y-2">
               {recommendations.slice(0, 10).map((topic, i) => (
-                <div key={i} className="flex items-center gap-2 px-3 py-2.5 rounded-xl" style={{ backgroundColor: 'var(--bg-tertiary)' }}>
-                  <RiBrainLine size={14} className="text-warning flex-shrink-0" />
-                  <span className="text-xs" style={{ color: 'var(--text-secondary)' }}>{topic}</span>
-                </div>
+                <button 
+                  key={i} 
+                  onClick={() => navigate(`/topic-details?topic=${encodeURIComponent(topic)}`)}
+                  className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl transition-all hover:bg-primary-500/10 border border-transparent hover:border-primary-500/30 group" 
+                  style={{ backgroundColor: 'var(--bg-tertiary)' }}
+                >
+                  <div className="flex items-center gap-2">
+                    <RiBrainLine size={14} className="text-warning flex-shrink-0" />
+                    <span className="text-xs group-hover:text-primary-500 font-medium transition-colors text-left" style={{ color: 'var(--text-secondary)' }}>{topic}</span>
+                  </div>
+                  <RiArrowRightLine size={14} className="text-primary-500 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
+                </button>
               ))}
             </div>
           </motion.div>

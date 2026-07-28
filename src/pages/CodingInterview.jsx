@@ -155,6 +155,18 @@ export default function CodingInterview() {
   }, [problem, timerRunning]);
 
   const loadProblem = async () => {
+    const result = await Swal.fire({
+      title: 'Start Coding Challenge?',
+      text: 'You are about to start a coding challenge. Make sure you are ready!',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, Start!',
+      cancelButtonText: 'Cancel',
+      confirmButtonColor: '#4A4DC9',
+      cancelButtonColor: '#6b7280',
+    });
+    if (!result.isConfirmed) return;
+
     setIsLoadingProblem(true);
     setReview(null);
     setOutput('');

@@ -72,6 +72,18 @@ export default function TechnicalInterview() {
   }, [started, isRunning]);
 
   const handleStart = async () => {
+    const result = await Swal.fire({
+      title: 'Start Technical Interview?',
+      text: 'You are about to start a technical interview session. Make sure you are ready!',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, Start!',
+      cancelButtonText: 'Cancel',
+      confirmButtonColor: '#4A4DC9',
+      cancelButtonColor: '#6b7280',
+    });
+    if (!result.isConfirmed) return;
+
     setIsThinking(true);
     setStarted(true);
     start();

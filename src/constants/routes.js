@@ -23,6 +23,7 @@ export const ROUTES = {
   ABOUT: '/about',
   PRIVACY: '/privacy',
   TERMS: '/terms',
+  TOPIC_DETAILS: '/topic-details',
   NOT_FOUND: '*',
 };
 

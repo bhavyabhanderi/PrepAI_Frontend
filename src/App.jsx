@@ -24,6 +24,7 @@ const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const ResumeAnalyzer = lazy(() => import('./pages/ResumeAnalyzer'));
 const SyllabusAnalyzer = lazy(() => import('./pages/SyllabusAnalyzer'));
+const TopicDetails = lazy(() => import('./pages/TopicDetails'));
 const HRInterview = lazy(() => import('./pages/HRInterview'));
 
 const TechnicalInterview = lazy(() => import('./pages/TechnicalInterview'));
@@ -132,6 +133,7 @@ export default function App() {
                     <Route path={ROUTES.DASHBOARD} element={<Dashboard />} />
                     <Route path={ROUTES.RESUME_ANALYZER} element={<ResumeAnalyzer />} />
                     <Route path={ROUTES.SYLLABUS_ANALYZER} element={<SyllabusAnalyzer />} />
+                    <Route path={ROUTES.TOPIC_DETAILS} element={<TopicDetails />} />
                     <Route path={ROUTES.HR_INTERVIEW} element={<HRInterview />} />
                     <Route path={ROUTES.TECHNICAL_INTERVIEW} element={<TechnicalInterview />} />
                     <Route path={ROUTES.CODING_INTERVIEW} element={<CodingInterview />} />
@@ -145,7 +147,7 @@ export default function App() {
                   </Route>
 
                   {/* 404 Fallback */}
-                  <Route path={ROUTES.NOT_FOUND} element={<Navigate to={ROUTES.HOME} replace />} />
+                  <Route path={ROUTES.NOT_FOUND} element={<Navigate to={ROUTES.DASHBOARD} replace />} />
                 </Routes>
               </Suspense>
             </BrowserRouter>

@@ -22,6 +22,18 @@ export default function AptitudeInterview() {
   const navigate = useNavigate();
 
   const handleStartTest = async () => {
+    const result = await Swal.fire({
+      title: 'Start Aptitude Test?',
+      text: 'You are about to start an aptitude test. Make sure you are ready!',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, Start!',
+      cancelButtonText: 'Cancel',
+      confirmButtonColor: '#4A4DC9',
+      cancelButtonColor: '#6b7280',
+    });
+    if (!result.isConfirmed) return;
+
     setLoading(true);
     setInterviewStarted(true);
     try {

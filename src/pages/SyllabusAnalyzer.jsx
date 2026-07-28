@@ -14,7 +14,8 @@ import {
   RiArrowGoBackLine
 } from 'react-icons/ri';
 import { syllabusService } from '../services/api';
-import TopicChatModal from '../components/common/TopicChatModal';
+import { useNavigate } from 'react-router-dom';
+import { ROUTES } from '../constants/routes';
 
 export default function SyllabusAnalyzer() {
   const [file, setFile] = useState(null);
@@ -26,9 +27,7 @@ export default function SyllabusAnalyzer() {
   const [savedSyllabi, setSavedSyllabi] = useState([]);
   const [loadingSaved, setLoadingSaved] = useState(true);
 
-  // Chat state
-  const [chatTopic, setChatTopic] = useState(null);
-  const [isChatOpen, setIsChatOpen] = useState(false);
+  const navigate = useNavigate();
 
   // Fetch saved syllabi on mount
   useEffect(() => {
@@ -94,8 +93,7 @@ export default function SyllabusAnalyzer() {
   };
 
   const handleTopicClick = (topic) => {
-    setChatTopic(topic);
-    setIsChatOpen(true);
+    navigate(`${ROUTES.TOPIC_DETAILS}?topic=${encodeURIComponent(topic)}&subject=${encodeURIComponent(syllabusData?.subject || '')}`);
   };
 
   const formatDate = (dateString) => {
@@ -307,12 +305,6 @@ export default function SyllabusAnalyzer() {
         </motion.div>
       )}
 
-      {/* Topic Chat Modal */}
-      <TopicChatModal
-        isOpen={isChatOpen}
-        onClose={() => setIsChatOpen(false)}
-        topic={chatTopic}
-      />
     </div>
   );
 }

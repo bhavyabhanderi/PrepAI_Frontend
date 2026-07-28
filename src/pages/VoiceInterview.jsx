@@ -82,6 +82,18 @@ export default function VoiceInterview() {
   }, [isRecording]);
 
   const handleStart = async () => {
+    const result = await Swal.fire({
+      title: 'Start Voice Interview?',
+      text: 'You are about to start a voice-based interview. Make sure your microphone is ready!',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, Start!',
+      cancelButtonText: 'Cancel',
+      confirmButtonColor: '#4A4DC9',
+      cancelButtonColor: '#6b7280',
+    });
+    if (!result.isConfirmed) return;
+
     isEndingRef.current = false;
     setIsThinking(true);
     try {

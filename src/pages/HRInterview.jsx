@@ -102,6 +102,18 @@ export default function HRInterview() {
   useEffect(() => { scrollToBottom(); }, [messages]);
 
   const handleStartInterview = async (voiceMode = false) => {
+    const result = await Swal.fire({
+      title: 'Start HR Interview?',
+      text: 'You are about to start an HR interview session. Make sure you are ready!',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, Start!',
+      cancelButtonText: 'Cancel',
+      confirmButtonColor: '#4A4DC9',
+      cancelButtonColor: '#6b7280',
+    });
+    if (!result.isConfirmed) return;
+
     setIsVoiceMode(voiceMode);
     setIsThinking(true);
     setInterviewStarted(true);
