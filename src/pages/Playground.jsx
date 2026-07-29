@@ -9,6 +9,7 @@ import {
 import { useTheme } from '../context/ThemeContext';
 import { useIsMobile } from '../hooks';
 import toast from 'react-hot-toast';
+import { codingService } from '../services/api';
 
 const fadeInUp = { initial: { opacity: 0, y: 20 }, animate: { opacity: 1, y: 0 } };
 
@@ -24,6 +25,10 @@ export default function Playground() {
   const isMobile = useIsMobile();
   const [language, setLanguage] = useState(LANGUAGES[0]);
   const [code, setCode] = useState(LANGUAGES[0].template);
+  const [stdin, setStdin] = useState('');
+  const [parsedInputs, setParsedInputs] = useState([]);
+  const [useRawStdin, setUseRawStdin] = useState(false);
+  const [showInputBox, setShowInputBox] = useState(false);
   const [showLangDropdown, setShowLangDropdown] = useState(false);
   const [activeTab, setActiveTab] = useState('output'); // 'output', 'review'
   const [isRunning, setIsRunning] = useState(false);
@@ -40,39 +45,115 @@ export default function Playground() {
     setShowLangDropdown(false);
   };
 
-  const handleRunCode = () => {
+  useEffect(() => {
+    if (useRawStdin) return;
+    
+    let newParsed = [];
+    if (language.id === 'python') {
+      const regex = /input\(\s*(['"])(.*?)\1\s*\)|input\(\)/g;
+      let match;
+      let count = 1;
+      while ((match = regex.exec(code)) !== null) {
+        newParsed.push({ id: count, label: match[2] || `Input ${count}`, value: '' });
+        count++;
+      }
+    } else if (language.id === 'javascript') {
+      const regex = /prompt\(\s*(['"])(.*?)\1\s*\)|prompt\(\)/g;
+      let match;
+      let count = 1;
+      while ((match = regex.exec(code)) !== null) {
+        newParsed.push({ id: count, label: match[2] || `Input ${count}`, value: '' });
+        count++;
+      }
+    }
+    
+    setParsedInputs(prev => {
+      // Retain existing values if possible
+      return newParsed.map((np, i) => ({
+        ...np,
+        value: prev[i] ? prev[i].value : ''
+      }));
+    });
+  }, [code, language, useRawStdin]);
+
+  const needsInput = (langId, codeText) => {
+    if (langId === 'python' && (codeText.includes('input(') || codeText.includes('sys.stdin'))) return true;
+    if (langId === 'cpp' && codeText.includes('cin')) return true;
+    if (langId === 'java' && (codeText.includes('Scanner') || codeText.includes('BufferedReader'))) return true;
+    if (langId === 'javascript' && (codeText.includes('readline') || codeText.includes('prompt('))) return true;
+    return false;
+  };
+
+  const handleRunCode = async () => {
+    let finalStdin = stdin;
+    let missingInputs = false;
+
+    if (!useRawStdin && parsedInputs.length > 0) {
+      finalStdin = parsedInputs.map(p => p.value).join('\n');
+      missingInputs = parsedInputs.some(p => p.value.trim() === '');
+    } else {
+      missingInputs = needsInput(language.id, code) && !stdin;
+    }
+
+    if (missingInputs && !showInputBox) {
+      setShowInputBox(true);
+      toast('Your code appears to require input. Please provide it below and click Run again.', { icon: 'ℹ️' });
+      return;
+    }
+
     setIsRunning(true);
+    setIsReviewing(true); // Backend does both simultaneously
     setActiveTab('output');
     setMetrics(null);
+    setOutput('');
     
-    // Simulate code execution
-    setTimeout(() => {
-      setOutput('> Code executed successfully.\n\nHello, PrepAI!\n\nAll hidden test cases passed.');
-      setMetrics({ time: '42ms', memory: '12.4 MB' });
+    try {
+      const response = await codingService.execute({
+        language: language.id,
+        source_code: code,
+        stdin: finalStdin,
+        test_cases: [] // No test cases in playground
+      });
+      
+      const data = response.data;
+      
+      if (data.error_message && !data.output) {
+        setOutput(`> Error Execution Failed.\n\n${data.error_message}`);
+      } else if (data.error_message) {
+        setOutput(`> Error Execution Failed.\n\n${data.output}\n\nError: ${data.error_message}`);
+      } else {
+        setOutput(`> Code executed successfully.\n\n${data.output || 'No output returned.'}`);
+      }
+      
+      setMetrics({ time: `${data.execution_time_ms.toFixed(2)}ms`, memory: `${data.memory_used_kb} KB` });
+      
+      // AI Review Data
+      setReview({
+        score: data.code_quality_score || 0,
+        bugs: 0, // We don't have a bugs field, assume 0 if passed
+        complexity: { time: data.time_complexity || 'N/A', space: data.space_complexity || 'N/A' },
+        feedback: data.optimization_suggestions.map((text, i) => ({
+          type: i === 0 ? 'positive' : 'suggestion',
+          text
+        }))
+      });
+      
+      toast.success('Execution & AI Review completed');
+    } catch (error) {
+      console.error('Execution error:', error);
+      toast.error('Failed to execute code');
+      setOutput('> Error: Failed to communicate with execution server.');
+    } finally {
       setIsRunning(false);
-      toast.success('Execution completed');
-    }, 1500);
+      setIsReviewing(false);
+    }
   };
 
   const handleAIReview = () => {
-    setIsReviewing(true);
     setActiveTab('review');
-    
-    // Simulate AI Review analysis
-    setTimeout(() => {
-      setReview({
-        score: 88,
-        bugs: 0,
-        complexity: { time: 'O(1)', space: 'O(1)' },
-        feedback: [
-          { type: 'positive', text: 'Clean and readable implementation.' },
-          { type: 'suggestion', text: 'Consider extracting magic strings into constants.' },
-          { type: 'suggestion', text: 'Adding input validation would make this more robust in a production environment.' }
-        ]
-      });
-      setIsReviewing(false);
-      toast.success('AI Review completed');
-    }, 2500);
+    if (!review && !isRunning) {
+      handleRunCode(); // Run it to get review if not already done
+    }
   };
 
   return (
@@ -133,6 +214,12 @@ export default function Playground() {
 
             <div className="flex gap-2">
               <button
+                onClick={() => setShowInputBox(!showInputBox)}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${showInputBox ? 'bg-primary-500/20 text-primary-600 dark:text-primary-400' : 'hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-500'}`}
+              >
+                Custom Input
+              </button>
+              <button
                 onClick={handleRunCode}
                 disabled={isRunning}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-success/10 text-success hover:bg-success/20 transition-colors"
@@ -149,23 +236,82 @@ export default function Playground() {
             </div>
           </div>
 
-          <div className="flex-1 min-h-0">
-            <Editor
-              height="100%"
-              language={language.id}
-              value={code}
-              onChange={(val) => setCode(val || '')}
-              theme={isDark ? 'vs-dark' : 'light'}
-              options={{
-                minimap: { enabled: false },
-                fontSize: isMobile ? 13 : 14,
-                fontFamily: "'JetBrains Mono', monospace",
-                lineNumbers: 'on',
-                roundedSelection: true,
-                padding: { top: 16 },
-                tabSize: 2,
-              }}
-            />
+          <div className="flex-1 min-h-0 flex flex-col">
+            <div className="flex-1 min-h-0">
+              <Editor
+                height="100%"
+                language={language.id}
+                value={code}
+                onChange={(val) => setCode(val || '')}
+                theme={isDark ? 'vs-dark' : 'light'}
+                options={{
+                  minimap: { enabled: false },
+                  fontSize: isMobile ? 13 : 14,
+                  fontFamily: "'JetBrains Mono', monospace",
+                  lineNumbers: 'on',
+                  roundedSelection: true,
+                  padding: { top: 16 },
+                  tabSize: 2,
+                }}
+              />
+            </div>
+            
+            {/* Standard Input Section */}
+            <AnimatePresence>
+              {showInputBox && (
+                <motion.div 
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  className="border-t p-3 overflow-hidden" 
+                  style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-tertiary)' }}
+                >
+                  <div className="flex justify-between items-center mb-2">
+                    <label className="block text-xs font-bold text-neutral-500 uppercase tracking-wider">Standard Input (stdin)</label>
+                    {parsedInputs.length > 0 && (
+                      <button 
+                        onClick={() => setUseRawStdin(!useRawStdin)}
+                        className="text-xs text-primary-500 hover:underline"
+                      >
+                        {/* {useRawStdin ? "Use Smart Inputs" : "Use Raw Textarea"} */}
+                      </button>
+                    )}
+                  </div>
+                  
+                  {!useRawStdin && parsedInputs.length > 0 ? (
+                    <div className="space-y-2 overflow-y-auto max-h-40 pr-2">
+                      {parsedInputs.map((pInput, idx) => (
+                        <div key={idx} className="flex flex-col sm:flex-row sm:items-center gap-2">
+                          <span className="text-sm font-mono text-neutral-500 w-32 truncate" title={pInput.label}>
+                            {pInput.label}
+                          </span>
+                          <input
+                            type="text"
+                            value={pInput.value}
+                            onChange={(e) => {
+                              const newInputs = [...parsedInputs];
+                              newInputs[idx].value = e.target.value;
+                              setParsedInputs(newInputs);
+                            }}
+                            className="flex-1 p-2 text-sm font-mono rounded-lg border bg-white dark:bg-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary-500/50"
+                            style={{ borderColor: 'var(--border-color)', color: 'var(--text-primary)' }}
+                            placeholder="Value..."
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <textarea
+                      value={stdin}
+                      onChange={(e) => setStdin(e.target.value)}
+                      placeholder="Enter inputs here (e.g. for input() in Python). Separate multiple inputs by newlines..."
+                      className="w-full h-20 p-2 text-sm font-mono rounded-lg border bg-white dark:bg-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary-500/50 resize-none"
+                      style={{ borderColor: 'var(--border-color)', color: 'var(--text-primary)' }}
+                    />
+                  )}
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </motion.div>
 

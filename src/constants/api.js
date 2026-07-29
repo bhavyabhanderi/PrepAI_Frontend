@@ -44,6 +44,8 @@ export const API_ENDPOINTS = {
     EXECUTE: '/coding/execute',
     PROBLEMS: '/coding/problems',
     HISTORY: '/coding/history',
+    SQL_PROBLEMS: '/coding/sql-problems',
+    DEBUGGING_PROBLEMS: '/coding/debugging-problems',
   },
   // Analytics
   ANALYTICS: {

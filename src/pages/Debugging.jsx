@@ -1,24 +1,15 @@
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Editor from '@monaco-editor/react';
 import {
   RiBugLine, RiCheckDoubleLine, RiPlayLine,
-  RiArrowRightLine, RiInformationLine, RiCodeBoxLine
+  RiArrowRightLine, RiInformationLine, RiCodeBoxLine,
+  RiLoader4Line
 } from 'react-icons/ri';
 import { useTheme } from '../context/ThemeContext';
 import { useIsMobile } from '../hooks';
 import toast from 'react-hot-toast';
-import { BUG_CHALLENGES } from '../data/debuggingQuestions';
-
-const getShuffledChallenges = (diff) => {
-  const filtered = diff === 'all' ? BUG_CHALLENGES : BUG_CHALLENGES.filter(c => c.difficulty === diff);
-  const shuffled = [...filtered];
-  for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-  }
-  return shuffled;
-};
+import { codingService } from '../services/api';
 
 const fadeInUp = { initial: { opacity: 0, y: 20 }, animate: { opacity: 1, y: 0 } };
 
@@ -26,38 +17,48 @@ export default function Debugging() {
   const { isDark } = useTheme();
   const isMobile = useIsMobile();
   const [difficulty, setDifficulty] = useState('all');
-  const [queue, setQueue] = useState(() => getShuffledChallenges('all'));
-  const [queueIndex, setQueueIndex] = useState(0);
-  const challenge = queue[queueIndex];
   
   const [sessionQuestionNumber, setSessionQuestionNumber] = useState(1);
-  const [code, setCode] = useState(challenge.brokenCode);
+  const [challenge, setChallenge] = useState(null);
+  const [code, setCode] = useState('');
   const [isVerifying, setIsVerifying] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
   const [result, setResult] = useState(null); // { success: boolean, diff: string, explanation: string }
+
+  const fetchChallenge = async (diff) => {
+    try {
+      setIsGenerating(true);
+      setResult(null);
+      const apiDiff = diff === 'all' ? 'medium' : diff; // AI endpoint expects specific difficulty
+      const response = await codingService.getDebuggingProblems(apiDiff);
+      const newChallenge = response.data[0];
+      setChallenge(newChallenge);
+      setCode(newChallenge.brokenCode);
+    } catch (error) {
+      console.error('Error fetching challenge:', error);
+      toast.error('Failed to generate challenge.');
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const fetchedRef = React.useRef(false);
+
+  useEffect(() => {
+    if (fetchedRef.current) return;
+    fetchedRef.current = true;
+    fetchChallenge(difficulty);
+  }, []);
 
   const handleDifficultyChange = (newDiff) => {
     setDifficulty(newDiff);
-    const newQueue = getShuffledChallenges(newDiff);
-    setQueue(newQueue);
-    setQueueIndex(0);
-    setCode(newQueue[0].brokenCode);
-    setResult(null);
+    setSessionQuestionNumber(1);
+    fetchChallenge(newDiff);
   };
 
   const handleNextChallenge = () => {
-    let nextIdx = queueIndex + 1;
-    let currentQueue = queue;
-
-    if (nextIdx >= currentQueue.length) {
-      currentQueue = getShuffledChallenges(difficulty);
-      setQueue(currentQueue);
-      nextIdx = 0;
-    }
-    
-    setQueueIndex(nextIdx);
     setSessionQuestionNumber(prev => prev + 1);
-    setCode(currentQueue[nextIdx].brokenCode);
-    setResult(null);
+    fetchChallenge(difficulty);
   };
 
   const handleVerify = () => {
@@ -125,29 +126,35 @@ export default function Debugging() {
           className="rounded-2xl border flex flex-col h-[40dvh] lg:h-auto overflow-y-auto no-scrollbar relative"
           style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)' }}
         >
-          <div className="p-5 space-y-6">
-            
-            {/* Challenge Info */}
-            <div>
-              <div className="flex flex-wrap items-center gap-3 mb-2">
-                <span className="px-2 py-1 bg-primary-500/10 text-primary-600 dark:text-primary-400 font-mono text-xs font-bold rounded uppercase">
-                  {challenge.language}
-                </span>
-                <span className={`px-2 py-1 font-mono text-xs font-bold rounded uppercase ${
-                  challenge.difficulty === 'easy' ? 'bg-green-500/10 text-green-600 dark:text-green-400' :
-                  challenge.difficulty === 'medium' ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400' :
-                  'bg-red-500/10 text-red-600 dark:text-red-400'
-                }`}>
-                  {challenge.difficulty}
-                </span>
-                <h3 className="font-bold text-lg" style={{ color: 'var(--text-primary)' }}>
-                  Challenge {sessionQuestionNumber}: {challenge.title}
-                </h3>
+          <div className="p-5 space-y-6 relative">
+            {isGenerating || !challenge ? (
+              <div className="flex flex-col items-center justify-center py-20 gap-3">
+                <RiLoader4Line className="text-3xl text-primary-500 animate-spin" />
+                <p className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>Generating dynamic debugging challenge...</p>
               </div>
-              <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
-                {challenge.description}
-              </p>
-            </div>
+            ) : (
+              <>
+                {/* Challenge Info */}
+                <div>
+                  <div className="flex flex-wrap items-center gap-3 mb-2">
+                    <span className="px-2 py-1 bg-primary-500/10 text-primary-600 dark:text-primary-400 font-mono text-xs font-bold rounded uppercase">
+                      {challenge.language}
+                    </span>
+                    <span className={`px-2 py-1 font-mono text-xs font-bold rounded uppercase ${
+                      challenge.difficulty === 'easy' ? 'bg-green-500/10 text-green-600 dark:text-green-400' :
+                      challenge.difficulty === 'medium' ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400' :
+                      'bg-red-500/10 text-red-600 dark:text-red-400'
+                    }`}>
+                      {challenge.difficulty}
+                    </span>
+                    <h3 className="font-bold text-lg" style={{ color: 'var(--text-primary)' }}>
+                      Challenge {sessionQuestionNumber}: {challenge.title}
+                    </h3>
+                  </div>
+                  <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+                    {challenge.description}
+                  </p>
+                </div>
 
             {/* AI Explanation Result */}
             <AnimatePresence>
@@ -181,6 +188,8 @@ export default function Debugging() {
                 </motion.div>
               )}
             </AnimatePresence>
+            </>
+            )}
 
           </div>
         </motion.div>
@@ -215,23 +224,29 @@ export default function Debugging() {
             </button>
           </div>
 
-          <div className="flex-1 min-h-0">
-            <Editor
-              height="100%"
-              language={challenge.language}
-              value={code}
-              onChange={(val) => setCode(val || '')}
-              theme={isDark ? 'vs-dark' : 'light'}
-              options={{
-                minimap: { enabled: false },
-                fontSize: isMobile ? 13 : 14,
-                fontFamily: "'JetBrains Mono', monospace",
-                lineNumbers: 'on',
-                roundedSelection: true,
-                padding: { top: 16 },
-                tabSize: 2,
-              }}
-            />
+          <div className="flex-1 min-h-0 relative">
+            {isGenerating || !challenge ? (
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
+                <RiLoader4Line className="text-3xl text-neutral-300 dark:text-neutral-700 animate-spin" />
+              </div>
+            ) : (
+              <Editor
+                height="100%"
+                language={challenge.language}
+                value={code}
+                onChange={(val) => setCode(val || '')}
+                theme={isDark ? 'vs-dark' : 'light'}
+                options={{
+                  minimap: { enabled: false },
+                  fontSize: isMobile ? 13 : 14,
+                  fontFamily: "'JetBrains Mono', monospace",
+                  lineNumbers: 'on',
+                  roundedSelection: true,
+                  padding: { top: 16 },
+                  tabSize: 2,
+                }}
+              />
+            )}
           </div>
         </motion.div>
       </div>

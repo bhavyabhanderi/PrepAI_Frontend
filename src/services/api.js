@@ -61,6 +61,8 @@ export const codingService = {
   execute: (data) => axiosInstance.post(API_ENDPOINTS.CODING.EXECUTE, data),
   getProblems: () => axiosInstance.get(API_ENDPOINTS.CODING.PROBLEMS),
   getHistory: () => axiosInstance.get(API_ENDPOINTS.CODING.HISTORY),
+  getSqlProblems: (difficulty) => axiosInstance.get(`${API_ENDPOINTS.CODING.SQL_PROBLEMS}?difficulty=${difficulty}`),
+  getDebuggingProblems: (difficulty) => axiosInstance.get(`${API_ENDPOINTS.CODING.DEBUGGING_PROBLEMS}?difficulty=${difficulty}`),
 };
 
 export const analyticsService = {

@@ -1,24 +1,15 @@
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Editor from '@monaco-editor/react';
 import {
   RiDatabase2Line, RiPlayLine, RiTableLine,
-  RiCheckDoubleLine, RiKey2Line, RiSparklingFill
+  RiCheckDoubleLine, RiKey2Line, RiSparklingFill,
+  RiLoader4Line
 } from 'react-icons/ri';
 import { useTheme } from '../context/ThemeContext';
 import { useIsMobile } from '../hooks';
 import toast from 'react-hot-toast';
-import { SQL_QUESTIONS } from '../data/sqlQuestions';
-
-const getShuffledQuestions = (diff) => {
-  const filtered = diff === 'all' ? SQL_QUESTIONS : SQL_QUESTIONS.filter(q => q.difficulty === diff);
-  const shuffled = [...filtered];
-  for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-  }
-  return shuffled;
-};
+import { codingService } from '../services/api';
 
 const fadeInUp = { initial: { opacity: 0, y: 20 }, animate: { opacity: 1, y: 0 } };
 
@@ -26,38 +17,48 @@ export default function SQLPractice() {
   const { isDark } = useTheme();
   const isMobile = useIsMobile();
   const [difficulty, setDifficulty] = useState('all');
-  const [queue, setQueue] = useState(() => getShuffledQuestions('all'));
-  const [queueIndex, setQueueIndex] = useState(0);
-  const question = queue[queueIndex];
   
   const [sessionQuestionNumber, setSessionQuestionNumber] = useState(1);
-  const [code, setCode] = useState(`-- Write your SQL query here\n-- Question: ${question.question}\n\n`);
+  const [question, setQuestion] = useState(null);
+  const [code, setCode] = useState('-- Write your SQL query here\n');
   const [isRunning, setIsRunning] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
   const [results, setResults] = useState(null);
+
+  const fetchQuestion = async (diff) => {
+    try {
+      setIsGenerating(true);
+      setResults(null);
+      const apiDiff = diff === 'all' ? 'medium' : diff; // AI endpoint expects specific difficulty
+      const response = await codingService.getSqlProblems(apiDiff);
+      const newQuestion = response.data[0];
+      setQuestion(newQuestion);
+      setCode(`-- Write your SQL query here\n-- Question: ${newQuestion.question}\n\n`);
+    } catch (error) {
+      console.error('Error fetching question:', error);
+      toast.error('Failed to generate question.');
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const fetchedRef = React.useRef(false);
+
+  useEffect(() => {
+    if (fetchedRef.current) return;
+    fetchedRef.current = true;
+    fetchQuestion(difficulty);
+  }, []);
 
   const handleDifficultyChange = (newDiff) => {
     setDifficulty(newDiff);
-    const newQueue = getShuffledQuestions(newDiff);
-    setQueue(newQueue);
-    setQueueIndex(0);
-    setCode(`-- Write your SQL query here\n-- Question: ${newQueue[0].question}\n\n`);
-    setResults(null);
+    setSessionQuestionNumber(1);
+    fetchQuestion(newDiff);
   };
 
   const handleNextQuestion = () => {
-    let nextIdx = queueIndex + 1;
-    let currentQueue = queue;
-
-    if (nextIdx >= currentQueue.length) {
-      currentQueue = getShuffledQuestions(difficulty);
-      setQueue(currentQueue);
-      nextIdx = 0;
-    }
-    
-    setQueueIndex(nextIdx);
     setSessionQuestionNumber(prev => prev + 1);
-    setCode(`-- Write your SQL query here\n-- Question: ${currentQueue[nextIdx].question}\n\n`);
-    setResults(null);
+    fetchQuestion(difficulty);
   };
 
   const handleRunQuery = () => {
@@ -123,20 +124,27 @@ export default function SQLPractice() {
             </button>
           </div>
           
-          <div className="flex-1 p-5 overflow-y-auto">
-            <div className="flex items-center gap-3 mb-2">
-              <h4 className="font-bold text-lg" style={{ color: 'var(--text-primary)' }}>Question {sessionQuestionNumber}</h4>
-              <span className={`px-2 py-1 font-mono text-xs font-bold rounded uppercase ${
-                question.difficulty === 'easy' ? 'bg-green-500/10 text-green-600 dark:text-green-400' :
-                question.difficulty === 'medium' ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400' :
-                'bg-red-500/10 text-red-600 dark:text-red-400'
-              }`}>
-                {question.difficulty}
-              </span>
-            </div>
-            <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
-              {question.question}
-            </p>
+          <div className="flex-1 p-5 overflow-y-auto relative">
+            {isGenerating || !question ? (
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
+                <RiLoader4Line className="text-3xl text-primary-500 animate-spin" />
+                <p className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>Generating dynamic SQL challenge...</p>
+              </div>
+            ) : (
+              <>
+                <div className="flex items-center gap-3 mb-2">
+                  <h4 className="font-bold text-lg" style={{ color: 'var(--text-primary)' }}>Question {sessionQuestionNumber}</h4>
+                  <span className={`px-2 py-1 font-mono text-xs font-bold rounded uppercase ${
+                    question.difficulty === 'easy' ? 'bg-green-500/10 text-green-600 dark:text-green-400' :
+                    question.difficulty === 'medium' ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400' :
+                    'bg-red-500/10 text-red-600 dark:text-red-400'
+                  }`}>
+                    {question.difficulty}
+                  </span>
+                </div>
+                <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+                  {question.question}
+                </p>
             
             <div className="mt-6 p-4 rounded-xl border border-dashed flex flex-col gap-4" style={{ backgroundColor: 'var(--bg-tertiary)', borderColor: 'var(--border-color)' }}>
               <div>
@@ -146,27 +154,29 @@ export default function SQLPractice() {
                 </p>
               </div>
 
-              {question.tables.map((table, idx) => (
-                <div key={idx} className="rounded-lg border overflow-hidden" style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-card)' }}>
-                  <div className="bg-primary-500/10 px-3 py-2 font-mono text-sm font-bold text-primary-600 dark:text-primary-400">
-                    {table.name}
+                {question.tables.map((table, idx) => (
+                  <div key={idx} className="rounded-lg border overflow-hidden" style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-card)' }}>
+                    <div className="bg-primary-500/10 px-3 py-2 font-mono text-sm font-bold text-primary-600 dark:text-primary-400">
+                      {table.name}
+                    </div>
+                    <div className="px-3 py-2 space-y-1">
+                      {table.columns.map((col, cIdx) => (
+                        <div key={cIdx} className="flex justify-between items-center text-xs font-mono">
+                          <span className={`flex items-center gap-1 ${col.isPrimaryKey ? 'font-bold text-neutral-700 dark:text-neutral-300' : 'text-neutral-600 dark:text-neutral-400 pl-4'}`}>
+                            {col.isPrimaryKey && <RiKey2Line className="text-amber-500" />}
+                            {col.name}
+                          </span>
+                          <span className="text-neutral-400">
+                            {col.type} {col.isPrimaryKey ? 'PK' : col.isForeignKey ? 'FK' : ''}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                  <div className="px-3 py-2 space-y-1">
-                    {table.columns.map((col, cIdx) => (
-                      <div key={cIdx} className="flex justify-between items-center text-xs font-mono">
-                        <span className={`flex items-center gap-1 ${col.isPrimaryKey ? 'font-bold text-neutral-700 dark:text-neutral-300' : 'text-neutral-600 dark:text-neutral-400 pl-4'}`}>
-                          {col.isPrimaryKey && <RiKey2Line className="text-amber-500" />}
-                          {col.name}
-                        </span>
-                        <span className="text-neutral-400">
-                          {col.type} {col.isPrimaryKey ? 'PK' : col.isForeignKey ? 'FK' : ''}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            </>
+            )}
           </div>
         </motion.div>
 
