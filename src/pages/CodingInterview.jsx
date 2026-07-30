@@ -74,7 +74,6 @@ export default function CodingInterview() {
     { id: 'javascript', name: 'JavaScript', template: defaultProblem.initial_templates.javascript },
     { id: 'python', name: 'Python', template: defaultProblem.initial_templates.python },
     { id: 'java', name: 'Java', template: defaultProblem.initial_templates.java },
-    { id: 'cpp', name: 'C++', template: defaultProblem.initial_templates.cpp },
     { id: 'csharp', name: 'C#', template: defaultProblem.initial_templates.csharp },
     { id: 'go', name: 'Go', template: defaultProblem.initial_templates.go },
     { id: 'ruby', name: 'Ruby', template: defaultProblem.initial_templates.ruby },

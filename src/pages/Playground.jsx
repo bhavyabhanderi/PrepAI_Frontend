@@ -17,7 +17,6 @@ const LANGUAGES = [
   { id: 'javascript', name: 'JavaScript', template: '// Write your JavaScript code here\nconsole.log("Hello, PrepAI!");' },
   { id: 'python', name: 'Python', template: '# Write your Python code here\nprint("Hello, PrepAI!")' },
   { id: 'java', name: 'Java', template: 'public class Main {\n    public static void main(String[] args) {\n        System.out.println("Hello, PrepAI!");\n    }\n}' },
-  { id: 'cpp', name: 'C++', template: '#include <iostream>\n\nint main() {\n    std::cout << "Hello, PrepAI!" << std::endl;\n    return 0;\n}' },
 ];
 
 export default function Playground() {
@@ -138,7 +137,11 @@ export default function Playground() {
         }))
       });
       
-      toast.success('Execution & AI Review completed');
+      if (data.error_message) {
+        toast.error('Execution failed');
+      } else {
+        toast.success('Execution & AI Review completed');
+      }
     } catch (error) {
       console.error('Execution error:', error);
       toast.error('Failed to execute code');

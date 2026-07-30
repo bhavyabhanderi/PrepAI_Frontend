@@ -21,8 +21,8 @@ mermaid.initialize({
   startOnLoad: false,
   theme: 'default',
   securityLevel: 'loose',
-  fontFamily: 'inherit',
-  flowchart: { htmlLabels: false },
+  fontFamily: '"Inter", system-ui, -apple-system, sans-serif',
+  flowchart: { htmlLabels: true },
 });
 
 // Mermaid block renderer

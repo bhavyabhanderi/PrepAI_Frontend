@@ -757,3 +757,8 @@
   max-width: 100%;
   height: auto;
 }
+
+/* Ensure text inside mermaid nodes is never clipped */
+.mermaid-diagram .node foreignObject {
+  overflow: visible;
+}
