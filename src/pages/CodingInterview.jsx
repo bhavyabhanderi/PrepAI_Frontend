@@ -92,6 +92,7 @@ export default function CodingInterview() {
   // Monaco never loses its state when switching.
   const [mobileView, setMobileView] = useState('problem');
   const [started, setStarted] = useState(false);
+  const [difficulty, setDifficulty] = useState('all');
   const { time, start, reset, isRunning: timerRunning } = useTimer();
   const isMobile = useIsMobile();
   const dispatch = useDispatch();
@@ -153,25 +154,28 @@ export default function CodingInterview() {
     };
   }, [problem, timerRunning]);
 
-  const loadProblem = async () => {
-    const result = await Swal.fire({
-      title: 'Start Coding Challenge?',
-      text: 'You are about to start a coding challenge. Make sure you are ready!',
-      icon: 'question',
-      showCancelButton: true,
-      confirmButtonText: 'Yes, Start!',
-      cancelButtonText: 'Cancel',
-      confirmButtonColor: '#4A4DC9',
-      cancelButtonColor: '#6b7280',
-    });
-    if (!result.isConfirmed) return;
+  const loadProblem = async (skipConfirm = false, overrideDiff) => {
+    const activeDiff = overrideDiff || difficulty;
+    if (!skipConfirm) {
+      const result = await Swal.fire({
+        title: 'Start Coding Challenge?',
+        text: 'You are about to start a coding challenge. Make sure you are ready!',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, Start!',
+        cancelButtonText: 'Cancel',
+        confirmButtonColor: '#4A4DC9',
+        cancelButtonColor: '#6b7280',
+      });
+      if (!result.isConfirmed) return;
+    }
 
     setIsLoadingProblem(true);
     setReview(null);
     setOutput('');
     reset();
     try {
-      const res = await codingService.getProblems();
+      const res = await codingService.getProblems(activeDiff);
       if (res.data && res.data.length > 0) {
         const fetchedProblem = res.data[0];
         setProblem(fetchedProblem);
@@ -324,10 +328,21 @@ export default function CodingInterview() {
           <p className="text-sm mb-8" style={{ color: 'var(--text-tertiary)' }}>
             Practice coding challenges with real-time test execution and AI-powered reviews. Optimize your runtime complexity and code quality.
           </p>
+          <div className="flex bg-neutral-100 dark:bg-neutral-800 p-1 rounded-xl mb-6 mx-auto w-fit">
+            {['all', 'easy', 'medium', 'hard'].map((level) => (
+              <button
+                key={level}
+                onClick={() => setDifficulty(level)}
+                className={`px-4 py-1.5 rounded-lg text-sm font-medium capitalize transition-all ${difficulty === level ? 'bg-white dark:bg-neutral-700 shadow-sm text-primary-600 dark:text-primary-400' : 'text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300'}`}
+              >
+                {level}
+              </button>
+            ))}
+          </div>
           <button
             onClick={() => {
               setStarted(true);
-              loadProblem();
+              loadProblem(true);
             }}
             className="px-8 py-3 rounded-xl gradient-bg text-white font-medium hover:opacity-90 transition-opacity flex items-center gap-2 mx-auto"
           >
@@ -363,6 +378,20 @@ export default function CodingInterview() {
           </h1>
         </div>
         <div className="flex items-center gap-3 flex-shrink-0">
+          <div className="hidden sm:flex bg-neutral-100 dark:bg-neutral-800 p-1 rounded-xl">
+            {['all', 'easy', 'medium', 'hard'].map((level) => (
+              <button
+                key={level}
+                onClick={() => {
+                  setDifficulty(level);
+                  loadProblem(true, level);
+                }}
+                className={`px-3 py-1 rounded-lg text-xs font-medium capitalize transition-all ${difficulty === level ? 'bg-white dark:bg-neutral-700 shadow-sm text-primary-600 dark:text-primary-400' : 'text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300'}`}
+              >
+                {level}
+              </button>
+            ))}
+          </div>
           <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-mono"
             style={{ backgroundColor: 'var(--bg-tertiary)', color: 'var(--text-primary)' }}>
             <RiTimeLine size={14} /> {formatTimer(time)}
@@ -489,7 +518,7 @@ export default function CodingInterview() {
                   </div>
 
                   <button
-                    onClick={loadProblem}
+                    onClick={() => loadProblem(true)}
                     className="w-full mt-4 py-2.5 rounded-xl gradient-bg text-white font-medium text-sm hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
                   >
                     <RiRefreshLine size={16} /> Next Question
@@ -541,7 +570,7 @@ export default function CodingInterview() {
             {/* Action Buttons */}
             <div className="flex flex-wrap items-center gap-2 justify-end">
               <button
-                onClick={loadProblem}
+                onClick={() => loadProblem(true)}
                 disabled={isLoadingProblem || isRunning}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-primary-500/10 text-primary-500 hover:bg-primary-500/20 transition-colors disabled:opacity-50"
               >
