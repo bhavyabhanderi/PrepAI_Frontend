@@ -10,6 +10,7 @@ import { useTheme } from '../context/ThemeContext';
 import { useIsMobile } from '../hooks';
 import toast from 'react-hot-toast';
 import { codingService } from '../services/api';
+import { parseMarkdown } from '../utils/helpers';
 
 const fadeInUp = { initial: { opacity: 0, y: 20 }, animate: { opacity: 1, y: 0 } };
 
@@ -142,16 +143,16 @@ export default function SQLPractice() {
                     {question.difficulty}
                   </span>
                 </div>
-                <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
-                  {question.question}
-                </p>
+                <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}
+                  dangerouslySetInnerHTML={{ __html: parseMarkdown(question.question) }}
+                />
             
             <div className="mt-6 p-4 rounded-xl border border-dashed flex flex-col gap-4" style={{ backgroundColor: 'var(--bg-tertiary)', borderColor: 'var(--border-color)' }}>
               <div>
                 <p className="text-xs font-bold text-neutral-500 uppercase tracking-wider mb-2">Hint</p>
-                <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-                  {question.hint}
-                </p>
+                <p className="text-sm" style={{ color: 'var(--text-secondary)' }}
+                  dangerouslySetInnerHTML={{ __html: parseMarkdown(question.hint) }}
+                />
               </div>
 
                 {question.tables.map((table, idx) => (
@@ -274,9 +275,9 @@ export default function SQLPractice() {
                     <div className="flex items-center gap-2 mb-1">
                       <h4 className="text-xs font-bold text-primary-600 dark:text-primary-400 uppercase tracking-wider">AI Optimization Score: {results.optimizationScore}/100</h4>
                     </div>
-                    <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-                      {results.feedback}
-                    </p>
+                    <p className="text-sm" style={{ color: 'var(--text-secondary)' }}
+                      dangerouslySetInnerHTML={{ __html: parseMarkdown(results.feedback) }}
+                    />
                   </div>
                 </div>
                 <button

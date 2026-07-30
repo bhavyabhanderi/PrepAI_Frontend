@@ -6,7 +6,7 @@ import {
   RiTimeLine, RiSparklingFill, RiUser3Line, RiUserVoiceLine,
   RiRobot2Line, RiStopCircleLine, RiRefreshLine,
 } from 'react-icons/ri';
-import { formatTimer } from '../utils/helpers';
+import { formatTimer, parseMarkdown } from '../utils/helpers';
 import { useTimer, useTabSwitchGuard } from '../hooks';
 import toast from 'react-hot-toast';
 import Swal from 'sweetalert2';
@@ -535,7 +535,7 @@ export default function HRInterview() {
                 color: 'var(--text-primary)',
               } : undefined}
               dangerouslySetInnerHTML={{
-                __html: msg.content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br/>'),
+                __html: parseMarkdown(msg.content),
               }}
             />
           </motion.div>

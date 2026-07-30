@@ -7,7 +7,7 @@ import {
   RiTrophyLine, RiStarLine, RiSendPlaneFill, RiMicLine,
   RiMicOffLine, RiRobot2Line, RiUser3Line, RiStopCircleLine
 } from 'react-icons/ri';
-import { formatTimer, getScoreColor } from '../utils/helpers';
+import { formatTimer, getScoreColor, parseMarkdown } from '../utils/helpers';
 import { useTimer, useTabSwitchGuard } from '../hooks';
 import toast from 'react-hot-toast';
 import Swal from 'sweetalert2';
@@ -435,7 +435,7 @@ export default function TechnicalInterview() {
                 color: 'var(--text-primary)',
               } : undefined}
               dangerouslySetInnerHTML={{
-                __html: msg.content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br/>'),
+                __html: parseMarkdown(msg.content),
               }}
             />
           </motion.div>

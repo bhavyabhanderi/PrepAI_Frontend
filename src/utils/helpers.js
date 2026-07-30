@@ -110,3 +110,16 @@ export const getGreeting = () => {
   if (hour < 17) return 'Good Afternoon';
   return 'Good Evening';
 };
+
+/**
+ * Lightweight markdown-to-HTML converter for AI-generated text.
+ * Handles **bold**, `inline code`, and newlines → <br/>.
+ * Use with dangerouslySetInnerHTML={{ __html: parseMarkdown(text) }}.
+ */
+export const parseMarkdown = (text) => {
+  if (!text) return '';
+  return text
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/`([^`]+)`/g, '<code style="background:var(--bg-tertiary);padding:1px 5px;border-radius:4px;font-size:0.85em">$1</code>')
+    .replace(/\n/g, '<br/>');
+};

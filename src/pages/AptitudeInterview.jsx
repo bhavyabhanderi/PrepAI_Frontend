@@ -8,6 +8,7 @@ import { interviewService, analyticsService } from '../services/api';
 import { useTabSwitchGuard } from '../hooks';
 import toast from 'react-hot-toast';
 import Swal from 'sweetalert2';
+import { parseMarkdown } from '../utils/helpers';
 
 export default function AptitudeInterview() {
   const [interviewStarted, setInterviewStarted] = useState(false);
@@ -224,7 +225,7 @@ export default function AptitudeInterview() {
           <div key={q.id} className="p-6 rounded-2xl border" style={{ backgroundColor: 'var(--bg-secondary)', borderColor: 'var(--border-color)' }}>
             <h3 className="text-lg font-medium mb-4">
               <span className="text-primary-600 mr-2">{idx + 1}.</span>
-              {q.question_text}
+              <span dangerouslySetInnerHTML={{ __html: parseMarkdown(q.question_text) }} />
             </h3>
             
             {q.options && q.options.length > 0 ? (

@@ -10,6 +10,7 @@ import { useTheme } from '../context/ThemeContext';
 import { useIsMobile } from '../hooks';
 import toast from 'react-hot-toast';
 import { codingService } from '../services/api';
+import { parseMarkdown } from '../utils/helpers';
 
 const fadeInUp = { initial: { opacity: 0, y: 20 }, animate: { opacity: 1, y: 0 } };
 
@@ -151,9 +152,9 @@ export default function Debugging() {
                       Challenge {sessionQuestionNumber}: {challenge.title}
                     </h3>
                   </div>
-                  <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
-                    {challenge.description}
-                  </p>
+                  <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}
+                    dangerouslySetInnerHTML={{ __html: parseMarkdown(challenge.description) }}
+                  />
                 </div>
 
             {/* AI Explanation Result */}
@@ -172,9 +173,9 @@ export default function Debugging() {
                         <><RiBugLine className="text-error text-lg" /> <span className="text-error">Bug Still Present</span></>
                       )}
                     </div>
-                    <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-                      {result.explanation}
-                    </p>
+                    <p className="text-sm" style={{ color: 'var(--text-secondary)' }}
+                      dangerouslySetInnerHTML={{ __html: parseMarkdown(result.explanation) }}
+                    />
                   </div>
                   
                   {result.success && (

@@ -10,7 +10,7 @@ import {
   RiStopCircleLine,
 } from 'react-icons/ri';
 import { useTheme } from '../context/ThemeContext';
-import { formatTimer } from '../utils/helpers';
+import { formatTimer, parseMarkdown } from '../utils/helpers';
 import { useTimer, useIsMobile, useTabSwitchGuard } from '../hooks';
 import { codingService } from '../services/api';
 import toast from 'react-hot-toast';
@@ -421,9 +421,9 @@ export default function CodingInterview() {
           <div className="flex-1 overflow-y-auto p-4 sm:p-5 no-scrollbar">
             {activeTab === 'problem' && (
               <div className="space-y-4">
-                <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
-                  {problem.description}
-                </p>
+                <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}
+                  dangerouslySetInnerHTML={{ __html: parseMarkdown(problem.description) }}
+                />
 
                 {problem.examples?.map((ex, i) => (
                   <div key={i} className="p-3 rounded-xl" style={{ backgroundColor: 'var(--bg-tertiary)' }}>
@@ -440,7 +440,7 @@ export default function CodingInterview() {
                   <p className="text-xs font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>Constraints:</p>
                   <ul className="space-y-1">
                     {problem.constraints?.map((c, i) => (
-                      <li key={i} className="text-xs font-mono" style={{ color: 'var(--text-tertiary)' }}>• {typeof c === 'object' && c !== null ? JSON.stringify(c) : c}</li>
+                      <li key={i} className="text-xs font-mono" style={{ color: 'var(--text-tertiary)' }} dangerouslySetInnerHTML={{ __html: '• ' + parseMarkdown(typeof c === 'object' && c !== null ? JSON.stringify(c) : c) }} />
                     ))}
                   </ul>
                 </div>
@@ -483,7 +483,7 @@ export default function CodingInterview() {
                         ) : (
                           <RiSparklingFill className="text-accent-500 mt-0.5 flex-shrink-0" />
                         )}
-                        <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>{f.text}</span>
+                        <span className="text-sm" style={{ color: 'var(--text-secondary)' }} dangerouslySetInnerHTML={{ __html: parseMarkdown(f.text) }} />
                       </div>
                     ))}
                   </div>

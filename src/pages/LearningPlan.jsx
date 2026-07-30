@@ -13,6 +13,7 @@ import {
 } from 'react-icons/ri';
 import { analyticsService } from '../services/api';
 import { useNavigate } from 'react-router-dom';
+import { parseMarkdown } from '../utils/helpers';
 
 const MINS_PER_QUESTION = 1; // 1 minute per question (equal to number of questions)
 
@@ -395,7 +396,7 @@ export default function LearningPlan() {
           <motion.div key={currentQ} initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }}
             className="p-6 rounded-2xl border" style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)' }}>
             <div className="flex items-center justify-between mb-4">
-              <p className="text-base font-semibold leading-relaxed flex-1 mr-4" style={{ color: 'var(--text-primary)' }}>{q?.question}</p>
+              <p className="text-base font-semibold leading-relaxed flex-1 mr-4" style={{ color: 'var(--text-primary)' }} dangerouslySetInnerHTML={{ __html: parseMarkdown(q?.question) }} />
               <span className={`text-[10px] font-bold uppercase px-2 py-1 rounded-full flex-shrink-0 ${
                 q?.difficulty === 'easy' ? 'bg-success/10 text-success' :
                 q?.difficulty === 'hard' ? 'bg-error/10 text-error' :
