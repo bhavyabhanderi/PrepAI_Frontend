@@ -9,8 +9,8 @@ import {
   RiBookOpenLine, RiHistoryLine
 } from 'react-icons/ri';
 import {
-  AreaChart, Area, XAxis, YAxis, CartesianGrid,
-  Tooltip, ResponsiveContainer, BarChart, Bar,
+  ComposedChart, Area, XAxis, YAxis, CartesianGrid,
+  Tooltip, ResponsiveContainer, Bar,
 } from 'recharts';
 import { useSelector } from 'react-redux';
 import { getGreeting, getScoreColor } from '../utils/helpers';
@@ -138,14 +138,7 @@ export default function Dashboard() {
           subject: 'Learning Plan',
         }));
 
-        const mockNewFeatures = [
-          { id: 'mock-1', type: 'system_design', status: 'completed', created_at: new Date(Date.now() - 2 * 3600 * 1000).toISOString(), subject: 'System Design', job_role: 'Design a URL Shortener', difficulty_level: 'Hard' },
-          { id: 'mock-2', type: 'debugging', status: 'completed', created_at: new Date(Date.now() - 5 * 3600 * 1000).toISOString(), subject: 'Debugging', job_role: 'Fix API Authentication Bug', difficulty_level: 'Medium' },
-          { id: 'mock-3', type: 'sql_practice', status: 'completed', created_at: new Date(Date.now() - 24 * 3600 * 1000).toISOString(), subject: 'SQL Practice', job_role: 'Find Highest Earning Employees', difficulty_level: 'Easy' },
-          { id: 'mock-4', type: 'playground', status: 'completed', created_at: new Date(Date.now() - 48 * 3600 * 1000).toISOString(), subject: 'Playground', job_role: 'React Optimization Playground', difficulty_level: 'Medium' }
-        ];
-        
-        const combined = [...interviews, ...codings, ...syllabi, ...resumes, ...learningPlans, ...mockNewFeatures].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        const combined = [...interviews, ...codings, ...syllabi, ...resumes, ...learningPlans].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
         setHistoryActivity(combined);
       } catch (err) {
         console.error('Failed to load history', err);
@@ -166,25 +159,64 @@ export default function Dashboard() {
     );
   }
 
+  // Dynamically calculate stats based on historyActivity
+  const getAverageScore = (types) => {
+    const matching = historyActivity.filter(item => types.includes(item.type) && item.score != null);
+    if (matching.length === 0) return 'N/A';
+    const sum = matching.reduce((acc, curr) => acc + Number(curr.score), 0);
+    return Math.round(sum / matching.length) + '%';
+  };
+
+  const totalInterviews = historyActivity.filter(item => ['hr', 'technical', 'aptitude', 'coding', 'behavioral', 'company_specific'].includes(item.type)).length;
+  const technicalScore = getAverageScore(['technical', 'coding', 'system_design', 'debugging', 'sql_practice']);
+  const hrScore = getAverageScore(['hr', 'behavioral']);
+  const computedResumeScore = atsScore ? `${atsScore}%` : getAverageScore(['resume']);
+
   const stats = (dashboardData?.stats || [
-    { label: 'Total Interviews', value: '0', change: '0', up: true, icon: 'user-voice', color: '#533086', bg: 'rgba(83,48,134,0.1)' },
-    { label: 'Resume Score', value: atsScore ? `${atsScore}%` : 'N/A', change: '0%', up: true, icon: 'file-text', color: '#FC9145', bg: 'rgba(252,145,69,0.1)' },
-    { label: 'Technical Score', value: 'N/A', change: '0%', up: true, icon: 'code', color: '#4A4DC9', bg: 'rgba(74,77,201,0.1)' },
-    { label: 'HR Score', value: 'N/A', change: '0%', up: true, icon: 'trophy', color: '#22C55E', bg: 'rgba(34,197,94,0.1)' },
+    { label: 'Total Interviews', value: totalInterviews.toString(), change: '+0', up: true, icon: 'user-voice', color: '#533086', bg: 'rgba(83,48,134,0.1)' },
+    { label: 'Resume Score', value: computedResumeScore, change: '+0%', up: true, icon: 'file-text', color: '#FC9145', bg: 'rgba(252,145,69,0.1)' },
+    { label: 'Technical Score', value: technicalScore, change: '+0%', up: true, icon: 'code', color: '#4A4DC9', bg: 'rgba(74,77,201,0.1)' },
+    { label: 'HR Score', value: hrScore, change: '+0%', up: true, icon: 'trophy', color: '#22C55E', bg: 'rgba(34,197,94,0.1)' },
   ]).map(stat => ({
     ...stat,
     icon: ICON_MAP[stat.icon] || RiUserVoiceLine,
   }));
 
-  const weeklyData = dashboardData?.weeklyData || [
-    { day: 'Mon', interviews: 0, score: 0 },
-    { day: 'Tue', interviews: 0, score: 0 },
-    { day: 'Wed', interviews: 0, score: 0 },
-    { day: 'Thu', interviews: 0, score: 0 },
-    { day: 'Fri', interviews: 0, score: 0 },
-    { day: 'Sat', interviews: 0, score: 0 },
-    { day: 'Sun', interviews: 0, score: 0 },
-  ];
+  const generateWeeklyData = () => {
+    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const today = new Date();
+    const result = [];
+    
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(today);
+      d.setDate(d.getDate() - i);
+      const dayName = days[d.getDay()];
+      
+      const dayStart = new Date(d).setHours(0,0,0,0);
+      const dayEnd = new Date(d).setHours(23,59,59,999);
+      
+      const dayActivities = historyActivity.filter(item => {
+        if (!item.created_at) return false;
+        const itemDate = new Date(item.created_at).getTime();
+        return itemDate >= dayStart && itemDate <= dayEnd;
+      });
+      
+      let avgScore = 0;
+      const scoredActivities = dayActivities.filter(a => a.score != null);
+      if (scoredActivities.length > 0) {
+        avgScore = Math.round(scoredActivities.reduce((acc, curr) => acc + Number(curr.score), 0) / scoredActivities.length);
+      }
+      
+      result.push({
+        day: dayName,
+        interviews: dayActivities.length,
+        score: avgScore
+      });
+    }
+    return result;
+  };
+
+  const weeklyData = dashboardData?.weeklyData || generateWeeklyData();
 
   const recentActivity = historyActivity.map(item => {
     const meta = getTypeMeta(item.type);
@@ -279,7 +311,7 @@ export default function Dashboard() {
           </div>
           <div className="h-64 sm:h-72 lg:h-[260px] [&_*]:!outline-none">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={weeklyData} style={{ outline: 'none' }}>
+              <ComposedChart data={weeklyData} style={{ outline: 'none' }}>
                 <defs>
                   <linearGradient id="scoreGradient" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#4A4DC9" stopOpacity={0.3} />
@@ -298,9 +330,9 @@ export default function Dashboard() {
                     fontSize: '12px',
                   }}
                 />
-                <Area type="monotone" dataKey="score" stroke="#4A4DC9" fill="url(#scoreGradient)" strokeWidth={2} />
                 <Bar dataKey="interviews" fill="#FC9145" radius={[4, 4, 0, 0]} barSize={20} />
-              </AreaChart>
+                <Area type="monotone" dataKey="score" stroke="#4A4DC9" fill="url(#scoreGradient)" strokeWidth={2} />
+              </ComposedChart>
             </ResponsiveContainer>
           </div>
         </motion.div>

@@ -91,14 +91,7 @@ export default function InterviewHistory() {
           subject: 'Learning Plan',
         }));
 
-        const mockNewFeatures = [
-          { id: 'mock-1', type: 'system_design', status: 'completed', created_at: new Date(Date.now() - 2 * 3600 * 1000).toISOString(), subject: 'System Design', job_role: 'Design a URL Shortener', difficulty_level: 'Hard' },
-          { id: 'mock-2', type: 'debugging', status: 'completed', created_at: new Date(Date.now() - 5 * 3600 * 1000).toISOString(), subject: 'Debugging', job_role: 'Fix API Authentication Bug', difficulty_level: 'Medium' },
-          { id: 'mock-3', type: 'sql_practice', status: 'completed', created_at: new Date(Date.now() - 24 * 3600 * 1000).toISOString(), subject: 'SQL Practice', job_role: 'Find Highest Earning Employees', difficulty_level: 'Easy' },
-          { id: 'mock-4', type: 'playground', status: 'completed', created_at: new Date(Date.now() - 48 * 3600 * 1000).toISOString(), subject: 'Playground', job_role: 'React Optimization Playground', difficulty_level: 'Medium' }
-        ];
-        
-        const combined = [...interviews, ...codings, ...syllabi, ...resumes, ...learningPlans, ...mockNewFeatures].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        const combined = [...interviews, ...codings, ...syllabi, ...resumes, ...learningPlans].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
         setHistory(combined);
       } catch (err) {
         setError('Failed to load history.');
@@ -128,8 +121,27 @@ export default function InterviewHistory() {
         <p className="text-sm mt-1" style={{ color: 'var(--text-tertiary)' }}>Review your previous interviews and syllabus analyses.</p>
       </motion.div>
 
-      {/* Filter */}
-      <div className="flex flex-col sm:flex-row gap-3">
+      {/* Search + Filter */}
+      <div className="flex flex-col gap-3">
+        <div className="relative w-full sm:max-w-sm">
+          <RiSearchLine
+            size={16}
+            className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"
+            style={{ color: 'var(--text-tertiary)' }}
+          />
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search by activity, role, subject or file..."
+            className="w-full pl-9 pr-3 py-2 rounded-xl text-sm border transition-all outline-none focus:border-primary-500"
+            style={{
+              backgroundColor: 'var(--bg-card)',
+              borderColor: 'var(--border-color)',
+              color: 'var(--text-primary)',
+            }}
+          />
+        </div>
         <div className="flex gap-2 flex-wrap">
           {filters.map((f) => (
             <button key={f} onClick={() => setFilter(f)}
