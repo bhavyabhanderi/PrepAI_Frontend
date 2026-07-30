@@ -28,8 +28,24 @@ export default function Register() {
         
         dispatch(loginSuccess({ user: null, token: token }));
         
+        // Fetch profile from backend
         const profileRes = await authService.getProfile();
-        dispatch(loginSuccess({ user: profileRes.data, token: token }));
+        let userData = { ...profileRes.data };
+        
+        // Fetch Google profile photo using the access token
+        try {
+          const googleProfile = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+            headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
+          });
+          const googleData = await googleProfile.json();
+          if (googleData.picture) {
+            userData.profile_photo = googleData.picture;
+          }
+        } catch (photoErr) {
+          console.warn('Could not fetch Google profile photo:', photoErr);
+        }
+        
+        dispatch(loginSuccess({ user: userData, token: token }));
         
         toast.success('Successfully registered & logged in with Google!');
         navigate(ROUTES.DASHBOARD);

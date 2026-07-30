@@ -184,9 +184,18 @@ export default function Profile() {
 
       {/* Profile Header */}
       <div className="p-6 rounded-2xl border flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-4 sm:gap-6" style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)' }}>
-        <div className="w-20 h-20 shrink-0 rounded-2xl gradient-bg flex items-center justify-center text-white text-2xl font-bold">
-          {user?.name?.charAt(0) || 'U'}
-        </div>
+        {user?.profile_photo ? (
+          <img
+            src={user.profile_photo}
+            alt={user?.name || 'User'}
+            className="w-20 h-20 shrink-0 rounded-2xl object-cover"
+            referrerPolicy="no-referrer"
+          />
+        ) : (
+          <div className="w-20 h-20 shrink-0 rounded-2xl gradient-bg flex items-center justify-center text-white text-2xl font-bold">
+            {user?.name?.charAt(0) || 'U'}
+          </div>
+        )}
         <div className="flex-1 min-w-0">
           <h2 className="text-xl font-bold truncate" style={{ color: 'var(--text-primary)' }}>{user?.name || 'John Doe'}</h2>
           <p className="text-sm truncate" style={{ color: 'var(--text-tertiary)' }}>{user?.email || 'john@example.com'}</p>

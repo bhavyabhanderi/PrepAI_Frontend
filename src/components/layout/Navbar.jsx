@@ -154,9 +154,18 @@ export default function Navbar() {
             onClick={() => setShowProfile(!showProfile)}
             className="flex items-center gap-2 p-1.5 rounded-xl hover:bg-primary-500/10 transition-colors"
           >
-            <div className="w-8 h-8 rounded-full gradient-bg flex items-center justify-center text-white text-sm font-semibold shrink-0">
-              {getInitials(user?.name || 'User')}
-            </div>
+            {user?.profile_photo ? (
+              <img
+                src={user.profile_photo}
+                alt={user?.name || 'User'}
+                className="w-8 h-8 rounded-full object-cover shrink-0"
+                referrerPolicy="no-referrer"
+              />
+            ) : (
+              <div className="w-8 h-8 rounded-full gradient-bg flex items-center justify-center text-white text-sm font-semibold shrink-0">
+                {getInitials(user?.name || 'User')}
+              </div>
+            )}
             <span className="text-sm font-medium hidden xl:block max-w-[10rem] truncate" style={{ color: 'var(--text-primary)' }}>
               {user?.name || 'User'}
             </span>

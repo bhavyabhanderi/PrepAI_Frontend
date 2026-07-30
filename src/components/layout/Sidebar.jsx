@@ -399,9 +399,18 @@ export default function Sidebar() {
               style={{ backgroundColor: 'var(--bg-tertiary)' }}
             >
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-full gradient-bg flex items-center justify-center text-white text-sm font-semibold">
-                  {user.name?.charAt(0) || 'U'}
-                </div>
+                {user.profile_photo ? (
+                  <img
+                    src={user.profile_photo}
+                    alt={user.name || 'User'}
+                    className="w-9 h-9 rounded-full object-cover shrink-0"
+                    referrerPolicy="no-referrer"
+                  />
+                ) : (
+                  <div className="w-9 h-9 rounded-full gradient-bg flex items-center justify-center text-white text-sm font-semibold">
+                    {user.name?.charAt(0) || 'U'}
+                  </div>
+                )}
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium truncate" style={{ color: 'var(--text-primary)' }}>
                     {user.name || 'User'}
