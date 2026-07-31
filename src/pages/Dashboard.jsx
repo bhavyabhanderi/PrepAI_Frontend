@@ -13,11 +13,10 @@ import {
   Tooltip, ResponsiveContainer, Bar,
 } from 'recharts';
 import { useSelector } from 'react-redux';
-import { getGreeting, getScoreColor } from '../utils/helpers';
+import { getGreeting, getScoreColor, formatDate, extractScore } from '../utils/helpers';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../constants/routes';
 import { resumeService, profileService, analyticsService, interviewService, codingService, syllabusService } from '../services/api';
-import { formatDate } from '../utils/helpers';
 
 const TYPE_META = {
   hr:         { label: 'HR Interview',          icon: RiUserVoiceLine,  color: '#533086' },
@@ -106,13 +105,14 @@ export default function Dashboard() {
           analyticsService.getLearningPlanHistory().catch(() => ({ data: [] }))
         ]);
         
-        const interviews = (intRes.data || []).map(i => ({...i}));
+        const interviews = (intRes.data || []).map(i => ({...i, score: extractScore(i, ['score', 'overall_score', 'report.overall_score', 'report.score', 'aptitude_score', 'test_score', 'results.score', 'result.score']) }));
         const codings = (codRes.data || []).map(c => ({
           id: c.id || c._id,
           type: 'coding',
           status: 'completed',
           created_at: c.created_at,
           job_role: c.problem_title || 'Coding Challenge',
+          score: extractScore(c, ['score', 'code_quality_score', 'review.score', 'review.code_quality_score', 'results.score'])
         }));
         const syllabi = (sylRes.data || []).map(s => ({
           id: s.id || s._id,
@@ -120,7 +120,8 @@ export default function Dashboard() {
           status: 'completed',
           created_at: s.created_at,
           subject: s.subject,
-          file_name: s.file_name
+          file_name: s.file_name,
+          score: extractScore(s, ['score'])
         }));
         const resumes = (resRes.data || []).map(r => ({
           id: r.id || r._id,
@@ -128,7 +129,8 @@ export default function Dashboard() {
           status: 'completed',
           created_at: r.created_at,
           subject: 'Resume Analysis',
-          file_name: r.file_name || 'Resume'
+          file_name: r.file_name || 'Resume',
+          score: extractScore(r, ['score', 'ats_score', 'atsScore'])
         }));
         const learningPlans = (lpRes.data || []).map(lp => ({
           id: lp.id || lp._id,
@@ -136,6 +138,7 @@ export default function Dashboard() {
           status: 'completed',
           created_at: lp.created_at,
           subject: 'Learning Plan',
+          score: extractScore(lp, ['score'])
         }));
 
         const combined = [...interviews, ...codings, ...syllabi, ...resumes, ...learningPlans].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
@@ -167,17 +170,21 @@ export default function Dashboard() {
     return Math.round(sum / matching.length) + '%';
   };
 
-  const totalInterviews = historyActivity.filter(item => ['hr', 'technical', 'aptitude', 'coding', 'behavioral', 'company_specific'].includes(item.type)).length;
-  const technicalScore = getAverageScore(['technical', 'coding', 'system_design', 'debugging', 'sql_practice']);
+  const totalInterviews = historyActivity.filter(item => ['hr', 'technical', 'aptitude', 'coding', 'voice'].includes(item.type) && item.status === 'completed').length;
+  const technicalScore = getAverageScore(['technical', 'system_design', 'debugging', 'sql_practice']);
+  const codingScore = getAverageScore(['coding']);
+  const aptitudeScore = getAverageScore(['aptitude']);
   const hrScore = getAverageScore(['hr', 'behavioral']);
   const computedResumeScore = atsScore ? `${atsScore}%` : getAverageScore(['resume']);
 
-  const stats = (dashboardData?.stats || [
-    { label: 'Total Interviews', value: totalInterviews.toString(), change: '+0', up: true, icon: 'user-voice', color: '#533086', bg: 'rgba(83,48,134,0.1)' },
-    { label: 'Resume Score', value: computedResumeScore, change: '+0%', up: true, icon: 'file-text', color: '#FC9145', bg: 'rgba(252,145,69,0.1)' },
-    { label: 'Technical Score', value: technicalScore, change: '+0%', up: true, icon: 'code', color: '#4A4DC9', bg: 'rgba(74,77,201,0.1)' },
-    { label: 'HR Score', value: hrScore, change: '+0%', up: true, icon: 'trophy', color: '#22C55E', bg: 'rgba(34,197,94,0.1)' },
-  ]).map(stat => ({
+  const stats = [
+    { label: 'Total Interviews', value: totalInterviews.toString(), change: dashboardData?.stats?.[0]?.change || '+0', up: true, icon: 'user-voice', color: '#533086', bg: 'rgba(83,48,134,0.1)' },
+    { label: 'Resume Score', value: computedResumeScore, change: dashboardData?.stats?.[1]?.change || '+0%', up: true, icon: 'file-text', color: '#FC9145', bg: 'rgba(252,145,69,0.1)' },
+    { label: 'Technical Score', value: technicalScore, change: dashboardData?.stats?.[2]?.change || '+0%', up: true, icon: 'code', color: '#4A4DC9', bg: 'rgba(74,77,201,0.1)' },
+    { label: 'Coding Score', value: codingScore, change: dashboardData?.stats?.[3]?.change || '+0%', up: true, icon: 'code', color: '#22C55E', bg: 'rgba(34,197,94,0.1)' },
+    { label: 'Aptitude Score', value: aptitudeScore, change: dashboardData?.stats?.[4]?.change || '+0%', up: true, icon: 'brain', color: '#F59E0B', bg: 'rgba(245,158,11,0.1)' },
+    { label: 'HR Score', value: hrScore, change: dashboardData?.stats?.[5]?.change || '+0%', up: true, icon: 'trophy', color: '#10B981', bg: 'rgba(16,185,129,0.1)' },
+  ].map(stat => ({
     ...stat,
     icon: ICON_MAP[stat.icon] || RiUserVoiceLine,
   }));
@@ -239,7 +246,7 @@ export default function Dashboard() {
   return (
     <div className="space-y-6">
       {/* Stats Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
         {stats.map((stat, i) => (
           <motion.div
             key={stat.label}
@@ -418,7 +425,7 @@ export default function Dashboard() {
                   className="text-sm font-bold"
                   style={{ color: activity.score != null ? getScoreColor(activity.score) : 'var(--text-tertiary)' }}
                 >
-                  {activity.score != null ? `${activity.score}%` : 'N/A'}
+                  {activity.score != null ? `${Math.round(Number(activity.score))}%` : 'N/A'}
                 </div>
               </div>
             ))}

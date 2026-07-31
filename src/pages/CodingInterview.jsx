@@ -517,12 +517,29 @@ export default function CodingInterview() {
                     ))}
                   </div>
 
-                  <button
-                    onClick={() => loadProblem(true)}
-                    className="w-full mt-4 py-2.5 rounded-xl gradient-bg text-white font-medium text-sm hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
-                  >
-                    <RiRefreshLine size={16} /> Next Question
-                  </button>
+                  <div className="flex flex-col sm:flex-row items-center gap-3 mt-6">
+                    <button
+                      onClick={() => loadProblem(true)}
+                      className="flex-1 w-full py-2.5 rounded-xl gradient-bg text-white font-medium text-sm hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
+                    >
+                      <RiRefreshLine size={16} /> Next Question
+                    </button>
+                    <button
+                      onClick={() => {
+                        handleEndInterview();
+                        const score = review ? review.score : 0;
+                        Swal.fire({
+                          icon: 'success',
+                          title: 'Interview Complete!',
+                          html: `Your coding practice session is over.<br><br><b>Final Code Quality Score: ${score}/100</b>`,
+                          confirmButtonColor: '#7c3aed'
+                        });
+                      }}
+                      className="flex-1 w-full py-2.5 rounded-xl bg-error/10 text-error hover:bg-error/20 font-medium text-sm transition-opacity flex items-center justify-center gap-2"
+                    >
+                      <RiStopCircleLine size={16} /> End Interview
+                    </button>
+                  </div>
                 </div>
               ) : (
                 <p className="text-sm" style={{ color: 'var(--text-tertiary)' }}>Submit your code to get an AI review.</p>

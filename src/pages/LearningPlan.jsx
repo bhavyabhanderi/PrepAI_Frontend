@@ -222,24 +222,29 @@ export default function LearningPlan() {
   // ── STEP 1: Upload Resume ──
   if (step === 'upload') {
     return (
-      <div className="space-y-6 max-w-2xl mx-auto">
+      <div className="space-y-6">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
           <h1 className="text-2xl lg:text-3xl font-bold" style={{ color: 'var(--text-primary)' }}>Learning Plan</h1>
           <p className="text-sm mt-1" style={{ color: 'var(--text-tertiary)' }}>Upload your resume to get a skills assessment test, then receive a personalized study roadmap.</p>
         </motion.div>
 
         {/* Steps indicator */}
-        <div className="flex items-center gap-2">
-          {['Upload Resume', 'Skills Test', 'Learning Plan'].map((label, i) => (
-            <div key={i} className="flex items-center gap-2 flex-1">
-              <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 ${i === 0 ? 'gradient-bg text-white' : 'border'}`}
-                style={i !== 0 ? { borderColor: 'var(--border-color)', color: 'var(--text-tertiary)' } : undefined}>
-                {i + 1}
+        <div className="flex items-center gap-4">
+          {['Upload Resume', 'Skills Test', 'Learning Plan'].map((label, i) => {
+            const isActive = i === 0; // Update this logic if step changes
+            return (
+              <div key={i} className="flex items-center gap-4 flex-1 last:flex-none">
+                <div className="flex items-center gap-2">
+                  <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 ${isActive ? 'gradient-bg text-white' : 'border'}`}
+                    style={!isActive ? { borderColor: 'var(--border-color)', color: 'var(--text-tertiary)' } : undefined}>
+                    {i + 1}
+                  </div>
+                  <span className="text-xs font-medium hidden sm:block whitespace-nowrap" style={{ color: isActive ? 'var(--text-primary)' : 'var(--text-tertiary)' }}>{label}</span>
+                </div>
+                {i < 2 && <div className="flex-1 h-px" style={{ backgroundColor: 'var(--border-color)' }} />}
               </div>
-              <span className="text-xs font-medium hidden sm:block" style={{ color: i === 0 ? 'var(--text-primary)' : 'var(--text-tertiary)' }}>{label}</span>
-              {i < 2 && <div className="flex-1 h-px" style={{ backgroundColor: 'var(--border-color)' }} />}
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
@@ -330,7 +335,7 @@ export default function LearningPlan() {
       const scoreColor = quizResult.score >= 80 ? '#22C55E' : quizResult.score >= 50 ? '#FC9145' : '#EF4444';
       const scoreLabel = quizResult.score >= 80 ? 'Excellent!' : quizResult.score >= 50 ? 'Good effort!' : 'Needs improvement';
       return (
-        <div className="max-w-2xl mx-auto space-y-6">
+        <div className="space-y-6">
           <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
             className="p-8 rounded-2xl border text-center" style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)' }}>
             <RiTrophyLine size={56} className="mx-auto mb-4" style={{ color: scoreColor }} />
@@ -365,7 +370,7 @@ export default function LearningPlan() {
     }
 
     return (
-      <div className="max-w-2xl mx-auto space-y-4">
+      <div className="space-y-4">
         {/* Timer & Progress Header */}
         <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
           className="p-4 rounded-2xl border flex items-center justify-between" style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)' }}>

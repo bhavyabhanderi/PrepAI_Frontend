@@ -4,9 +4,10 @@ import {
   RiSearchLine, RiCalendarLine,
   RiUserVoiceLine, RiCodeSSlashLine, RiMicLine,
   RiBrainLine, RiArrowRightLine, RiHistoryLine, RiBook2Line,
-  RiNodeTree, RiDatabase2Line, RiBugLine, RiCodeBoxLine
+  RiNodeTree, RiDatabase2Line, RiBugLine, RiCodeBoxLine,
+  RiFilter3Line, RiMore2Fill
 } from 'react-icons/ri';
-import { formatDate, getScoreColor, getScoreLabel } from '../utils/helpers';
+import { formatDate, getScoreColor, getScoreLabel, extractScore } from '../utils/helpers';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../constants/routes';
 import { interviewService, codingService, syllabusService, resumeService, analyticsService } from '../services/api';
@@ -59,13 +60,14 @@ export default function InterviewHistory() {
           analyticsService.getLearningPlanHistory().catch(() => ({ data: [] }))
         ]);
         
-        const interviews = (intRes.data || []).map(i => ({...i}));
+        const interviews = (intRes.data || []).map(i => ({...i, score: extractScore(i, ['score', 'overall_score', 'report.overall_score', 'report.score', 'aptitude_score', 'test_score', 'results.score', 'result.score']) }));
         const codings = (codRes.data || []).map(c => ({
           id: c.id || c._id,
           type: 'coding',
           status: 'completed',
           created_at: c.created_at,
           job_role: c.problem_title || 'Coding Challenge',
+          score: extractScore(c, ['score', 'code_quality_score', 'review.score', 'review.code_quality_score', 'results.score'])
         }));
         const syllabi = (sylRes.data || []).map(s => ({
           id: s.id || s._id,
@@ -73,7 +75,8 @@ export default function InterviewHistory() {
           status: 'completed',
           created_at: s.created_at,
           subject: s.subject,
-          file_name: s.file_name
+          file_name: s.file_name,
+          score: extractScore(s, ['score'])
         }));
         const resumes = (resRes.data || []).map(r => ({
           id: r.id || r._id,
@@ -81,7 +84,8 @@ export default function InterviewHistory() {
           status: 'completed',
           created_at: r.created_at,
           subject: 'Resume Analysis',
-          file_name: r.file_name || 'Resume'
+          file_name: r.file_name || 'Resume',
+          score: extractScore(r, ['score', 'ats_score', 'atsScore'])
         }));
         const learningPlans = (lpRes.data || []).map(lp => ({
           id: lp.id || lp._id,
@@ -89,6 +93,7 @@ export default function InterviewHistory() {
           status: 'completed',
           created_at: lp.created_at,
           subject: 'Learning Plan',
+          score: extractScore(lp, ['score'])
         }));
 
         const combined = [...interviews, ...codings, ...syllabi, ...resumes, ...learningPlans].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
@@ -183,11 +188,12 @@ export default function InterviewHistory() {
         {!loading && filtered.length > 0 && (
           <div className="space-y-3">
             {/* Header Row */}
-            <div className="hidden md:grid grid-cols-4 gap-4 px-4 pb-1 text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>
+            <div className="hidden md:grid grid-cols-5 gap-4 px-4 pb-1 text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>
               <div>Activity</div>
               <div>Date</div>
               <div>Subject / Role</div>
               <div>Details</div>
+              <div>Score</div>
             </div>
 
             {/* Cards List */}
@@ -200,7 +206,7 @@ export default function InterviewHistory() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.05 }}
-                  className="p-3 sm:p-4 rounded-2xl border card-hover grid grid-cols-1 md:grid-cols-4 gap-3 sm:gap-4 items-center"
+                  className="p-3 sm:p-4 rounded-2xl border card-hover grid grid-cols-1 md:grid-cols-5 gap-3 sm:gap-4 items-center"
                   style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)' }}
                 >
                   {/* Activity */}
@@ -236,6 +242,11 @@ export default function InterviewHistory() {
                       </span>
                     )}
                     {!item.difficulty_level && !item.file_name && <span className="text-sm" style={{ color: 'var(--text-tertiary)' }}>—</span>}
+                  </div>
+
+                  {/* Score */}
+                  <div className="text-sm font-bold" style={{ color: item.score != null ? getScoreColor(item.score) : 'var(--text-tertiary)' }}>
+                    {item.score != null ? `${Math.round(Number(item.score))}%` : 'N/A'}
                   </div>
                 </motion.div>
               );

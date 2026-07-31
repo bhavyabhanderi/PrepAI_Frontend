@@ -18,6 +18,7 @@ export default function AptitudeInterview() {
   const [submitting, setSubmitting] = useState(false);
   const [result, setResult] = useState(null);
   const [interviewId, setInterviewId] = useState(null);
+  const [difficulty, setDifficulty] = useState('all');
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -40,7 +41,7 @@ export default function AptitudeInterview() {
     try {
       const res = await interviewService.create({
         type: 'aptitude',
-        difficulty_level: 'medium',
+        difficulty_level: difficulty,
       });
       const intId = res.data.id;
       setInterviewId(intId);
@@ -188,10 +189,21 @@ export default function AptitudeInterview() {
           <h1 className="text-2xl md:text-3xl font-bold mb-4" style={{ color: 'var(--text-primary)' }}>
             Aptitude Test
           </h1>
-          <p className="text-sm mb-8 leading-relaxed" style={{ color: 'var(--text-tertiary)' }}>
+          <p className="text-sm mb-6 leading-relaxed" style={{ color: 'var(--text-tertiary)' }}>
             Take a 20-question randomized aptitude test covering Mathematics, Logical Reasoning, and basic Coding skills. 
             There is no time limit, but try to complete it in one sitting!
           </p>
+          <div className="flex bg-neutral-100 dark:bg-neutral-800 p-1 rounded-xl mb-6 mx-auto w-fit">
+            {['all', 'easy', 'medium', 'hard'].map((level) => (
+              <button
+                key={level}
+                onClick={() => setDifficulty(level)}
+                className={`px-4 py-1.5 rounded-lg text-sm font-medium capitalize transition-all ${difficulty === level ? 'bg-white dark:bg-neutral-700 shadow-sm text-primary-600 dark:text-primary-400' : 'text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300'}`}
+              >
+                {level}
+              </button>
+            ))}
+          </div>
           <button
             onClick={handleStartTest}
             disabled={loading}

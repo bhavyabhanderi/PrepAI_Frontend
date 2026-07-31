@@ -86,6 +86,23 @@ export const cn = (...classes) => {
   return classes.filter(Boolean).join(' ');
 };
 
+export const extractScore = (item, paths) => {
+  if (!item) return null;
+  for (let path of paths) {
+    const keys = path.split('.');
+    let val = item;
+    for (let key of keys) {
+      if (typeof val === 'string') {
+        try { val = JSON.parse(val); } catch (e) { val = undefined; break; }
+      }
+      if (val != null) val = val[key];
+      else val = undefined;
+    }
+    if (val != null && !isNaN(val)) return Math.round(Number(val));
+  }
+  return null;
+};
+
 // Get initials from name
 export const getInitials = (name) => {
   if (!name) return '?';
