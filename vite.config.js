@@ -23,5 +23,12 @@ export default defineConfig({
   server: {
     port: 5173,
     open: true,
+    proxy: {
+      '/api/v1': {
+        target: 'https://prepai-backend-fmum.onrender.com',
+        changeOrigin: true,
+        secure: false,
+      },
+    },
   },
 });

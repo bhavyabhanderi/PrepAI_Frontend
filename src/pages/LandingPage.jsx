@@ -501,12 +501,11 @@ function FAQAccordion() {
           <motion.div
             initial={false}
             animate={{
-              scaleY: openIndex === i ? 1 : 0,
+              height: openIndex === i ? 'auto' : 0,
               opacity: openIndex === i ? 1 : 0,
             }}
             transition={{ duration: 0.3 }}
             className="overflow-hidden"
-            style={{ transformOrigin: 'top' }}
           >
             <p className="px-5 pb-5 text-sm leading-relaxed" style={{ color: 'var(--text-tertiary)' }}>
               {faq.a}
