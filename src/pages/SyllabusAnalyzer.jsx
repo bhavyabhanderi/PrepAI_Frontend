@@ -120,7 +120,7 @@ export default function SyllabusAnalyzer() {
           <p className="text-sm mt-1" style={{ color: 'var(--text-tertiary)' }}>Upload your syllabus PDF and let AI break it down into chapters and topics.</p>
         </div>
         {syllabusData && (
-          <button
+          <button type="button"
             onClick={handleReset}
             className="px-4 py-2 text-sm font-medium text-white rounded-lg transition-colors flex items-center justify-center gap-2 gradient-bg hover:opacity-90">
             <RiArrowGoBackLine size={18} />
@@ -157,7 +157,7 @@ export default function SyllabusAnalyzer() {
                     <p className="text-base font-semibold truncate" style={{ color: 'var(--text-primary)' }}>{file.name}</p>
                     <p className="text-sm" style={{ color: 'var(--text-tertiary)' }}>{(file.size / 1024).toFixed(1)} KB</p>
                   </div>
-                  <button onClick={() => setFile(null)} className="p-2 rounded-lg hover:bg-error/10 text-error transition-colors"><RiCloseLine size={20} /></button>
+                  <button type="button" onClick={() => setFile(null)} className="p-2 rounded-lg hover:bg-error/10 text-error transition-colors"><RiCloseLine size={20} /></button>
                 </div>
 
                 <div className="p-4 rounded-xl border border-primary-500/20 bg-primary-500/5 flex gap-3">
@@ -168,7 +168,7 @@ export default function SyllabusAnalyzer() {
                   </div>
                 </div>
 
-                <button
+                <button type="button"
                   onClick={handleUploadSyllabus}
                   disabled={loading}
                   className="w-full py-3.5 mt-auto rounded-xl text-sm font-semibold gradient-bg text-white hover:opacity-90 transition-opacity flex items-center justify-center gap-2 disabled:opacity-50">
@@ -196,7 +196,7 @@ export default function SyllabusAnalyzer() {
                 </div>
               ) : savedSyllabi.length > 0 ? (
                 savedSyllabi.map((item) => (
-                  <button
+                  <button type="button"
                     key={item._id}
                     onClick={() => handleLoadSavedSyllabus(item)}
                     className="w-full text-left p-4 rounded-xl border hover:border-primary-500 hover:bg-primary-500/5 transition-all group flex flex-col gap-2"
@@ -242,7 +242,7 @@ export default function SyllabusAnalyzer() {
                 const isExpanded = expandedChapter === idx;
                 return (
                   <div key={idx} className="rounded-xl border overflow-hidden transition-all duration-300" style={{ backgroundColor: 'var(--bg-tertiary)', borderColor: 'var(--border-color)' }}>
-                    <button
+                    <button type="button"
                       onClick={() => setExpandedChapter(isExpanded ? null : idx)}
                       className="w-full flex items-center justify-between p-4 hover:bg-black/5 dark:hover:bg-white/5 transition-colors text-left"
                     >
@@ -271,7 +271,7 @@ export default function SyllabusAnalyzer() {
                         >
                           <div className="p-4 pt-0 pl-[3.25rem] space-y-2">
                             {ch.topics && ch.topics.map((topic, tIdx) => (
-                              <button
+                              <button type="button"
                                 key={tIdx}
                                 onClick={() => handleTopicClick(topic)}
                                 className="w-full flex items-center justify-between p-3 rounded-xl border border-transparent hover:border-primary-500/30 hover:bg-primary-500/10 transition-all group text-left"

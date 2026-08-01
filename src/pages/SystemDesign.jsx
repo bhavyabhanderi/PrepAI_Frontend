@@ -127,7 +127,9 @@ graph TD
             <h3 className="font-bold text-sm" style={{ color: 'var(--text-primary)' }}>Architecture Description</h3>
           </div>
           <div className="flex-1 p-4 flex flex-col relative">
+            <label htmlFor="system-design-description" className="sr-only">Architecture description</label>
             <textarea
+              id="system-design-description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="e.g. Clients connect to a Load Balancer. The LB routes traffic to 3 API servers. The APIs read from a Redis cache. If cache misses, they query a PostgreSQL Primary DB. There is a Read Replica for the DB..."
@@ -136,7 +138,7 @@ graph TD
             />
             
             <div className="absolute bottom-4 right-4">
-              <button
+              <button type="button"
                 onClick={handleSubmit}
                 disabled={isGenerating}
                 className="px-6 py-2.5 rounded-xl gradient-bg text-white font-medium text-sm hover:opacity-90 transition-opacity flex items-center gap-2 disabled:opacity-70"
@@ -161,7 +163,7 @@ graph TD
           {/* Tabs */}
           <div className="flex border-b" style={{ borderColor: 'var(--border-color)' }}>
             {['diagram', 'feedback'].map((tab) => (
-              <button
+              <button type="button"
                 key={tab}
                 onClick={() => hasSubmitted && !isGenerating && setActiveTab(tab)}
                 disabled={!hasSubmitted || isGenerating}

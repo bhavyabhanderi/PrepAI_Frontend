@@ -52,7 +52,7 @@ export default function Navbar() {
       {/* Left Section */}
       <div className="flex items-center gap-2 sm:gap-4 min-w-0">
         {/* Drawer toggle — shown wherever the sidebar is not docked */}
-        <button
+        <button type="button"
           onClick={() => dispatch(setSidebarOpen(true))}
           aria-label="Open navigation menu"
           className="p-2 rounded-xl hover:bg-primary-500/10 transition-colors lg:hidden"
@@ -83,7 +83,7 @@ export default function Navbar() {
       <div className="flex items-center gap-1 sm:gap-2 shrink-0">
 
         {/* Theme Toggle */}
-        <button
+        <button type="button"
           onClick={toggleTheme}
           className="p-2 rounded-xl hover:bg-primary-500/10 transition-colors"
           style={{ color: 'var(--text-secondary)' }}
@@ -94,7 +94,7 @@ export default function Navbar() {
 
         {/* Notifications */}
         <div className="relative" ref={notifRef}>
-          <button
+          <button type="button"
             onClick={() => setShowNotifications(!showNotifications)}
             className="p-2 rounded-xl hover:bg-primary-500/10 transition-colors relative"
             style={{ color: 'var(--text-secondary)' }}
@@ -150,7 +150,7 @@ export default function Navbar() {
 
         {/* Profile Dropdown */}
         <div className="relative" ref={profileRef}>
-          <button
+          <button type="button"
             onClick={() => setShowProfile(!showProfile)}
             className="flex items-center gap-2 p-1.5 rounded-xl hover:bg-primary-500/10 transition-colors"
           >
@@ -194,7 +194,7 @@ export default function Navbar() {
                 </div>
 
                 <div className="py-1">
-                  <button
+                  <button type="button"
                     onClick={() => {
                       if (isInterviewActive) {
                         toast.error("Please end or cancel the current interview process first!");
@@ -213,7 +213,7 @@ export default function Navbar() {
                 </div>
 
                 <div className="border-t py-1" style={{ borderColor: 'var(--border-color)' }}>
-                  <button
+                  <button type="button"
                     onClick={() => {
                       if (isInterviewActive) {
                         toast.error("Please end or cancel the current interview process first!");

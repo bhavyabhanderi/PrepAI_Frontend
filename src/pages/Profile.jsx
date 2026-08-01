@@ -17,6 +17,13 @@ import toast from 'react-hot-toast';
 /**
  * Profile Page
  */
+const tabs = [
+  { id: 'personal', label: 'Personal Info', icon: RiUser3Line },
+  { id: 'skills', label: 'Skills', icon: RiShieldCheckLine },
+  { id: 'security', label: 'Security', icon: RiLockLine },
+  { id: 'settings', label: 'Settings', icon: RiShieldCheckLine },
+];
+
 export default function Profile() {
   const { user } = useSelector((state) => state.auth);
   const { isDark, toggleTheme } = useTheme();
@@ -73,12 +80,6 @@ export default function Profile() {
     loadProfile();
   }, [user, reset]);
 
-  const tabs = [
-    { id: 'personal', label: 'Personal Info', icon: RiUser3Line },
-    { id: 'skills', label: 'Skills', icon: RiShieldCheckLine },
-    { id: 'security', label: 'Security', icon: RiLockLine },
-    { id: 'settings', label: 'Settings', icon: RiShieldCheckLine },
-  ];
 
   const onSubmit = async (data) => {
     try {
@@ -203,7 +204,7 @@ export default function Profile() {
             {user?.role === 'admin' ? 'Admin' : 'Student'}
           </p>
         </div>
-        <button
+        <button type="button"
           onClick={() => setIsEditing(!isEditing)}
           className="tap-target w-full sm:w-auto px-4 py-2 rounded-xl border text-sm font-medium hover:bg-primary-500/5 flex items-center justify-center gap-1.5"
           style={{ borderColor: 'var(--border-color)', color: 'var(--text-secondary)' }}
@@ -216,7 +217,7 @@ export default function Profile() {
       {/* snap-row lets the 4 tabs swipe horizontally on a phone instead of squashing */}
       <div className="flex snap-row no-scrollbar gap-1 p-1 rounded-xl" style={{ backgroundColor: 'var(--bg-secondary)' }}>
         {tabs.map((tab) => (
-          <button key={tab.id} onClick={() => setActiveTab(tab.id)}
+          <button type="button" key={tab.id} onClick={() => setActiveTab(tab.id)}
             className={`shrink-0 sm:flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${
               activeTab === tab.id ? 'bg-primary-500 text-white shadow-md' : ''
             }`}
@@ -279,7 +280,7 @@ export default function Profile() {
                   <span key={skill} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium shadow-sm border"
                     style={{ borderColor: 'var(--border-color)', color: 'var(--text-primary)', backgroundColor: 'var(--bg-card)' }}>
                     {skill}
-                    <button onClick={(e) => { e.preventDefault(); removeSkill(skill); }} className="hover:text-error transition-colors flex items-center justify-center">
+                    <button type="button" onClick={(e) => { e.preventDefault(); removeSkill(skill); }} className="hover:text-error transition-colors flex items-center justify-center">
                       <RiCloseLine size={16} />
                     </button>
                   </span>
@@ -288,7 +289,9 @@ export default function Profile() {
             )}
             
             <div className="flex flex-col sm:flex-row gap-3">
+              <label htmlFor="profile-new-skill" className="sr-only">Add a skill</label>
               <input 
+                id="profile-new-skill"
                 type="text" 
                 value={newSkill} 
                 onChange={(e) => setNewSkill(e.target.value)} 
@@ -303,7 +306,7 @@ export default function Profile() {
                 style={{ backgroundColor: 'var(--input-bg)', borderColor: 'var(--border-color)', color: 'var(--text-primary)' }} 
               />
               
-              <button 
+              <button type="button" 
                 onClick={(e) => { e.preventDefault(); addSkill(); }}
                 disabled={!newSkill.trim()}
                 className="shrink-0 px-6 py-3 rounded-xl gradient-bg text-white text-sm font-medium hover:opacity-90 disabled:opacity-50 transition-all"
@@ -366,7 +369,7 @@ export default function Profile() {
               </div>
             </div>
 
-            <button 
+            <button type="button" 
               onClick={handleUpdatePassword} 
               disabled={passwordUpdating}
               className="w-full sm:w-auto px-6 py-2.5 rounded-xl gradient-bg text-white text-sm font-medium hover:opacity-90 disabled:opacity-50"
@@ -384,7 +387,7 @@ export default function Profile() {
                 <p className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>Dark Mode</p>
                 <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>Toggle between dark and light theme</p>
               </div>
-              <button onClick={toggleTheme} className={`shrink-0 w-12 h-6 rounded-full relative transition-colors ${isDark ? 'bg-primary-500' : 'bg-neutral-400'}`}>
+              <button type="button" onClick={toggleTheme} className={`shrink-0 w-12 h-6 rounded-full relative transition-colors ${isDark ? 'bg-primary-500' : 'bg-neutral-400'}`}>
                 <div className={`w-5 h-5 rounded-full bg-white absolute top-0.5 transition-transform ${isDark ? 'translate-x-6' : 'translate-x-0.5'}`} />
               </button>
             </div>
@@ -397,7 +400,7 @@ export default function Profile() {
                   <p className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{setting.label}</p>
                   <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>{setting.desc}</p>
                 </div>
-                <button 
+                <button type="button" 
                   onClick={() => {
                     const newPrefs = { ...preferences, [setting.id]: !preferences[setting.id] };
                     localStorage.setItem('ai-interview-preferences', JSON.stringify(newPrefs));

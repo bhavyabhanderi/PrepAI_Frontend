@@ -300,7 +300,7 @@ export default function HRInterview() {
         toast((t) => (
           <div className="flex items-center gap-3">
             <span>Performance report generated!</span>
-            <button
+            <button type="button"
               onClick={() => { toast.dismiss(t.id); navigate(ROUTES.PERFORMANCE_REPORT); }}
               className="px-3 py-1.5 rounded-lg gradient-bg text-white text-xs font-semibold hover:opacity-90 transition-opacity"
             >
@@ -369,10 +369,11 @@ export default function HRInterview() {
 
           <div className="space-y-4">
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: 'var(--text-secondary)' }}>
+              <label htmlFor="hr-job-role" className="block text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: 'var(--text-secondary)' }}>
                 Target Job Designation *
               </label>
               <input
+                id="hr-job-role"
                 type="text"
                 value={jobRole}
                 onChange={(e) => setJobRole(e.target.value)}
@@ -385,10 +386,11 @@ export default function HRInterview() {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: 'var(--text-secondary)' }}>
+                <label htmlFor="hr-company" className="block text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: 'var(--text-secondary)' }}>
                   Target Company
                 </label>
                 <input
+                  id="hr-company"
                   type="text"
                   value={company}
                   onChange={(e) => setCompany(e.target.value)}
@@ -416,10 +418,11 @@ export default function HRInterview() {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: 'var(--text-secondary)' }}>
+              <label htmlFor="hr-job-description" className="block text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: 'var(--text-secondary)' }}>
                 Job Description
               </label>
               <textarea
+                id="hr-job-description"
                 value={jobDescription}
                 onChange={(e) => setJobDescription(e.target.value)}
                 placeholder="Paste the job description here for highly customized questions (optional)..."
@@ -431,7 +434,7 @@ export default function HRInterview() {
           </div>
 
           <div className="mt-8 flex flex-col sm:flex-row gap-3">
-            <button
+            <button type="button"
               onClick={() => handleStartInterview(false)}
               disabled={!jobRole.trim() || isThinking}
               className="flex-1 px-6 py-3 rounded-xl gradient-bg text-white font-medium text-sm hover:opacity-90 transition-opacity flex items-center justify-center gap-2 disabled:opacity-50"
@@ -444,7 +447,7 @@ export default function HRInterview() {
                 </>
               )}
             </button>
-            <button
+            <button type="button"
               onClick={() => handleStartInterview(true)}
               disabled={!jobRole.trim() || isThinking}
               className="flex-1 px-6 py-3 rounded-xl border font-medium text-sm hover:bg-primary-500/5 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
@@ -490,7 +493,7 @@ export default function HRInterview() {
             <RiTimeLine size={14} />
             {formatTimer(time)}
           </div>
-          <button
+          <button type="button"
             onClick={confirmEnd}
             className="px-3 py-1.5 rounded-lg text-sm font-medium bg-error/10 text-error hover:bg-error/20 transition-colors flex items-center gap-1"
           >
@@ -565,7 +568,9 @@ export default function HRInterview() {
           className="flex-1 flex items-end gap-2 px-4 py-3 rounded-xl border transition-colors focus-within:border-primary-500"
           style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)' }}
         >
+          <label htmlFor="hr-answer-input" className="sr-only">Your answer</label>
           <textarea
+            id="hr-answer-input"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
@@ -575,7 +580,7 @@ export default function HRInterview() {
             style={{ color: 'var(--text-primary)', maxHeight: '120px' }}
           />
           {isVoiceMode && (
-            <button
+            <button type="button"
               onClick={toggleRecording}
               className={`tap-target p-2 rounded-lg transition-colors ${
                 isRecording ? 'bg-error/10 text-error animate-pulse' : 'hover:bg-primary-500/10'
@@ -586,7 +591,7 @@ export default function HRInterview() {
             </button>
           )}
         </div>
-        <button
+        <button type="button"
           onClick={handleSend}
           disabled={!input.trim() || isThinking}
           className="tap-target p-3 rounded-xl gradient-bg text-white hover:opacity-90 transition-all disabled:opacity-30"

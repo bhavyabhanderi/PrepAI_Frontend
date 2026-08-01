@@ -330,7 +330,7 @@ export default function CodingInterview() {
           </p>
           <div className="flex bg-neutral-100 dark:bg-neutral-800 p-1 rounded-xl mb-6 mx-auto w-fit">
             {['all', 'easy', 'medium', 'hard'].map((level) => (
-              <button
+              <button type="button"
                 key={level}
                 onClick={() => setDifficulty(level)}
                 className={`px-4 py-1.5 rounded-lg text-sm font-medium capitalize transition-all ${difficulty === level ? 'bg-white dark:bg-neutral-700 shadow-sm text-primary-600 dark:text-primary-400' : 'text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300'}`}
@@ -339,7 +339,7 @@ export default function CodingInterview() {
               </button>
             ))}
           </div>
-          <button
+          <button type="button"
             onClick={() => {
               setStarted(true);
               loadProblem(true);
@@ -380,7 +380,7 @@ export default function CodingInterview() {
         <div className="flex items-center gap-3 flex-shrink-0">
           <div className="hidden sm:flex bg-neutral-100 dark:bg-neutral-800 p-1 rounded-xl">
             {['all', 'easy', 'medium', 'hard'].map((level) => (
-              <button
+              <button type="button"
                 key={level}
                 onClick={() => {
                   setDifficulty(level);
@@ -396,7 +396,7 @@ export default function CodingInterview() {
             style={{ backgroundColor: 'var(--bg-tertiary)', color: 'var(--text-primary)' }}>
             <RiTimeLine size={14} /> {formatTimer(time)}
           </div>
-          <button
+          <button type="button"
             onClick={confirmEnd}
             className="px-3 py-1.5 rounded-lg text-sm font-medium bg-error/10 text-error hover:bg-error/20 flex items-center gap-1 transition-colors"
           >
@@ -411,7 +411,7 @@ export default function CodingInterview() {
           { id: 'problem', label: 'Problem' },
           { id: 'code', label: 'Code' },
         ].map((v) => (
-          <button
+          <button type="button"
             key={v.id}
             onClick={() => setMobileView(v.id)}
             className={`flex-1 tap-target rounded-xl text-sm font-medium border transition-colors ${
@@ -434,7 +434,7 @@ export default function CodingInterview() {
           {/* Tabs */}
           <div className="flex border-b" style={{ borderColor: 'var(--border-color)' }}>
             {['problem', 'output', 'review'].map((tab) => (
-              <button
+              <button type="button"
                 key={tab}
                 onClick={() => setActiveTab(tab)}
                 className={`px-4 py-3 text-sm font-medium capitalize transition-colors border-b-2 ${
@@ -518,13 +518,13 @@ export default function CodingInterview() {
                   </div>
 
                   <div className="flex flex-col sm:flex-row items-center gap-3 mt-6">
-                    <button
+                    <button type="button"
                       onClick={() => loadProblem(true)}
                       className="flex-1 w-full py-2.5 rounded-xl gradient-bg text-white font-medium text-sm hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
                     >
                       <RiRefreshLine size={16} /> Next Question
                     </button>
-                    <button
+                    <button type="button"
                       onClick={() => {
                         handleEndInterview();
                         const score = review ? review.score : 0;
@@ -557,7 +557,7 @@ export default function CodingInterview() {
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between px-4 py-2 gap-2 border-b" style={{ borderColor: 'var(--border-color)' }}>
             {/* Language Selector */}
             <div className="relative">
-              <button
+              <button type="button"
                 onClick={() => setShowLangDropdown(!showLangDropdown)}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-primary-500/10 transition-colors w-full sm:w-auto justify-between"
                 style={{ color: 'var(--text-primary)' }}
@@ -571,7 +571,7 @@ export default function CodingInterview() {
                   style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)' }}
                 >
                   {languages.map((lang) => (
-                    <button
+                    <button type="button"
                       key={lang.id}
                       onClick={() => handleLanguageChange(lang)}
                       className="w-full px-3 py-2 text-sm text-left hover:bg-primary-500/10 transition-colors"
@@ -586,7 +586,7 @@ export default function CodingInterview() {
 
             {/* Action Buttons */}
             <div className="flex flex-wrap items-center gap-2 justify-end">
-              <button
+              <button type="button"
                 onClick={() => loadProblem(true)}
                 disabled={isLoadingProblem || isRunning}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-primary-500/10 text-primary-500 hover:bg-primary-500/20 transition-colors disabled:opacity-50"
@@ -598,14 +598,14 @@ export default function CodingInterview() {
                 )}
                 New Question
               </button>
-              <button
+              <button type="button"
                 onClick={handleRunCode}
                 disabled={isRunning || isLoadingProblem}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-success/10 text-success hover:bg-success/20 transition-colors disabled:opacity-50"
               >
                 <RiPlayLine size={14} /> Run
               </button>
-              <button
+              <button type="button"
                 onClick={handleSubmit}
                 disabled={isRunning || isLoadingProblem}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium gradient-bg text-white hover:opacity-90 transition-opacity disabled:opacity-50"

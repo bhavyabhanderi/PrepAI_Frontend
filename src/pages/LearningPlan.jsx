@@ -274,7 +274,7 @@ export default function LearningPlan() {
                   <p className="text-sm font-medium truncate" style={{ color: 'var(--text-primary)' }}>{file.name}</p>
                   <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>{(file.size / 1024).toFixed(1)} KB</p>
                 </div>
-                <button onClick={() => setFile(null)} className="p-1 rounded-lg hover:bg-error/10 text-error transition-colors"><RiCloseLine size={18} /></button>
+                <button type="button" onClick={() => setFile(null)} className="p-1 rounded-lg hover:bg-error/10 text-error transition-colors"><RiCloseLine size={18} /></button>
               </div>
               <div className="p-4 rounded-xl mb-4 border border-primary-500/20 bg-primary-500/5">
                 <p className="text-sm font-semibold text-primary-500 mb-1">What happens next?</p>
@@ -283,7 +283,7 @@ export default function LearningPlan() {
               {/* Two option cards */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-2">
                 {/* Option 1: Skills Test */}
-                <button
+                <button type="button"
                   onClick={handleStartTest}
                   disabled={isGeneratingTest || isGeneratingPlan}
                   className="flex flex-col items-start p-4 rounded-xl border-2 text-left transition-all hover:border-primary-500 hover:bg-primary-500/5 disabled:opacity-50"
@@ -302,7 +302,7 @@ export default function LearningPlan() {
                 </button>
 
                 {/* Option 2: Generate Directly */}
-                <button
+                <button type="button"
                   onClick={handleGenerateDirectly}
                   disabled={isGeneratingTest || isGeneratingPlan}
                   className="flex flex-col items-start p-4 rounded-xl border-2 text-left transition-all hover:border-primary-500 hover:bg-primary-500/5 disabled:opacity-50"
@@ -360,7 +360,7 @@ export default function LearningPlan() {
               </div>
             )}
 
-            <button
+            <button type="button"
               onClick={handleGeneratePlan}
               disabled={isGeneratingPlan}
               className="w-full py-3 rounded-xl font-semibold text-sm gradient-bg text-white hover:opacity-90 transition-opacity flex items-center justify-center gap-2 disabled:opacity-50">
@@ -418,7 +418,7 @@ export default function LearningPlan() {
               {q?.options.map((option, oi) => {
                 const isSelected = answers[q.id] === option;
                 return (
-                  <button
+                  <button type="button"
                     key={oi}
                     onClick={() => handleSelectAnswer(q.id, option)}
                     className={`w-full text-left px-4 py-3 rounded-xl border text-sm font-medium transition-all duration-200 ${
@@ -436,7 +436,7 @@ export default function LearningPlan() {
 
         {/* Navigation */}
         <div className="flex items-center justify-between gap-3">
-          <button
+          <button type="button"
             onClick={() => setCurrentQ(p => Math.max(0, p - 1))}
             disabled={currentQ === 0}
             className="px-5 py-2.5 rounded-xl border text-sm font-medium transition-colors disabled:opacity-40"
@@ -444,13 +444,13 @@ export default function LearningPlan() {
             Previous
           </button>
           {isLast ? (
-            <button
+            <button type="button"
               onClick={() => handleSubmitQuiz(false)}
               className="px-6 py-2.5 rounded-xl text-sm font-semibold gradient-bg text-white hover:opacity-90 flex items-center gap-2">
               <RiCheckLine size={16} /> Submit Test
             </button>
           ) : (
-            <button
+            <button type="button"
               onClick={() => setCurrentQ(p => Math.min(totalQ - 1, p + 1))}
               className="px-5 py-2.5 rounded-xl text-sm font-semibold gradient-bg text-white hover:opacity-90 flex items-center gap-2">
               Next <RiArrowRightLine size={16} />
@@ -461,7 +461,7 @@ export default function LearningPlan() {
         {/* Skip */}
         <p className="text-center text-xs" style={{ color: 'var(--text-tertiary)' }}>
           Answered: {Object.keys(answers).length}/{totalQ} &nbsp;·&nbsp;
-          <button onClick={() => handleSubmitQuiz(false)} className="underline hover:text-primary-500 transition-colors">Submit early</button>
+          <button type="button" onClick={() => handleSubmitQuiz(false)} className="underline hover:text-primary-500 transition-colors">Submit early</button>
         </p>
       </div>
     );
@@ -487,14 +487,14 @@ export default function LearningPlan() {
           <p className="text-sm mt-1" style={{ color: 'var(--text-tertiary)' }}>Your personalized AI-generated study roadmap.</p>
         </div>
         <div className="flex gap-3 w-full sm:w-auto">
-          <button
+          <button type="button"
             onClick={() => { setPlan(null); setStep('upload'); setQuizQuestions([]); setAnswers({}); setQuizSubmitted(false); setQuizResult(null); }}
             className="flex-1 sm:flex-none px-4 py-2 text-sm font-medium rounded-lg border transition-colors flex items-center justify-center gap-2 hover:bg-primary-500/5"
             style={{ borderColor: 'var(--border-color)', color: 'var(--text-secondary)' }}>
             <RiCalendarLine size={18} />
             Regenerate
           </button>
-          <button
+          <button type="button"
             onClick={() => { setPlan(null); setFile(null); setStep('upload'); setQuizQuestions([]); setAnswers({}); setQuizSubmitted(false); setQuizResult(null); }}
             className="flex-1 sm:flex-none px-4 py-2 text-sm font-medium text-white rounded-lg transition-colors flex items-center justify-center gap-2 gradient-bg hover:opacity-90">
             <RiUploadCloud2Line size={18} />
@@ -517,7 +517,7 @@ export default function LearningPlan() {
               {/* Week Tabs */}
               <div className="flex overflow-x-auto no-scrollbar gap-2 mb-6 pb-1">
                 {schedule.map((day, idx) => (
-                  <button
+                  <button type="button"
                     key={day.day}
                     onClick={() => setActiveWeekIndex(idx)}
                     className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${
@@ -593,19 +593,19 @@ export default function LearningPlan() {
                             </div>
 
                             {task.type === 'coding' ? (
-                              <button onClick={() => navigate('/coding-interview')}
+                              <button type="button" onClick={() => navigate('/coding-interview')}
                                 className="px-3 py-1.5 rounded-lg text-xs font-medium bg-primary-500 text-white hover:bg-primary-600 transition-colors flex items-center gap-1">
                                 Practice <RiExternalLinkLine size={12} />
                               </button>
                             ) : task.type === 'interview' || task.type === 'aptitude' ? (
-                              <button onClick={() => navigate(task.type === 'interview' ? '/technical-interview' : '/aptitude-interview')}
+                              <button type="button" onClick={() => navigate(task.type === 'interview' ? '/technical-interview' : '/aptitude-interview')}
                                 className="px-3 py-1.5 rounded-lg text-xs font-medium text-white transition-colors flex items-center gap-1 hover:opacity-90"
                                 style={{ backgroundColor: task.type === 'interview' ? '#FC9145' : '#533086' }}>
                                 Start <RiExternalLinkLine size={12} />
                               </button>
                             ) : (
                               <div className="flex items-center gap-2">
-                                <button
+                                <button type="button"
                                   onClick={() => navigate(`/topic-details?topic=${encodeURIComponent(task.title)}`)}
                                   className="px-3 py-1.5 rounded-lg text-xs font-medium gradient-bg text-white hover:opacity-90 transition-opacity flex items-center gap-1 shadow-sm"
                                 >
@@ -640,7 +640,7 @@ export default function LearningPlan() {
             </div>
             <div className="space-y-2">
               {recommendations.slice(0, 10).map((topic, i) => (
-                <button 
+                <button type="button" 
                   key={i} 
                   onClick={() => navigate(`/topic-details?topic=${encodeURIComponent(topic)}`)}
                   className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl transition-all hover:bg-primary-500/10 border border-transparent hover:border-primary-500/30 group" 

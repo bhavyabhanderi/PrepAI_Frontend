@@ -156,7 +156,7 @@ Generate deep, accurate, and visually rich notes that a student can use as their
     return (
       <div className="text-center p-8">
         <p className="text-error mb-4">{error}</p>
-        <button onClick={generateNotes} className="px-4 py-2 bg-primary-500 text-white rounded-lg hover:opacity-90 transition-opacity">Try Again</button>
+        <button type="button" onClick={generateNotes} className="px-4 py-2 bg-primary-500 text-white rounded-lg hover:opacity-90 transition-opacity">Try Again</button>
       </div>
     );
   }
@@ -171,7 +171,7 @@ Generate deep, accurate, and visually rich notes that a student can use as their
         <p className="text-sm max-w-md mb-6" style={{ color: 'var(--text-tertiary)' }}>
           Get comprehensive study notes for <strong>{topic}</strong>, including definitions, flowcharts, tables, and real-world examples.
         </p>
-        <button 
+        <button type="button" 
           onClick={generateNotes} 
           className="px-6 py-3 gradient-bg text-white font-semibold rounded-xl hover:opacity-90 transition-opacity shadow-lg shadow-primary-500/20"
         >
@@ -184,7 +184,7 @@ Generate deep, accurate, and visually rich notes that a student can use as their
   return (
     <div className="space-y-4">
       <div className="flex justify-end">
-        <button 
+        <button type="button" 
           onClick={generateNotes} 
           className="text-sm flex items-center gap-2 px-4 py-2 rounded-lg bg-primary-500/10 text-primary-500 hover:bg-primary-500/20 transition-colors font-medium"
         >
@@ -213,7 +213,13 @@ Generate deep, accurate, and visually rich notes that a student can use as their
 }
 
 function TutorTab({ topic }) {
-  const [messages, setMessages] = useState([]);
+  // Seed the initial greeting at mount time so no effect needs to
+  // adjust state in reaction to the `topic` prop later.
+  const [messages, setMessages] = useState(() =>
+    topic
+      ? [{ role: 'assistant', content: `Hi there! I'm your AI tutor for **${topic}**. What would you like to know about this topic?` }]
+      : []
+  );
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isInitializing, setIsInitializing] = useState(true);
@@ -226,17 +232,6 @@ function TutorTab({ topic }) {
     }, 2000); // 2 seconds delay
     return () => clearTimeout(timer);
   }, []);
-
-  useEffect(() => {
-    if (!isInitializing && topic && messages.length === 0) {
-      setMessages([
-        {
-          role: 'assistant',
-          content: `Hi there! I'm your AI tutor for **${topic}**. What would you like to know about this topic?`
-        }
-      ]);
-    }
-  }, [topic, isInitializing, messages.length]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -328,7 +323,9 @@ function TutorTab({ topic }) {
 
       <div className="p-4 border-t shrink-0" style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)' }}>
         <form onSubmit={handleSendMessage} className="relative flex items-center">
+          <label htmlFor="tutor-question-input" className="sr-only">Ask a question</label>
           <input
+            id="tutor-question-input"
             type="text"
             value={inputMessage}
             onChange={(e) => setInputMessage(e.target.value)}
@@ -450,7 +447,7 @@ Each object must have this exact structure:
     return (
       <div className="text-center p-8">
         <p className="text-error mb-4">{error}</p>
-        <button onClick={generateMCQs} className="px-4 py-2 bg-primary-500 text-white rounded-lg hover:opacity-90 transition-opacity">Try Again</button>
+        <button type="button" onClick={generateMCQs} className="px-4 py-2 bg-primary-500 text-white rounded-lg hover:opacity-90 transition-opacity">Try Again</button>
       </div>
     );
   }
@@ -466,7 +463,7 @@ Each object must have this exact structure:
         <p className="text-lg mb-6" style={{ color: 'var(--text-secondary)' }}>
           Your Score: <span className="font-bold text-primary-500">{score}</span> out of {questions.length}
         </p>
-        <button
+        <button type="button"
           onClick={generateMCQs}
           className="px-6 py-3 rounded-xl text-sm font-semibold gradient-bg text-white hover:opacity-90 transition-opacity shadow-lg shadow-primary-500/20"
         >
@@ -517,7 +514,7 @@ Each object must have this exact structure:
             }
 
             return (
-              <button
+              <button type="button"
                 key={optIdx}
                 onClick={() => handleSelectOption(optIdx)}
                 disabled={showExplanation}
@@ -539,7 +536,7 @@ Each object must have this exact structure:
             <p className="text-sm font-bold text-primary-500 mb-2 uppercase tracking-wider">Explanation</p>
             <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>{currentQ.explanation}</p>
             
-            <button
+            <button type="button"
               onClick={handleNextQuestion}
               className="mt-6 w-full py-3.5 rounded-xl text-sm font-semibold gradient-bg text-white hover:opacity-90 transition-opacity shadow-lg shadow-primary-500/20 flex items-center justify-center gap-2"
             >
@@ -552,38 +549,39 @@ Each object must have this exact structure:
   );
 }
 
+const cards = [
+  {
+    id: 'notes',
+    title: 'AI Notes',
+    description: 'Generate comprehensive, premium study notes with flowcharts, tables, and bold key terms.',
+    icon: RiFileList3Line,
+    color: 'text-primary-500',
+    bg: 'bg-primary-500/10'
+  },
+  {
+    id: 'tutor',
+    title: 'AI Tutor',
+    description: 'Chat with an intelligent tutor to clarify doubts, explain concepts, and dive deeper into the topic.',
+    icon: RiRobot2Line,
+    color: 'text-purple-500',
+    bg: 'bg-purple-500/10'
+  },
+  {
+    id: 'practice',
+    title: 'Practice Test',
+    description: 'Test your knowledge with an interactive 10-question MCQ quiz with detailed explanations.',
+    icon: RiQuestionnaireLine,
+    color: 'text-green-500',
+    bg: 'bg-green-500/10'
+  }
+];
+
 function OverviewTab({ topic, onSelectTab }) {
-  const cards = [
-    {
-      id: 'notes',
-      title: 'AI Notes',
-      description: 'Generate comprehensive, premium study notes with flowcharts, tables, and bold key terms.',
-      icon: RiFileList3Line,
-      color: 'text-primary-500',
-      bg: 'bg-primary-500/10'
-    },
-    {
-      id: 'tutor',
-      title: 'AI Tutor',
-      description: 'Chat with an intelligent tutor to clarify doubts, explain concepts, and dive deeper into the topic.',
-      icon: RiRobot2Line,
-      color: 'text-purple-500',
-      bg: 'bg-purple-500/10'
-    },
-    {
-      id: 'practice',
-      title: 'Practice Test',
-      description: 'Test your knowledge with an interactive 10-question MCQ quiz with detailed explanations.',
-      icon: RiQuestionnaireLine,
-      color: 'text-green-500',
-      bg: 'bg-green-500/10'
-    }
-  ];
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
       {cards.map(card => (
-        <button
+        <button type="button"
           key={card.id}
           onClick={() => onSelectTab(card.id)}
           className="flex flex-col text-left p-6 rounded-2xl border transition-all hover:border-primary-500 hover:shadow-lg hover:-translate-y-1 bg-white dark:bg-gray-800"
@@ -606,6 +604,13 @@ function OverviewTab({ topic, onSelectTab }) {
   );
 }
 
+const tabs = [
+  { id: 'overview', label: 'Overview', icon: RiDashboardLine },
+  { id: 'notes', label: 'AI Notes', icon: RiFileList3Line },
+  { id: 'tutor', label: 'AI Tutor', icon: RiRobot2Line },
+  { id: 'practice', label: 'Practice', icon: RiQuestionnaireLine }
+];
+
 export default function TopicDetails() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -618,7 +623,7 @@ export default function TopicDetails() {
     return (
       <div className="flex flex-col items-center justify-center p-12 text-center h-[calc(100vh-100px)]">
         <p className="text-lg font-semibold" style={{ color: 'var(--text-primary)' }}>No topic selected.</p>
-        <button 
+        <button type="button" 
           onClick={() => navigate(-1)} 
           className="mt-4 px-4 py-2 gradient-bg text-white rounded-lg flex items-center gap-2 mx-auto"
         >
@@ -628,18 +633,12 @@ export default function TopicDetails() {
     );
   }
 
-  const tabs = [
-    { id: 'overview', label: 'Overview', icon: RiDashboardLine },
-    { id: 'notes', label: 'AI Notes', icon: RiFileList3Line },
-    { id: 'tutor', label: 'AI Tutor', icon: RiRobot2Line },
-    { id: 'practice', label: 'Practice', icon: RiQuestionnaireLine }
-  ];
 
   return (
     <div className="space-y-6 mx-auto pb-12 min-h-full w-full">
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col gap-4">
         <div>
-          <button 
+          <button type="button" 
             onClick={() => navigate(-1)}
             className="flex items-center gap-2 text-sm font-medium mb-4 px-3 py-1.5 -ml-3 rounded-lg hover:bg-primary-500/10 hover:text-primary-500 transition-colors w-fit"
             style={{ color: 'var(--text-tertiary)' }}
@@ -655,7 +654,7 @@ export default function TopicDetails() {
 
       <div className="flex border-b overflow-x-auto no-scrollbar" style={{ borderColor: 'var(--border-color)' }}>
         {tabs.map(tab => (
-          <button
+          <button type="button"
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={`flex items-center gap-2 px-6 py-4 font-medium text-sm transition-colors border-b-2 whitespace-nowrap ${

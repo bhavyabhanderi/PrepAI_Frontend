@@ -6,6 +6,8 @@ import { useSelector } from 'react-redux';
 import { useTheme } from '../../context/ThemeContext';
 import { ROUTES } from '../../constants/routes';
 
+const navLinks = ['Features', 'Benefits', 'Testimonials', 'FAQ'];
+
 export default function PublicNavbar() {
   const { isDark, toggleTheme } = useTheme();
   const location = useLocation();
@@ -21,7 +23,6 @@ export default function PublicNavbar() {
     return () => window.removeEventListener('keydown', onKey);
   }, [mobileMenuOpen]);
 
-  const navLinks = ['Features', 'Benefits', 'Testimonials', 'FAQ'];
 
   const handleNavClick = (e, targetId) => {
     e.preventDefault();
@@ -61,7 +62,7 @@ export default function PublicNavbar() {
           </div>
 
           <div className="flex items-center gap-2 sm:gap-3">
-            <button
+            <button type="button"
               onClick={toggleTheme}
               className="tap-target p-2 rounded-lg hover:bg-primary-500/10 transition-colors"
               style={{ color: 'var(--text-secondary)' }}
@@ -94,7 +95,7 @@ export default function PublicNavbar() {
                 </Link>
               </>
             )}
-            <button
+            <button type="button"
               onClick={() => setMobileMenuOpen((v) => !v)}
               className="tap-target md:hidden p-2 rounded-lg hover:bg-primary-500/10 transition-colors"
               style={{ color: 'var(--text-primary)' }}

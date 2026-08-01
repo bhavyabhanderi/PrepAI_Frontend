@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useEffectEvent } from 'react';
+import React, { useState, useEffect, useEffectEvent, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import ratingService from '../services/ratingService';
 import './RatingModal.css';
@@ -9,6 +9,7 @@ const RatingModal = ({ isOpen, onClose }) => {
   const [feedback, setFeedback] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const dialogRef = useRef(null);
 
   // Close on Escape, and stop the page behind the overlay from scrolling.
   const onCloseEvent = useEffectEvent(onClose);
@@ -30,13 +31,15 @@ const RatingModal = ({ isOpen, onClose }) => {
     };
   }, [isOpen]);
 
-  // A reopened modal should start blank rather than showing the last attempt.
+  // Open/close the native <dialog> imperatively so the browser provides
+  // focus trapping, Escape dismissal, and the ::backdrop for free.
   useEffect(() => {
+    const dialog = dialogRef.current;
+    if (!dialog) return;
     if (isOpen) {
-      setRating(0);
-      setHover(0);
-      setFeedback('');
-      setError('');
+      if (!dialog.open) dialog.showModal();
+    } else {
+      if (dialog.open) dialog.close();
     }
   }, [isOpen]);
 
@@ -72,10 +75,9 @@ const RatingModal = ({ isOpen, onClose }) => {
       onClick={onClose}
       role="presentation"
     >
-      <div
+      <dialog
+        ref={dialogRef}
         className="rating-modal-content"
-        role="dialog"
-        aria-modal="true"
         aria-labelledby="rating-modal-title"
         onClick={(e) => e.stopPropagation()}
       >
@@ -102,7 +104,11 @@ const RatingModal = ({ isOpen, onClose }) => {
           ))}
         </div>
 
+        <label htmlFor="rating-feedback" className="rating-feedback-label">
+          Additional feedback (optional)
+        </label>
         <textarea
+          id="rating-feedback"
           placeholder="Any additional feedback? (Optional)"
           value={feedback}
           onChange={(e) => setFeedback(e.target.value)}
@@ -119,7 +125,7 @@ const RatingModal = ({ isOpen, onClose }) => {
             {isSubmitting ? 'Submitting...' : 'Submit Rating'}
           </button>
         </div>
-      </div>
+      </dialog>
     </div>,
     document.body
   );

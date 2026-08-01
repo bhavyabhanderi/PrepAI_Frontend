@@ -109,6 +109,9 @@ export const useTimer = (initialTime = 0, countDown = false) => {
       intervalRef.current = setInterval(() => {
         setTime((prev) => {
           if (countDown && prev <= 0) {
+            // Stop the timer on the next tick so it never undershoots zero.
+            clearInterval(intervalRef.current);
+            setIsRunning(false);
             return 0;
           }
           return countDown ? prev - 1 : prev + 1;
@@ -117,12 +120,6 @@ export const useTimer = (initialTime = 0, countDown = false) => {
     }
     return () => clearInterval(intervalRef.current);
   }, [isRunning, countDown]);
-
-  useEffect(() => {
-    if (countDown && time <= 0 && isRunning) {
-      setIsRunning(false);
-    }
-  }, [time, countDown, isRunning]);
 
   return { time, isRunning, start, stop, reset };
 };

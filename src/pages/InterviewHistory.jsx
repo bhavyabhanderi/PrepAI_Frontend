@@ -42,6 +42,8 @@ const STATUS_COLORS = {
 /**
  * Interview History Page
  */
+const filters = ['all', 'hr', 'technical', 'aptitude', 'coding', 'syllabus', 'resume', 'learning_plan', 'system_design', 'sql_practice', 'debugging', 'playground'];
+
 export default function InterviewHistory() {
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -107,7 +109,6 @@ export default function InterviewHistory() {
     fetchHistory();
   }, []);
 
-  const filters = ['all', 'hr', 'technical', 'aptitude', 'coding', 'syllabus', 'resume', 'learning_plan', 'system_design', 'sql_practice', 'debugging', 'playground'];
 
   const filtered = history.filter((item) => {
     const meta = getTypeMeta(item.type);
@@ -134,7 +135,9 @@ export default function InterviewHistory() {
             className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"
             style={{ color: 'var(--text-tertiary)' }}
           />
+          <label htmlFor="history-search" className="sr-only">Search history</label>
           <input
+            id="history-search"
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -149,7 +152,7 @@ export default function InterviewHistory() {
         </div>
         <div className="flex gap-2 flex-wrap">
           {filters.map((f) => (
-            <button key={f} onClick={() => setFilter(f)}
+            <button type="button" key={f} onClick={() => setFilter(f)}
               className={`px-3 py-2 rounded-xl text-xs font-medium border transition-all whitespace-nowrap capitalize ${
                 filter === f ? 'border-primary-500 bg-primary-500/10 text-primary-500' : 'hover:bg-primary-500/5'
               }`}

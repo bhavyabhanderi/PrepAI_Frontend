@@ -107,7 +107,7 @@ export default function Debugging() {
         {/* Difficulty Selector */}
         <div className="flex bg-neutral-100 dark:bg-neutral-800 p-1 rounded-xl">
           {['all', 'easy', 'medium', 'hard'].map((level) => (
-            <button
+            <button type="button"
               key={level}
               onClick={() => handleDifficultyChange(level)}
               className={`px-4 py-1.5 rounded-lg text-sm font-medium capitalize transition-all ${difficulty === level ? 'bg-white dark:bg-neutral-700 shadow-sm text-primary-600 dark:text-primary-400' : 'text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300'}`}
@@ -180,7 +180,7 @@ export default function Debugging() {
                   </div>
                   
                   {result.success && (
-                    <button
+                    <button type="button"
                       onClick={handleNextChallenge}
                       className="px-4 py-2 rounded-lg text-sm font-bold bg-success text-white shadow-md hover:bg-green-600 transition-colors whitespace-nowrap self-end sm:self-auto"
                     >
@@ -208,7 +208,7 @@ export default function Debugging() {
               <RiCodeBoxLine className="text-primary-500" /> Source Code
             </h3>
             
-            <button
+            <button type="button"
               onClick={handleVerify}
               disabled={isVerifying}
               className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-sm font-medium gradient-bg text-white shadow-md hover:opacity-90 transition-opacity disabled:opacity-50"

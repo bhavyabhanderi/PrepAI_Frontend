@@ -113,7 +113,7 @@ export default function Login() {
 
       {/* Social Login */}
       <div className="flex gap-3 mb-4">
-        <button
+        <button type="button"
           onClick={() => handleGoogleLogin()}
           className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border text-sm font-medium transition-all hover:bg-primary-500/5"
           style={{

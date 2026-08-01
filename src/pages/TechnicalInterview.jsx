@@ -239,7 +239,7 @@ export default function TechnicalInterview() {
         toast((t) => (
           <div className="flex items-center gap-3">
             <span>Performance report generated!</span>
-            <button
+            <button type="button"
               onClick={() => { toast.dismiss(t.id); navigate(ROUTES.PERFORMANCE_REPORT); }}
               className="px-3 py-1.5 rounded-lg gradient-bg text-white text-xs font-semibold hover:opacity-90 transition-opacity"
             >
@@ -306,7 +306,7 @@ export default function TechnicalInterview() {
             <h3 className="text-base font-semibold mb-4" style={{ color: 'var(--text-primary)' }}>Select Technology</h3>
             <div className="grid grid-cols-2 gap-2">
               {technologies.map((tech) => (
-                <button
+                <button type="button"
                   key={tech}
                   onClick={() => setSelectedTech(tech)}
                   className={`p-3 rounded-xl text-sm font-medium border transition-all ${
@@ -325,7 +325,7 @@ export default function TechnicalInterview() {
             <h3 className="text-base font-semibold mb-4" style={{ color: 'var(--text-primary)' }}>Select Difficulty</h3>
             <div className="space-y-3">
               {difficulties.map((diff) => (
-                <button
+                <button type="button"
                   key={diff}
                   onClick={() => setSelectedDifficulty(diff)}
                   className={`w-full p-4 rounded-xl text-left border transition-all flex items-center justify-between ${
@@ -344,7 +344,7 @@ export default function TechnicalInterview() {
               ))}
             </div>
 
-            <button
+            <button type="button"
               onClick={handleStart}
               disabled={!selectedTech || !selectedDifficulty || isThinking}
               className="w-full mt-6 py-3 rounded-xl gradient-bg text-white font-medium text-sm hover:opacity-90 transition-all disabled:opacity-30 flex items-center justify-center gap-2"
@@ -390,7 +390,7 @@ export default function TechnicalInterview() {
             <RiTimeLine size={14} />
             {formatTimer(time)}
           </div>
-          <button
+          <button type="button"
             onClick={confirmEnd}
             className="px-3 py-1.5 rounded-lg text-sm font-medium bg-error/10 text-error hover:bg-error/20 transition-colors flex items-center gap-1"
           >
@@ -465,7 +465,9 @@ export default function TechnicalInterview() {
           className="flex-1 flex items-end gap-2 px-4 py-3 rounded-xl border transition-colors focus-within:border-primary-500"
           style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)' }}
         >
+          <label htmlFor="technical-answer-input" className="sr-only">Your answer</label>
           <textarea
+            id="technical-answer-input"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
@@ -475,7 +477,7 @@ export default function TechnicalInterview() {
             style={{ color: 'var(--text-primary)', maxHeight: '120px' }}
           />
           {isVoiceMode && (
-            <button
+            <button type="button"
               onClick={toggleRecording}
               className={`p-2 rounded-lg transition-colors tap-target ${
                 isRecording ? 'bg-error/10 text-error animate-pulse' : 'hover:bg-primary-500/10'
@@ -486,7 +488,7 @@ export default function TechnicalInterview() {
             </button>
           )}
         </div>
-        <button
+        <button type="button"
           onClick={handleSend}
           disabled={!input.trim() || isThinking}
           className="p-3 rounded-xl gradient-bg text-white hover:opacity-90 transition-all disabled:opacity-30 tap-target flex-shrink-0"

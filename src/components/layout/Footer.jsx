@@ -2,40 +2,42 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { RiSparklingFill, RiGithubLine, RiTwitterXLine, RiLinkedinLine, RiMailLine } from 'react-icons/ri';
 import { ROUTES } from '../../constants/routes';
 
+const footerLinks = [
+  {
+    title: 'Product',
+    links: [
+      { label: 'Features', href: '#features' },
+      { label: 'Benefits', href: '#benefits' },
+      { label: 'FAQ', href: '#faq' },
+      { label: 'Testimonials', href: '#testimonials' },
+    ],
+  },
+  {
+    title: 'Resources',
+    links: [
+      { label: 'Documentation', href: '#' },
+      { label: 'Blog', href: '#' },
+      { label: 'Community', href: '#' },
+      { label: 'Support', href: '#' },
+    ],
+  },
+  {
+    title: 'Company',
+    links: [
+      { label: 'About Us', href: ROUTES.ABOUT },
+      { label: 'Privacy Policy', href: ROUTES.PRIVACY },
+      { label: 'Terms of Service', href: ROUTES.TERMS },
+    ],
+  },
+];
+
 /**
  * Footer Component - Landing page footer with links and branding
  */
 export default function Footer() {
   const currentYear = new Date().getFullYear();
 
-  const footerLinks = [
-    {
-      title: 'Product',
-      links: [
-        { label: 'Features', href: '#features' },
-        { label: 'Benefits', href: '#benefits' },
-        { label: 'FAQ', href: '#faq' },
-        { label: 'Testimonials', href: '#testimonials' },
-      ],
-    },
-    {
-      title: 'Resources',
-      links: [
-        { label: 'Documentation', href: '#' },
-        { label: 'Blog', href: '#' },
-        { label: 'Community', href: '#' },
-        { label: 'Support', href: '#' },
-      ],
-    },
-    {
-      title: 'Company',
-      links: [
-        { label: 'About Us', href: ROUTES.ABOUT },
-        { label: 'Privacy Policy', href: ROUTES.PRIVACY },
-        { label: 'Terms of Service', href: ROUTES.TERMS },
-      ],
-    },
-  ];
+
 
   const navigate = useNavigate();
   const location = useLocation();

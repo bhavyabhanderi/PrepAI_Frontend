@@ -188,7 +188,7 @@ export default function Playground() {
           {/* Editor Header */}
           <div className="flex items-center justify-between px-4 py-2 border-b" style={{ borderColor: 'var(--border-color)' }}>
             <div className="relative">
-              <button
+              <button type="button"
                 onClick={() => setShowLangDropdown(!showLangDropdown)}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-primary-500/10 transition-colors"
                 style={{ color: 'var(--text-primary)' }}
@@ -202,7 +202,7 @@ export default function Playground() {
                   style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)' }}
                 >
                   {LANGUAGES.map((lang) => (
-                    <button
+                    <button type="button"
                       key={lang.id}
                       onClick={() => handleLanguageChange(lang)}
                       className="w-full px-3 py-2 text-sm text-left hover:bg-primary-500/10 transition-colors"
@@ -216,20 +216,20 @@ export default function Playground() {
             </div>
 
             <div className="flex gap-2">
-              <button
+              <button type="button"
                 onClick={() => setShowInputBox(!showInputBox)}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${showInputBox ? 'bg-primary-500/20 text-primary-600 dark:text-primary-400' : 'hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-500'}`}
               >
                 Custom Input
               </button>
-              <button
+              <button type="button"
                 onClick={handleRunCode}
                 disabled={isRunning}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-success/10 text-success hover:bg-success/20 transition-colors"
               >
                 <RiPlayLine size={14} /> Run
               </button>
-              <button
+              <button type="button"
                 onClick={handleAIReview}
                 disabled={isReviewing}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium gradient-bg text-white shadow-md hover:opacity-90 transition-opacity"
@@ -272,7 +272,7 @@ export default function Playground() {
                   <div className="flex justify-between items-center mb-2">
                     <label className="block text-xs font-bold text-neutral-500 uppercase tracking-wider">Standard Input (stdin)</label>
                     {parsedInputs.length > 0 && (
-                      <button 
+                      <button type="button" 
                         onClick={() => setUseRawStdin(!useRawStdin)}
                         className="text-xs text-primary-500 hover:underline"
                       >
@@ -285,10 +285,15 @@ export default function Playground() {
                     <div className="space-y-2 overflow-y-auto max-h-40 pr-2">
                       {parsedInputs.map((pInput, idx) => (
                         <div key={idx} className="flex flex-col sm:flex-row sm:items-center gap-2">
-                          <span className="text-sm font-mono text-neutral-500 w-32 truncate" title={pInput.label}>
+                          <label
+                            htmlFor={`playground-input-${idx}`}
+                            className="text-sm font-mono text-neutral-500 w-32 truncate"
+                            title={pInput.label}
+                          >
                             {pInput.label}
-                          </span>
+                          </label>
                           <input
+                            id={`playground-input-${idx}`}
                             type="text"
                             value={pInput.value}
                             onChange={(e) => {
@@ -304,13 +309,17 @@ export default function Playground() {
                       ))}
                     </div>
                   ) : (
-                    <textarea
-                      value={stdin}
-                      onChange={(e) => setStdin(e.target.value)}
-                      placeholder="Enter inputs here (e.g. for input() in Python). Separate multiple inputs by newlines..."
-                      className="w-full h-20 p-2 text-sm font-mono rounded-lg border bg-white dark:bg-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary-500/50 resize-none"
-                      style={{ borderColor: 'var(--border-color)', color: 'var(--text-primary)' }}
-                    />
+                    <>
+                      <label htmlFor="playground-stdin" className="sr-only">Standard input</label>
+                      <textarea
+                        id="playground-stdin"
+                        value={stdin}
+                        onChange={(e) => setStdin(e.target.value)}
+                        placeholder="Enter inputs here (e.g. for input() in Python). Separate multiple inputs by newlines..."
+                        className="w-full h-20 p-2 text-sm font-mono rounded-lg border bg-white dark:bg-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary-500/50 resize-none"
+                        style={{ borderColor: 'var(--border-color)', color: 'var(--text-primary)' }}
+                      />
+                    </>
                   )}
                 </motion.div>
               )}
@@ -327,7 +336,7 @@ export default function Playground() {
           {/* Tabs */}
           <div className="flex border-b" style={{ borderColor: 'var(--border-color)' }}>
             {['output', 'review'].map((tab) => (
-              <button
+              <button type="button"
                 key={tab}
                 onClick={() => setActiveTab(tab)}
                 className={`flex-1 px-4 py-3 text-sm font-medium capitalize transition-colors border-b-2 ${

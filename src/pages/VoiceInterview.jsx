@@ -236,10 +236,11 @@ export default function VoiceInterview() {
 
           <div className="space-y-4">
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: 'var(--text-secondary)' }}>
+              <label htmlFor="voice-job-role" className="block text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: 'var(--text-secondary)' }}>
                 Target Job Designation *
               </label>
               <input
+                id="voice-job-role"
                 type="text"
                 value={jobRole}
                 onChange={(e) => setJobRole(e.target.value)}
@@ -252,10 +253,11 @@ export default function VoiceInterview() {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: 'var(--text-secondary)' }}>
+                <label htmlFor="voice-company" className="block text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: 'var(--text-secondary)' }}>
                   Target Company
                 </label>
                 <input
+                  id="voice-company"
                   type="text"
                   value={company}
                   onChange={(e) => setCompany(e.target.value)}
@@ -283,10 +285,11 @@ export default function VoiceInterview() {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: 'var(--text-secondary)' }}>
+              <label htmlFor="voice-job-description" className="block text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: 'var(--text-secondary)' }}>
                 Job Description
               </label>
               <textarea
+                id="voice-job-description"
                 value={jobDescription}
                 onChange={(e) => setJobDescription(e.target.value)}
                 placeholder="Paste the job description here for highly customized questions (optional)..."
@@ -297,7 +300,7 @@ export default function VoiceInterview() {
             </div>
           </div>
 
-          <button
+          <button type="button"
             onClick={handleStart}
             disabled={!jobRole.trim() || isThinking}
             className="w-full mt-8 py-3 rounded-xl gradient-bg text-white font-medium hover:opacity-90 transition-opacity flex items-center justify-center gap-2 disabled:opacity-50"
@@ -357,7 +360,7 @@ export default function VoiceInterview() {
             style={{ backgroundColor: 'var(--bg-tertiary)', color: 'var(--text-primary)' }}>
             <RiTimeLine size={14} /> {formatTimer(time)}
           </div>
-          <button
+          <button type="button"
             onClick={confirmEnd}
             className="px-3 py-1.5 rounded-lg text-sm font-medium bg-error/10 text-error hover:bg-error/20 flex items-center gap-1"
           >
@@ -396,7 +399,7 @@ export default function VoiceInterview() {
             </div>
 
             {/* Record Button */}
-            <button
+            <button type="button"
               onClick={toggleRecording}
               className={`w-20 h-20 rounded-full flex items-center justify-center mx-auto transition-all ${
                 isRecording ? 'bg-error animate-pulse scale-110' : 'gradient-bg hover:scale-105'

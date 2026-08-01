@@ -1,12 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useMemo } from 'react';
 import { useTheme } from '../../context/ThemeContext';
 
 export default function Snowfall({ count = 50 }) {
-  const [snowflakes, setSnowflakes] = useState([]);
+
   const { isDark } = useTheme();
 
-  useEffect(() => {
-    const flakes = Array.from({ length: count }).map((_, i) => ({
+  const snowflakes = useMemo(() => {
+    return Array.from({ length: count }).map((_, i) => ({
       id: i,
       left: `${Math.random() * 100}%`,
       animationDuration: `${Math.random() * 10 + 10}s`, // 10s to 20s for slower, gentle fall
@@ -15,7 +15,6 @@ export default function Snowfall({ count = 50 }) {
       size: `${Math.random() * 5 + 3}px`, // 3px to 8px
       horizontalDrift: Math.random() > 0.5 ? 1 : -1,
     }));
-    setSnowflakes(flakes);
   }, [count]);
 
   return (

@@ -395,7 +395,7 @@ export default function LandingPage() {
 
             {testimonials.length > visibleTestimonials && (
               <div className="text-center mt-10 sm:mt-12">
-                <button
+                <button type="button"
                   onClick={() => setVisibleTestimonials((prev) => prev + 3)}
                   className="tap-target px-6 py-3 rounded-xl border font-medium transition-all hover:bg-primary-500/5 hover:scale-105"
                   style={{ color: 'var(--text-primary)', borderColor: 'var(--border-color)' }}
@@ -457,17 +457,18 @@ export default function LandingPage() {
   );
 }
 
+const faqs = [
+  { q: 'How does the AI interview work?', a: 'Our AI uses advanced natural language processing to conduct realistic interviews. It generates questions based on your selected topic and difficulty, evaluates your responses in real-time, and provides detailed feedback on communication, technical accuracy, and confidence.' },
+  { q: 'Is PrepAI free to use?', a: 'Yes! PrepAI offers a free tier that includes limited mock interviews, resume analysis, and basic performance tracking. Premium plans unlock unlimited interviews, detailed analytics, and personalized learning plans.' },
+  { q: 'What types of interviews are supported?', a: 'We support HR/Behavioral interviews, Technical interviews (across 20+ technologies), Coding interviews (with built-in code editor), and Voice interviews with speech analysis.' },
+  { q: 'How accurate is the resume analyzer?', a: 'Our ATS scanner uses the same algorithms that major companies use. It checks for keyword optimization, formatting, content gaps, and provides an industry-standard ATS compatibility score.' },
+  { q: 'Can I track my progress over time?', a: 'Absolutely! Our analytics dashboard tracks your performance across all interview types with detailed charts, trends, and AI-generated improvement suggestions.' },
+];
+
 /* FAQ Accordion Sub-component */
 function FAQAccordion() {
   const [openIndex, setOpenIndex] = useState(null);
 
-  const faqs = [
-    { q: 'How does the AI interview work?', a: 'Our AI uses advanced natural language processing to conduct realistic interviews. It generates questions based on your selected topic and difficulty, evaluates your responses in real-time, and provides detailed feedback on communication, technical accuracy, and confidence.' },
-    { q: 'Is PrepAI free to use?', a: 'Yes! PrepAI offers a free tier that includes limited mock interviews, resume analysis, and basic performance tracking. Premium plans unlock unlimited interviews, detailed analytics, and personalized learning plans.' },
-    { q: 'What types of interviews are supported?', a: 'We support HR/Behavioral interviews, Technical interviews (across 20+ technologies), Coding interviews (with built-in code editor), and Voice interviews with speech analysis.' },
-    { q: 'How accurate is the resume analyzer?', a: 'Our ATS scanner uses the same algorithms that major companies use. It checks for keyword optimization, formatting, content gaps, and provides an industry-standard ATS compatibility score.' },
-    { q: 'Can I track my progress over time?', a: 'Absolutely! Our analytics dashboard tracks your performance across all interview types with detailed charts, trends, and AI-generated improvement suggestions.' },
-  ];
 
   return (
     <div className="space-y-3">
@@ -484,7 +485,7 @@ function FAQAccordion() {
             borderColor: 'var(--border-color)',
           }}
         >
-          <button
+          <button type="button"
             onClick={() => setOpenIndex(openIndex === i ? null : i)}
             className="w-full flex items-center justify-between p-5 text-left"
           >

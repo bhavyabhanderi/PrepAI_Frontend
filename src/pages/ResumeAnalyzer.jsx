@@ -189,14 +189,14 @@ export default function ResumeAnalyzer() {
                       {formatFileSize(file.size)}
                     </p>
                   </div>
-                  <button onClick={handleReset} className="p-1 rounded-lg hover:bg-error/10 transition-colors">
+                  <button type="button" onClick={handleReset} className="p-1 rounded-lg hover:bg-error/10 transition-colors">
                     <RiCloseLine className="text-error" size={18} />
                   </button>
                 </div>
 
                 {/* Analyze Button */}
                 {!analysis && (
-                  <button
+                  <button type="button"
                     onClick={handleAnalyze}
                     disabled={isAnalyzing}
                     className="w-full py-3 rounded-xl gradient-bg text-white font-medium text-sm hover:opacity-90 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
@@ -217,7 +217,7 @@ export default function ResumeAnalyzer() {
 
                 {analysis && (
                   <div className="flex gap-2">
-                    <button
+                    <button type="button"
                       onClick={handleReset}
                       className="flex-1 py-2.5 rounded-xl border text-sm font-medium hover:bg-primary-500/5 transition-colors"
                       style={{ borderColor: 'var(--border-color)', color: 'var(--text-secondary)' }}
@@ -225,7 +225,7 @@ export default function ResumeAnalyzer() {
                       <RiRefreshLine className="inline mr-1" size={14} />
                       New Upload
                     </button>
-                    <button className="flex-1 py-2.5 rounded-xl gradient-bg text-white text-sm font-medium hover:opacity-90 transition-opacity">
+                    <button type="button" className="flex-1 py-2.5 rounded-xl gradient-bg text-white text-sm font-medium hover:opacity-90 transition-opacity">
                       <RiDownloadLine className="inline mr-1" size={14} />
                       Download Report
                     </button>

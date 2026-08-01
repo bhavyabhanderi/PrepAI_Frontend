@@ -12,8 +12,12 @@
 }
 
 .rating-modal-content {
-  background-color: var(--bg-card);
+  /* Reset native <dialog> defaults */
   border: 1px solid var(--border-color);
+  padding: 0;
+  background: transparent;
+  /* Sizing & layout */
+  background-color: var(--bg-card);
   border-radius: 1rem;
   padding: 2rem;
   width: 100%;
@@ -25,6 +29,11 @@
   flex-direction: column;
   gap: 1.25rem;
   animation: modalFadeIn 0.3s ease-out;
+}
+
+/* Hide the browser-native ::backdrop — we provide our own overlay */
+.rating-modal-content::backdrop {
+  display: none;
 }
 
 @keyframes ratingOverlayFadeIn {
@@ -101,6 +110,12 @@
 
 .rating-modal-content textarea::placeholder {
   color: var(--text-tertiary);
+}
+
+.rating-feedback-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary);
 }
 
 .rating-modal-content textarea:focus {

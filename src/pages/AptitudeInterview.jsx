@@ -163,7 +163,7 @@ export default function AptitudeInterview() {
           <p className="mb-8 text-neutral-500">
             You got {result.correct_count} out of {result.total_questions} questions correct.
           </p>
-          <button
+          <button type="button"
             onClick={() => navigate('/dashboard')}
             className="px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-xl font-medium transition-colors"
           >
@@ -195,7 +195,7 @@ export default function AptitudeInterview() {
           </p>
           <div className="flex bg-neutral-100 dark:bg-neutral-800 p-1 rounded-xl mb-6 mx-auto w-fit">
             {['all', 'easy', 'medium', 'hard'].map((level) => (
-              <button
+              <button type="button"
                 key={level}
                 onClick={() => setDifficulty(level)}
                 className={`px-4 py-1.5 rounded-lg text-sm font-medium capitalize transition-all ${difficulty === level ? 'bg-white dark:bg-neutral-700 shadow-sm text-primary-600 dark:text-primary-400' : 'text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300'}`}
@@ -204,7 +204,7 @@ export default function AptitudeInterview() {
               </button>
             ))}
           </div>
-          <button
+          <button type="button"
             onClick={handleStartTest}
             disabled={loading}
             className="px-8 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-xl font-medium shadow-md transition-all flex items-center justify-center gap-2 mx-auto"
@@ -271,7 +271,7 @@ export default function AptitudeInterview() {
       </div>
 
       <div className="mt-8 flex justify-end">
-        <button
+        <button type="button"
           onClick={() => handleSubmit()}
           disabled={submitting}
           className="px-8 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-xl font-semibold shadow-lg disabled:opacity-50 transition-all flex items-center gap-2"

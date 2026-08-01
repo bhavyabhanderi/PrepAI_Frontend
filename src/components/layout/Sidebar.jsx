@@ -199,7 +199,7 @@ export default function Sidebar() {
 
           {/* Close button — drawer only */}
           {!isDesktop && (
-            <button
+            <button type="button"
               onClick={closeDrawer}
               aria-label="Close navigation menu"
               className="p-2 -mr-1 rounded-lg hover:bg-primary-500/10 transition-colors"
@@ -211,7 +211,7 @@ export default function Sidebar() {
 
           {/* Collapse toggle on desktop */}
           {isDesktop && !collapsed && (
-            <button
+            <button type="button"
               onClick={() => dispatch(toggleSidebarCollapse())}
               aria-label="Collapse sidebar"
               className="p-1.5 rounded-lg hover:bg-primary-500/10 transition-colors"
@@ -225,7 +225,7 @@ export default function Sidebar() {
         {/* Expand button when collapsed */}
         {isDesktop && collapsed && (
           <div className="flex justify-center py-3 shrink-0">
-            <button
+            <button type="button"
               onClick={() => dispatch(toggleSidebarCollapse())}
               aria-label="Expand sidebar"
               className="p-1.5 rounded-lg hover:bg-primary-500/10 transition-colors"
@@ -249,7 +249,7 @@ export default function Sidebar() {
                 
                 return (
                   <div key={item.label} className="space-y-1">
-                    <button
+                    <button type="button"
                       onClick={() => {
                         if (collapsed) {
                            dispatch(toggleSidebarCollapse());

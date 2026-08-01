@@ -36,7 +36,7 @@ class ErrorBoundary extends Component {
             <p className="text-sm mb-6" style={{ color: 'var(--text-tertiary)' }}>
               An unexpected error occurred. Please try again.
             </p>
-            <button
+            <button type="button"
               onClick={this.handleReset}
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl gradient-bg text-white text-sm font-medium hover:opacity-90 transition-opacity"
             >

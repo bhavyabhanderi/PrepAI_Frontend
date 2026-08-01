@@ -33,6 +33,8 @@ const mockUsers = [
 /**
  * Admin Dashboard Page
  */
+const tabs = ['overview', 'users', 'interviews', 'questions', 'feedback'];
+
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('overview');
   const [search, setSearch] = useState('');
@@ -74,7 +76,6 @@ export default function AdminDashboard() {
   ];
 
 
-  const tabs = ['overview', 'users', 'interviews', 'questions', 'feedback'];
 
   return (
     <div className="space-y-6">
@@ -86,7 +87,7 @@ export default function AdminDashboard() {
       {/* Tabs */}
       <div className="flex gap-1 border-b overflow-x-auto no-scrollbar" style={{ borderColor: 'var(--border-color)' }}>
         {tabs.map((tab) => (
-          <button key={tab} onClick={() => setActiveTab(tab)}
+          <button type="button" key={tab} onClick={() => setActiveTab(tab)}
             className={`px-4 py-3 text-sm font-medium capitalize border-b-2 transition-colors whitespace-nowrap ${
               activeTab === tab ? 'border-primary-500 text-primary-500' : 'border-transparent'
             }`}
@@ -168,7 +169,8 @@ export default function AdminDashboard() {
             </h3>
             <div className="flex items-center gap-2 px-3 py-2 rounded-lg border w-full sm:w-auto" style={{ backgroundColor: 'var(--input-bg)', borderColor: 'var(--border-color)' }}>
               <RiSearchLine size={14} style={{ color: 'var(--text-tertiary)' }} />
-              <input type="text" placeholder="Search users..." value={search} onChange={(e) => setSearch(e.target.value)}
+              <label htmlFor="admin-user-search" className="sr-only">Search users</label>
+              <input id="admin-user-search" type="text" placeholder="Search users..." value={search} onChange={(e) => setSearch(e.target.value)}
                 className="bg-transparent text-sm outline-none w-full sm:w-40" style={{ color: 'var(--text-primary)' }} />
             </div>
           </div>
@@ -206,13 +208,13 @@ export default function AdminDashboard() {
                   </div>
                 </div>
                 <div className="flex items-center gap-1 mt-3">
-                  <button className="tap-target p-1.5 rounded-lg hover:bg-primary-500/10 transition-colors" style={{ color: 'var(--text-tertiary)' }}>
+                  <button type="button" className="tap-target p-1.5 rounded-lg hover:bg-primary-500/10 transition-colors" style={{ color: 'var(--text-tertiary)' }}>
                     <RiEyeLine size={16} />
                   </button>
-                  <button className="tap-target p-1.5 rounded-lg hover:bg-primary-500/10 transition-colors" style={{ color: 'var(--text-tertiary)' }}>
+                  <button type="button" className="tap-target p-1.5 rounded-lg hover:bg-primary-500/10 transition-colors" style={{ color: 'var(--text-tertiary)' }}>
                     <RiPencilLine size={16} />
                   </button>
-                  <button className="tap-target p-1.5 rounded-lg hover:bg-error/10 text-error transition-colors">
+                  <button type="button" className="tap-target p-1.5 rounded-lg hover:bg-error/10 text-error transition-colors">
                     <RiDeleteBinLine size={16} />
                   </button>
                 </div>
@@ -255,13 +257,13 @@ export default function AdminDashboard() {
                     </td>
                     <td className="py-3 px-4">
                       <div className="flex items-center gap-1">
-                        <button className="p-1.5 rounded-lg hover:bg-primary-500/10 transition-colors" style={{ color: 'var(--text-tertiary)' }}>
+                        <button type="button" className="p-1.5 rounded-lg hover:bg-primary-500/10 transition-colors" style={{ color: 'var(--text-tertiary)' }}>
                           <RiEyeLine size={14} />
                         </button>
-                        <button className="p-1.5 rounded-lg hover:bg-primary-500/10 transition-colors" style={{ color: 'var(--text-tertiary)' }}>
+                        <button type="button" className="p-1.5 rounded-lg hover:bg-primary-500/10 transition-colors" style={{ color: 'var(--text-tertiary)' }}>
                           <RiPencilLine size={14} />
                         </button>
-                        <button className="p-1.5 rounded-lg hover:bg-error/10 text-error transition-colors">
+                        <button type="button" className="p-1.5 rounded-lg hover:bg-error/10 text-error transition-colors">
                           <RiDeleteBinLine size={14} />
                         </button>
                       </div>

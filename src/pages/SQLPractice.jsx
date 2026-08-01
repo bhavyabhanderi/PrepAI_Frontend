@@ -93,7 +93,7 @@ export default function SQLPractice() {
         {/* Difficulty Selector */}
         <div className="flex bg-neutral-100 dark:bg-neutral-800 p-1 rounded-xl">
           {['all', 'easy', 'medium', 'hard'].map((level) => (
-            <button
+            <button type="button"
               key={level}
               onClick={() => handleDifficultyChange(level)}
               className={`px-4 py-1.5 rounded-lg text-sm font-medium capitalize transition-all ${difficulty === level ? 'bg-white dark:bg-neutral-700 shadow-sm text-primary-600 dark:text-primary-400' : 'text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300'}`}
@@ -117,7 +117,7 @@ export default function SQLPractice() {
             <h3 className="font-bold text-sm flex items-center gap-2" style={{ color: 'var(--text-primary)' }}>
               <RiTableLine className="text-primary-500" /> Current Question
             </h3>
-            <button 
+            <button type="button" 
               onClick={handleNextQuestion}
               className="text-xs font-semibold px-2 py-1 rounded bg-primary-500/10 text-primary-600 dark:text-primary-400 hover:bg-primary-500/20 transition-colors"
             >
@@ -192,7 +192,7 @@ export default function SQLPractice() {
           >
             <div className="px-4 py-2 border-b flex justify-between items-center" style={{ borderColor: 'var(--border-color)' }}>
               <h3 className="font-bold text-sm" style={{ color: 'var(--text-primary)' }}>SQL Editor</h3>
-              <button
+              <button type="button"
                 onClick={handleRunQuery}
                 disabled={isRunning}
                 className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-sm font-medium gradient-bg text-white shadow-md hover:opacity-90 transition-opacity disabled:opacity-50"
@@ -280,7 +280,7 @@ export default function SQLPractice() {
                     />
                   </div>
                 </div>
-                <button
+                <button type="button"
                   onClick={handleNextQuestion}
                   className="px-4 py-2 rounded-lg text-sm font-bold bg-primary-500 text-white shadow-md hover:bg-primary-600 transition-colors whitespace-nowrap self-end sm:self-auto"
                 >
