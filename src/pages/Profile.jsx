@@ -399,11 +399,9 @@ export default function Profile() {
                 </div>
                 <button 
                   onClick={() => {
-                    setPreferences(prev => {
-                      const newPrefs = { ...prev, [setting.id]: !prev[setting.id] };
-                      localStorage.setItem('ai-interview-preferences', JSON.stringify(newPrefs));
-                      return newPrefs;
-                    });
+                    const newPrefs = { ...preferences, [setting.id]: !preferences[setting.id] };
+                    localStorage.setItem('ai-interview-preferences', JSON.stringify(newPrefs));
+                    setPreferences(newPrefs);
                     toast.success(`${setting.label} updated`);
                   }}
                   className={`shrink-0 w-12 h-6 rounded-full relative transition-colors ${preferences[setting.id] ? 'bg-primary-500' : 'bg-neutral-400'}`}

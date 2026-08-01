@@ -34,7 +34,7 @@ export default function SQLPractice() {
       const response = await codingService.getSqlProblems(apiDiff);
       const newQuestion = response.data[0];
       setQuestion(newQuestion);
-      setCode(`-- Write your SQL query here\n-- Question: ${newQuestion.question}\n\n`);
+      setCode(`-- Write your SQL query here\n\n`);
     } catch (error) {
       console.error('Error fetching question:', error);
       toast.error('Failed to generate question.');

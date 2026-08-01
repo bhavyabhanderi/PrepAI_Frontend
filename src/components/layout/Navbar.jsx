@@ -62,7 +62,7 @@ export default function Navbar() {
         </button>
 
         {/* Mobile Logo */}
-        <div className="lg:hidden flex items-center gap-2 cursor-pointer" onClick={() => navigate(ROUTES.DASHBOARD)}>
+        <div className="lg:hidden flex items-center gap-2 cursor-pointer" onClick={() => navigate(ROUTES.HOME)}>
           <img src="/PrepAI.png" alt="PrepAI Logo" className="w-12 h-12 object-contain" />
         </div>
 
@@ -230,7 +230,10 @@ export default function Navbar() {
                         confirmButtonText: 'Yes, logout!'
                       }).then((result) => {
                         if (result.isConfirmed) {
-                          dispatch(logout());
+                          navigate(ROUTES.HOME);
+                          setTimeout(() => {
+                            dispatch(logout());
+                          }, 50);
                         }
                       });
                     }}

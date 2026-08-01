@@ -60,12 +60,13 @@ export default function LandingPage() {
   useEffect(() => {
     if (location.hash) {
       const id = location.hash.substring(1);
-      setTimeout(() => {
+      const timerId = setTimeout(() => {
         const element = document.getElementById(id);
         if (element) {
           element.scrollIntoView({ behavior: 'smooth' });
         }
       }, 100);
+      return () => clearTimeout(timerId);
     }
   }, [location]);
 
@@ -100,7 +101,9 @@ export default function LandingPage() {
     const sections = document.querySelectorAll('section[id]');
     sections.forEach((section) => observer.observe(section));
 
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+    };
   }, []);
 
   const handleNavClick = (e, targetId) => {
@@ -497,11 +500,12 @@ function FAQAccordion() {
           <motion.div
             initial={false}
             animate={{
-              height: openIndex === i ? 'auto' : 0,
+              scaleY: openIndex === i ? 1 : 0,
               opacity: openIndex === i ? 1 : 0,
             }}
             transition={{ duration: 0.3 }}
             className="overflow-hidden"
+            style={{ transformOrigin: 'top' }}
           >
             <p className="px-5 pb-5 text-sm leading-relaxed" style={{ color: 'var(--text-tertiary)' }}>
               {faq.a}

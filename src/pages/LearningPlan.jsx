@@ -79,8 +79,6 @@ export default function LearningPlan() {
     timerRef.current = setInterval(() => {
       setTimeLeft(prev => {
         if (prev <= 1) {
-          clearInterval(timerRef.current);
-          handleSubmitQuiz(true); // auto-submit
           return 0;
         }
         return prev - 1;
@@ -89,6 +87,14 @@ export default function LearningPlan() {
     return () => clearInterval(timerRef.current);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [step, quizSubmitted]);
+
+  useEffect(() => {
+    if (timeLeft === 0 && step === 'quiz' && !quizSubmitted) {
+      clearInterval(timerRef.current);
+      handleSubmitQuiz(true);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [timeLeft, step, quizSubmitted]);
 
   const formatTime = (secs) => {
     const m = Math.floor(secs / 60).toString().padStart(2, '0');

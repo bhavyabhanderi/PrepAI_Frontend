@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useEffectEvent } from 'react';
 import { createPortal } from 'react-dom';
 import ratingService from '../services/ratingService';
 import './RatingModal.css';
@@ -11,11 +11,13 @@ const RatingModal = ({ isOpen, onClose }) => {
   const [error, setError] = useState('');
 
   // Close on Escape, and stop the page behind the overlay from scrolling.
+  const onCloseEvent = useEffectEvent(onClose);
+
   useEffect(() => {
     if (!isOpen) return undefined;
 
     const handleKeyDown = (e) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') onCloseEvent();
     };
     document.addEventListener('keydown', handleKeyDown);
 
@@ -26,7 +28,7 @@ const RatingModal = ({ isOpen, onClose }) => {
       document.removeEventListener('keydown', handleKeyDown);
       document.body.style.overflow = previousOverflow;
     };
-  }, [isOpen, onClose]);
+  }, [isOpen]);
 
   // A reopened modal should start blank rather than showing the last attempt.
   useEffect(() => {

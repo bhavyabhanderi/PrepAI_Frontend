@@ -265,8 +265,9 @@ export default function ResumeAnalyzer() {
                 <div className="w-48 h-1.5 rounded-full mx-auto mt-6 overflow-hidden" style={{ backgroundColor: 'var(--border-color)' }}>
                   <motion.div
                     className="h-full rounded-full gradient-bg"
-                    initial={{ width: '0%' }}
-                    animate={{ width: '100%' }}
+                    style={{ width: '100%', transformOrigin: 'left' }}
+                    initial={{ scaleX: 0 }}
+                    animate={{ scaleX: 1 }}
                     transition={{ duration: 2.5, ease: 'easeInOut' }}
                   />
                 </div>

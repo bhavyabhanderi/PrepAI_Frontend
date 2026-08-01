@@ -124,7 +124,7 @@ export default function Debugging() {
         {/* Left pane: Problem & Result */}
         <motion.div 
           {...fadeInUp}
-          className="rounded-2xl border flex flex-col h-[40dvh] lg:h-auto overflow-y-auto no-scrollbar relative"
+          className="rounded-2xl border flex flex-col h-[40dvh] lg:h-full overflow-y-auto no-scrollbar relative"
           style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)' }}
         >
           <div className="p-5 space-y-6 relative">
@@ -161,9 +161,10 @@ export default function Debugging() {
             <AnimatePresence>
               {result && (
                 <motion.div 
-                  initial={{ opacity: 0, height: 0, y: -10 }} 
-                  animate={{ opacity: 1, height: 'auto', y: 0 }}
-                  className={`p-4 rounded-xl border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 \${result.success ? 'bg-success/5 border-success/30' : 'bg-error/5 border-error/30'}`}
+                  initial={{ opacity: 0, scaleY: 0, y: -10 }} 
+                  animate={{ opacity: 1, scaleY: 1, y: 0 }}
+                  className={`p-4 rounded-xl border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 ${result.success ? 'bg-success/5 border-success/30' : 'bg-error/5 border-error/30'}`}
+                  style={{ transformOrigin: 'top' }}
                 >
                   <div>
                     <div className="flex items-center gap-2 font-bold mb-2">
@@ -198,7 +199,7 @@ export default function Debugging() {
         {/* Right pane: Editor */}
         <motion.div 
           {...fadeInUp} transition={{ delay: 0.1 }}
-          className="rounded-2xl border flex flex-col h-[50dvh] lg:h-auto overflow-hidden"
+          className="rounded-2xl border flex flex-col h-[50dvh] lg:h-full overflow-hidden"
           style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)' }}
         >
           {/* Editor Header */}
@@ -233,7 +234,7 @@ export default function Debugging() {
             ) : (
               <Editor
                 height="100%"
-                language={challenge.language}
+                language={challenge.language?.toLowerCase()}
                 value={code}
                 onChange={(val) => setCode(val || '')}
                 theme={isDark ? 'vs-dark' : 'light'}

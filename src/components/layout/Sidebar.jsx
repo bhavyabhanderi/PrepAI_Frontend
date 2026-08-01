@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useState } from 'react';
-import { NavLink, Link, useLocation } from 'react-router-dom';
+import { useCallback, useEffect, useState, useEffectEvent } from 'react';
+import { NavLink, Link, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../../context/ThemeContext';
@@ -51,6 +51,7 @@ export default function Sidebar() {
   const { isActive: isInterviewActive } = useSelector((state) => state.interview);
   const { isDark, toggleTheme } = useTheme();
   const location = useLocation();
+  const navigate = useNavigate();
   const isDesktop = useIsDesktop();
 
   // Below `lg` the sidebar is an overlay drawer: it is always full-width there,
@@ -97,18 +98,20 @@ export default function Sidebar() {
     if (!isDesktop) closeDrawer();
   }, [location.pathname, isDesktop, closeDrawer]);
 
+  const closeDrawerEvent = useEffectEvent(closeDrawer);
+
   // Lock body scroll and wire Escape while the drawer covers the page.
   useEffect(() => {
     if (!drawerOpen) return;
     const { overflow } = document.body.style;
     document.body.style.overflow = 'hidden';
-    const onKeyDown = (e) => e.key === 'Escape' && closeDrawer();
+    const onKeyDown = (e) => e.key === 'Escape' && closeDrawerEvent();
     window.addEventListener('keydown', onKeyDown);
     return () => {
       document.body.style.overflow = overflow;
       window.removeEventListener('keydown', onKeyDown);
     };
-  }, [drawerOpen, closeDrawer]);
+  }, [drawerOpen]);
 
   const handleLogout = () => {
     Swal.fire({
@@ -121,7 +124,10 @@ export default function Sidebar() {
       confirmButtonText: 'Yes, logout!'
     }).then((result) => {
       if (result.isConfirmed) {
-        dispatch(logout());
+        navigate(ROUTES.HOME);
+        setTimeout(() => {
+          dispatch(logout());
+        }, 50);
       }
     });
   };
@@ -174,7 +180,8 @@ export default function Sidebar() {
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="flex items-center gap-3"
+              className="flex items-center gap-3 cursor-pointer"
+              onClick={() => navigate(ROUTES.HOME)}
             >
               <img src="/PrepAI.png" alt="PrepAI Logo" className="w-12 h-12 object-contain" />
               <span className="font-bold text-lg gradient-text">PrepAI</span>
@@ -182,7 +189,12 @@ export default function Sidebar() {
           )}
 
           {collapsed && (
-            <img src="/PrepAI.png" alt="PrepAI Logo" className="w-12 h-12 object-contain mx-auto" />
+            <img 
+              src="/PrepAI.png" 
+              alt="PrepAI Logo" 
+              className="w-12 h-12 object-contain mx-auto cursor-pointer" 
+              onClick={() => navigate(ROUTES.HOME)}
+            />
           )}
 
           {/* Close button — drawer only */}
@@ -278,11 +290,11 @@ export default function Sidebar() {
                     <AnimatePresence>
                       {!collapsed && isExpanded && (
                         <motion.div
-                          initial={{ height: 0, opacity: 0 }}
-                          animate={{ height: 'auto', opacity: 1 }}
-                          exit={{ height: 0, opacity: 0 }}
+                          initial={{ scaleY: 0, opacity: 0 }}
+                          animate={{ scaleY: 1, opacity: 1 }}
+                          exit={{ scaleY: 0, opacity: 0 }}
                           className="overflow-hidden ml-4 pl-3 border-l space-y-1 mt-1"
-                          style={{ borderColor: 'var(--border-color)' }}
+                          style={{ transformOrigin: 'top', borderColor: 'var(--border-color)' }}
                         >
                           {item.subItems.map(subItem => {
                              const SubIcon = iconMap[subItem.icon];

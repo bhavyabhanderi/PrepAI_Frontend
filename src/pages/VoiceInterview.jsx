@@ -388,8 +388,8 @@ export default function VoiceInterview() {
                 <motion.div
                   key={i}
                   className="w-1.5 rounded-full"
-                  style={{ backgroundColor: isRecording ? '#4A4DC9' : 'var(--border-color)' }}
-                  animate={{ height: isRecording ? `${Math.max(h * 0.8, 8)}%` : '8%' }}
+                  style={{ backgroundColor: isRecording ? '#4A4DC9' : 'var(--border-color)', height: '100%', transformOrigin: 'bottom' }}
+                  animate={{ scaleY: isRecording ? Math.max(h * 0.008, 0.08) : 0.08 }}
                   transition={{ duration: prefersReducedMotion ? 0 : 0.1 }}
                 />
               ))}

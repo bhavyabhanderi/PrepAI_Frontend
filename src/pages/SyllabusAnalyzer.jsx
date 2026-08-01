@@ -263,10 +263,11 @@ export default function SyllabusAnalyzer() {
                     <AnimatePresence>
                       {isExpanded && (
                         <motion.div
-                          initial={{ height: 0, opacity: 0 }}
-                          animate={{ height: 'auto', opacity: 1 }}
-                          exit={{ height: 0, opacity: 0 }}
+                          initial={{ scaleY: 0, opacity: 0 }}
+                          animate={{ scaleY: 1, opacity: 1 }}
+                          exit={{ scaleY: 0, opacity: 0 }}
                           className="overflow-hidden"
+                          style={{ transformOrigin: 'top' }}
                         >
                           <div className="p-4 pt-0 pl-[3.25rem] space-y-2">
                             {ch.topics && ch.topics.map((topic, tIdx) => (

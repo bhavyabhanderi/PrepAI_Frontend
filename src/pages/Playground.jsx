@@ -263,11 +263,11 @@ export default function Playground() {
             <AnimatePresence>
               {showInputBox && (
                 <motion.div 
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: 'auto', opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
+                  initial={{ scaleY: 0, opacity: 0 }}
+                  animate={{ scaleY: 1, opacity: 1 }}
+                  exit={{ scaleY: 0, opacity: 0 }}
                   className="border-t p-3 overflow-hidden" 
-                  style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-tertiary)' }}
+                  style={{ transformOrigin: 'top', borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-tertiary)' }}
                 >
                   <div className="flex justify-between items-center mb-2">
                     <label className="block text-xs font-bold text-neutral-500 uppercase tracking-wider">Standard Input (stdin)</label>

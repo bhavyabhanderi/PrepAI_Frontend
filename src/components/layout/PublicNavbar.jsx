@@ -111,12 +111,12 @@ export default function PublicNavbar() {
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
+            initial={{ scaleY: 0, opacity: 0 }}
+            animate={{ scaleY: 1, opacity: 1 }}
+            exit={{ scaleY: 0, opacity: 0 }}
             transition={{ duration: 0.25 }}
             className="md:hidden overflow-hidden border-t"
-            style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-card)' }}
+            style={{ transformOrigin: 'top', borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-card)' }}
           >
             <div className="px-4 py-4 flex flex-col gap-1 safe-bottom">
               {navLinks.map((item) => (
