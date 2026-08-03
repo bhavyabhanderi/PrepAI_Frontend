@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/api/v1/(.*)",
+      "destination": "https://prepai-backend-fmum.onrender.com/api/v1/$1"
+    },
+    {
       "source": "/(.*)",
       "destination": "/"
     }
