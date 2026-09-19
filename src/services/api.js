@@ -89,4 +89,5 @@ export const syllabusService = {
     }),
   list: () => axiosInstance.get(API_ENDPOINTS.SYLLABUS.LIST),
   chat: (data) => axiosInstance.post(API_ENDPOINTS.SYLLABUS.CHAT, data),
+  delete: (id) => axiosInstance.delete(API_ENDPOINTS.SYLLABUS.DELETE(id)),
 };

@@ -68,5 +68,6 @@ export const API_ENDPOINTS = {
     UPLOAD: '/syllabus/upload',
     LIST: '/syllabus/',
     CHAT: '/syllabus/chat',
+    DELETE: (id) => `/syllabus/${id}`,
   },
 };

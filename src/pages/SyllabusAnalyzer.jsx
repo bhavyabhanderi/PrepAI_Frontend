@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { toast } from 'react-hot-toast';
+import Swal from 'sweetalert2';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   RiUploadCloud2Line,
@@ -11,7 +12,8 @@ import {
   RiCheckDoubleLine,
   RiTimeLine,
   RiChatSmile3Line,
-  RiArrowGoBackLine
+  RiArrowGoBackLine,
+  RiDeleteBinLine
 } from 'react-icons/ri';
 import { syllabusService } from '../services/api';
 import { useNavigate } from 'react-router-dom';
@@ -90,6 +92,32 @@ export default function SyllabusAnalyzer() {
     setFile(null);
     setSyllabusData(null);
     setExpandedChapter(null);
+  };
+
+  const handleDeleteSyllabus = async (id) => {
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#ef4444',
+      cancelButtonColor: '#6b7280',
+      confirmButtonText: 'Yes, delete it!'
+    });
+
+    if (!result.isConfirmed) return;
+
+    try {
+      await syllabusService.delete(id);
+      toast.success('Syllabus deleted successfully');
+      setSavedSyllabi((prev) => prev.filter((item) => item._id !== id));
+      if (syllabusData && syllabusData._id === id) {
+        handleReset();
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error('Failed to delete syllabus');
+    }
   };
 
   const handleTopicClick = (topic) => {
@@ -196,24 +224,32 @@ export default function SyllabusAnalyzer() {
                 </div>
               ) : savedSyllabi.length > 0 ? (
                 savedSyllabi.map((item) => (
-                  <button type="button"
+                  <div
                     key={item._id}
-                    onClick={() => handleLoadSavedSyllabus(item)}
-                    className="w-full text-left p-4 rounded-xl border hover:border-primary-500 hover:bg-primary-500/5 transition-all group flex flex-col gap-2"
+                    className="w-full text-left p-4 rounded-xl border hover:border-primary-500 hover:bg-primary-500/5 transition-all group flex flex-col gap-2 relative"
                     style={{ backgroundColor: 'var(--bg-tertiary)', borderColor: 'var(--border-color)' }}
                   >
-                    <p className="text-sm font-semibold truncate group-hover:text-primary-500 transition-colors" style={{ color: 'var(--text-primary)' }}>
-                      {item.subject || 'Unknown Subject'}
-                    </p>
-                    <div className="flex items-center justify-between mt-auto">
-                      <p className="text-xs flex items-center gap-1" style={{ color: 'var(--text-tertiary)' }}>
-                        <RiFileTextLine /> {item.file_name || 'Uploaded File'}
+                    <div className="cursor-pointer" onClick={() => handleLoadSavedSyllabus(item)}>
+                      <p className="text-sm font-semibold truncate group-hover:text-primary-500 transition-colors pr-8" style={{ color: 'var(--text-primary)' }}>
+                        {item.subject || 'Unknown Subject'}
                       </p>
-                      <p className="text-[10px] flex items-center gap-1 bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded-full" style={{ color: 'var(--text-secondary)' }}>
-                        <RiTimeLine /> {formatDate(item.created_at)}
-                      </p>
+                      <div className="flex items-center justify-between mt-auto pt-2">
+                        <p className="text-xs flex items-center gap-1" style={{ color: 'var(--text-tertiary)' }}>
+                          <RiFileTextLine /> {item.file_name || 'Uploaded File'}
+                        </p>
+                        <p className="text-[10px] flex items-center gap-1 bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded-full" style={{ color: 'var(--text-secondary)' }}>
+                          <RiTimeLine /> {formatDate(item.created_at)}
+                        </p>
+                      </div>
                     </div>
-                  </button>
+                    <button 
+                      onClick={(e) => { e.stopPropagation(); handleDeleteSyllabus(item._id); }}
+                      className="absolute top-3 right-3 p-1.5 rounded-lg text-red-500 hover:bg-red-500/10 opacity-0 group-hover:opacity-100 transition-all"
+                      title="Delete Syllabus"
+                    >
+                      <RiDeleteBinLine size={16} />
+                    </button>
+                  </div>
                 ))
               ) : (
                 <div className="col-span-full flex flex-col items-center justify-center h-32 text-center">

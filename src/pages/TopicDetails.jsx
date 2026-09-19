@@ -34,10 +34,13 @@ function MermaidBlock({ code }) {
     let cancelled = false;
     const id = `mermaid-${Math.random().toString(36).substring(2, 10)}`;
     
+    // Sanitize code to fix common AI syntax errors with arrows
+    const sanitizedCode = code.replace(/⟶/g, '-->').replace(/→/g, '-->');
+    
     // First validate the syntax using mermaid.parse
     // If it's invalid, this will throw and we can catch it silently WITHOUT mermaid drawing global errors
-    mermaid.parse(code, { suppressErrors: true })
-      .then(() => mermaid.render(id, code))
+    mermaid.parse(sanitizedCode, { suppressErrors: true })
+      .then(() => mermaid.render(id, sanitizedCode))
       .then(({ svg: renderedSvg }) => {
         if (!cancelled) {
           if (renderedSvg.toLowerCase().includes('syntax error')) {
